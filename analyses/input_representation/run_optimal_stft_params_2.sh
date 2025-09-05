@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1             # 8 tasks total
 #SBATCH --cpus-per-task=2    # Request 8 CPU cores per GPU
 #SBATCH --mem=256G
-#SBATCH -t 1:00:00         # total run time limit (HH:MM:SS) (increased to 24 hours)
+#SBATCH -t 4:00:00         # total run time limit (HH:MM:SS) (increased to 24 hours)
 #####SBATCH --gres=gpu:1
 #####SBATCH --constraint=24GB
 #SBATCH --exclude=dgx001,dgx002
