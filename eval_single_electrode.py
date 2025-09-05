@@ -13,13 +13,13 @@ from eval_utils import *
 
 preprocess_options = [
     'none', # no preprocessing, just raw voltage
-    'fft_absangle', # magnitude and phase after FFT
-    'fft_realimag', # real and imaginary parts after FFT
-    'fft_abs', # just magnitude after FFT ("spectrogram")
+    'stft_absangle', # magnitude and phase after FFT
+    'stft_realimag', # real and imaginary parts after FFT
+    'stft_abs', # just magnitude after FFT ("spectrogram")
+    'laplacian', # Laplacian rereference
 
     'remove_line_noise', # remove line noise from the raw voltage
     'downsample_200', # downsample to 200 Hz
-    'downsample_200+remove_line_noise', # downsample to 200 Hz and remove line noise
 ]
 splits_options = [
     'SS_SM', # same subject, same trial
@@ -32,7 +32,7 @@ parser.add_argument('--subject', type=int, required=True, help='Subject ID')
 parser.add_argument('--trial', type=int, required=True, help='Trial ID')
 parser.add_argument('--verbose', action='store_true', help='Whether to print progress')
 parser.add_argument('--save_dir', type=str, default='eval_results', help='Directory to save results')
-parser.add_argument('--preprocess', type=str, choices=preprocess_options, default='none', help=f'Preprocessing to apply to neural data ({", ".join(preprocess_options)})')
+parser.add_argument('--preprocess', type=str, default='none', help=f'Preprocessing to apply to neural data ({", ".join(preprocess_options)})')
 parser.add_argument('--splits_type', type=str, choices=splits_options, default='SS_SM', help=f'Type of splits to use ({", ".join(splits_options)})')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
 parser.add_argument('--nperseg', type=int, default=256, help='Length of each segment for FFT calculation')
