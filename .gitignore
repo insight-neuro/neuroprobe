@@ -1,13 +1,7 @@
 .venv/
 
-_*
-_*/
-
 logs/
 eval_results*/
 data/
 
-neuroprobe/__pycache__
-
-*.pdf
-*.png
+**/__pycache__
