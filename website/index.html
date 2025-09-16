@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuroprobe - Evaluating Intracranial Brain Responses</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-content">
+                <div class="logo">Neuroprobe</div>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#leaderboard">Leaderboard</a>
+                    <a href="#paper">Paper</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Neuroprobe</h1>
+                <p class="subtitle">Evaluating Intracranial Brain Responses to Naturalistic Stimuli</p>
+                <div class="hero-buttons">
+                    <a href="#paper" class="button primary">Read Paper</a>
+                    <a href="https://github.com/azaho/neuroprobe" class="button secondary" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+                <div class="tech-badges">
+                    <img alt="Python" src="https://img.shields.io/badge/Python-3.8+-1f425f.svg?color=purple">
+                    <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg">
+                    <img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg">
+                    <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fneuroprobe.dev">
+                </div>
+            </div>
+            <div class="hero-animation">
+                <img src="https://azaho.org/bfm_join/brain_gif.gif" alt="Brain Activity Animation">
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <h2>About</h2>
+            <div class="abstract">
+                <h3>Abstract</h3>
+                <p>We present Neuroprobe, a benchmark for understanding how the brain processes information across multiple tasks. Neuroprobe analyzes intracranial recordings during naturalistic stimuli using techniques from modern natural language processing. By probing neural responses across many tasks simultaneously, Neuroprobe aims to reveal the functional organization of the brain and relationships between different cognitive processes.</p>
+            </div>
+        </section>
+
+        <section id="leaderboard" class="leaderboard">
+            <h2>Leaderboard</h2>
+            <div class="leaderboard-tabs">
+                <button class="tab-button active" data-tab="population">Population</button>
+                <button class="tab-button" data-tab="single">Single Electrode</button>
+            </div>
+            
+            <div class="leaderboard-content">
+                <div class="tab-content active" id="population">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Model</th>
+                                <th>SS/SM</th>
+                                <th>SS/DM</th>
+                                <th>DS/DM</th>
+                                <th>Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge gold">1</span></td>
+                                <td>Linear Lite</td>
+                                <td>0.591</td>
+                                <td>0.562</td>
+                                <td>---</td>
+                                <td>---</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge silver">2</span></td>
+                                <td>BrainBert Lite</td>
+                                <td>0.575</td>
+                                <td>0.562</td>
+                                <td>---</td>
+                                <td>---</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge bronze">3</span></td>
+                                <td>PopT</td>
+                                <td>0.547</td>
+                                <td>0.545</td>
+                                <td>0.507</td>
+                                <td>0.533</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="single">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Model</th>
+                                <th>SS/SM</th>
+                                <th>SS/DM</th>
+                                <th>DS/DM</th>
+                                <th>Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge gold">1</span></td>
+                                <td>Linear</td>
+                                <td>0.534</td>
+                                <td>0.527</td>
+                                <td>0.507</td>
+                                <td>0.523</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <a class="submit-button" href="mailto:zaho@mit.edu?subject=Neuroprobe%20benchmark%20submission">Submit Results</a>
+            </div>
+        </section>
+
+        <section id="paper" class="paper">
+            <h2>Paper</h2>
+            <div class="paper-content">
+                <div class="paper-info">
+                    <h3>Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli</h3>
+                    <p class="authors">By Andrii Zahorodnii¹²*, Bennett Stankovits¹*, Christopher Wang¹*, Charikleia Moraitaki¹, Geeling Chau³, Ila R Fiete¹², Boris Katz¹, Andrei Barbu¹</p>
+                    <p class="affiliations">¹MIT CSAIL, CBMM | ²MIT McGovern Institute | ³Caltech | *Equal contribution</p>
+                    <div class="paper-links">
+                        <a href="https://azaho.org/papers/NeurIPS_2025__BTBench_paper.pdf" class="button primary">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </a>
+                        <a href="https://github.com/azaho/neuroprobe" class="button secondary" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                    <div class="citation">
+                        <h4>Citation</h4>
+                        <p>If you use Neuroprobe in your work, please cite our paper:</p>
+                        <pre><code>@misc{2024neuroprobe,
+  title={Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli},
+  author={Zahorodnii, Andrii and Stankovits, Bennett and Wang, Christopher and Moraitaki, Charikleia and Chau, Geeling and Fiete, Ila R and Katz, Boris and Barbu, Andrei},
+  year={2025},
+  publisher={TBD},
+  url={TBD}
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Neuroprobe. All rights reserved.</p>
+            <p>Licensed under the MIT License</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
