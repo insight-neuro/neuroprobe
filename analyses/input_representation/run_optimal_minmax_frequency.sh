@@ -26,13 +26,13 @@ declare -a eval_names=(
     "frame_brightness"
     "global_flow"
     "local_flow"
-    "global_flow_angle"
-    "local_flow_angle" 
+    "global_flow_angle" # NOTE: This task is not actually part of Neuroprobe benchmark, but is available in the dataset class.
+    "local_flow_angle" # NOTE: This task is not actually part of Neuroprobe benchmark, but is available in the dataset class.
     "face_num"
     "volume"
     "pitch"
     "delta_volume"
-    "delta_pitch"
+    "delta_pitch" # NOTE: This task is not actually part of Neuroprobe benchmark, but is available in the dataset class.
     "speech"
     "onset"
     "gpt2_surprisal"
@@ -41,7 +41,7 @@ declare -a eval_names=(
     "word_index"
     "word_head_pos"
     "word_part_speech"
-    "speaker"
+    "speaker" # NOTE: This task is not actually part of Neuroprobe benchmark, but is available in the dataset class.
 )
 
 declare -a preprocess_type=(
