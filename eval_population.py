@@ -39,7 +39,7 @@ parser.add_argument('--overwrite', action='store_true', help='Whether to overwri
 parser.add_argument('--save_dir', type=str, default='eval_results', help='Directory to save results')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
 
-parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset')
+parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--full', action='store_true', help='Whether to use the full eval for Neuroprobe (NOTE: Lite is the default!)')
 parser.add_argument('--nano', action='store_true', help='Whether to use Neuroprobe Nano for faster evaluation')
 

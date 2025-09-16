@@ -42,7 +42,7 @@ parser.add_argument('--preprocess.stft.min_frequency', type=int, default=0, help
 
 parser.add_argument('--splits_type', type=str, choices=splits_options, default='SS_SM', help=f'Type of splits to use ({", ".join(splits_options)})')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
-parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset')
+parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--lite', action='store_true', help='Whether to use the lite eval for Neuroprobe (which is the default)')
 parser.add_argument('--electrodes', type=str, default='all', help='Electrode labels to evaluate on. If multiple, separate with commas.')
 parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer'], default='linear', help='Type of classifier to use for evaluation')
