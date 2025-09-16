@@ -1,0 +1,17 @@
+# Include the README and license files
+include README.md
+include LICENSE
+
+# Include the configuration and data files
+recursive-include neuroprobe/braintreebank_features_time_alignment *
+recursive-include neuroprobe/pitch_volume_features *
+
+# Include any JSON schema files
+include leaderboard_schema.json
+
+# Exclude unnecessary files
+exclude .gitignore
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store 

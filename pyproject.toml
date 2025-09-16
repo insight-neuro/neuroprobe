@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neuroprobe"
+version = "1.0"
+authors = [
+    {name = "Andrii Zahorodnii", email = "zaho@csail.mit.edu"},
+    {name = "Christopher Wang"},
+    {name = "Bennett Stankovits"},
+    {name = "Charikleia Moraitaki"},
+    {name = "Geeling Chau"},
+    {name = "Ila R Fiete"},
+    {name = "Boris Katz"},
+    {name = "Andrei Barbu"},
+]
+description = "A benchmark for evaluating intracranial brain responses to naturalistic stimuli"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = [
+    "neuroscience",
+    "brain",
+    "neural-data", 
+    "benchmark",
+    "intracranial",
+    "eeg",
+    "ieeg",
+    "seeg",
+    "ecog",
+    "foundation-models",
+    "evaluation",
+    "naturalistic-stimuli",
+    "machine-learning",
+    "pytorch",
+]
+dependencies = [
+    "torch",
+    "torchvision",
+    "h5py",
+    "pandas",
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn",
+    "psutil",
+    "scikit-learn"
+]
+
+[project.optional-dependencies]
+dev = [
+    "beautifulsoup4",
+    "requests",
+    "jupyter",
+    "ipykernel",
+    "matplotlib",
+    "seaborn",
+    "psutil",
+]
+
+[project.urls]
+Homepage = "https://neuroprobe.dev"
+Repository = "https://github.com/azaho/neuroprobe"
+"Bug Reports" = "https://github.com/neuroprobe/neuroprobe/issues"
+
+[tool.setuptools]
+packages = ["neuroprobe"]
