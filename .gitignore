@@ -1,7 +1,8 @@
-.venv/
+.venv*/
 
 logs/
 eval_results*/
 data/
 
 **/__pycache__
+*.egg-info/
