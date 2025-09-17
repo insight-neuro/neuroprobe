@@ -37,7 +37,7 @@ all_tasks = single_float_variables + four_way_cardinal_direction_variables + ["o
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
     def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, 
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
-                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False):
+                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None):
         """
         Args:
             subject (Subject): the subject to evaluate on
@@ -64,6 +64,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             start_neural_data_before_word_onset (int): the number of samples to start the neural data before each word onset
             end_neural_data_after_word_onset (int): the number of samples to end the neural data after each word onset
             random_seed (int): seed for random operations within this dataset
+            max_samples (int): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
         """
 
         # Set up a local random state with the provided seed
@@ -83,6 +84,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         self.nano = nano
         self.n_classes = 2
         self.output_dict = output_dict
+        self.max_samples = max_samples
 
         if self.nano:
             nano_electrodes = NEUROPROBE_NANO_ELECTRODES[subject.subject_identifier]
@@ -214,6 +216,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             n_samples_each = min(n_samples_each, NEUROPROBE_LITE_MAX_SAMPLES//2)
         elif self.nano:
             n_samples_each = min(n_samples_each, NEUROPROBE_NANO_MAX_SAMPLES//2)
+        if self.max_samples is not None:
+            n_samples_each = min(n_samples_each, self.max_samples//2)
         self.positive_indices = np.sort(self.rng.choice(self.positive_indices, size=n_samples_each, replace=False))
         self.negative_indices = np.sort(self.rng.choice(self.negative_indices, size=n_samples_each, replace=False))
         self.n_samples = len(self.positive_indices) + len(self.negative_indices)
