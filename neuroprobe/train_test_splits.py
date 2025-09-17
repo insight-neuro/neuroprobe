@@ -52,62 +52,6 @@ def generate_splits_DS_DM(all_subjects, test_subject_id, test_trial_id, eval_nam
                                                                 lite=lite, nano=nano)
 
     return train_dataset, test_dataset
-
-
-def generate_splits_DS_SM(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
-                          lite=True,
-                          
-                          # Dataset parameters
-                          output_indices=False, 
-                          start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
-                          end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET):
-    """Generate train/test splits for Different Subject Same Movie (DS-SM) evaluation.
-    
-    This function creates train/test splits by using one subject and movie as the test set,
-    and using the same movie from all other subjects as the training set. This evaluates
-    generalization across subjects while controlling for the movie content.
-
-    NOTE: Neuroprobe-Nano does not support DS-SM because it does not contain splits where subject is different but the movie is the same.
-
-    Args:
-        all_subjects (dict): Dictionary mapping subject IDs to Subject objects
-        test_subject_id (int): ID of the subject to use as test set
-        test_trial_id (int): ID of the trial/movie to use as test set
-        eval_name (str): Name of the evaluation metric to use (e.g. "rms")
-        dtype (torch.dtype, optional): Data type for tensors. Defaults to torch.float32.
-        lite (bool): if True, the eval is Neuroprobe-Lite (the default), otherwise it is Neuroprobe-Full.
-
-        # Dataset parameters
-        output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
-        start_neural_data_before_word_onset (int, optional): Number of seconds before the word onset to start the neural data. Defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET.
-        end_neural_data_after_word_onset (int, optional): Number of seconds after the word onset to end the neural data. Defaults to END_NEURAL_DATA_AFTER_WORD_ONSET.
-
-    Returns:
-        tuple: A tuple containing:
-            - train_datasets (list): List of training datasets
-            - test_dataset (Dataset): Dataset for the test subject and trial
-    """
-    test_movie_name = BRAINTREEBANK_SUBJECT_TRIAL_MOVIE_NAME_MAPPING[f"btbank{test_subject_id}_{test_trial_id}"]
-    other_subject_trials_list = []
-
-    subject_trial_array = NEUROPROBE_LITE_SUBJECT_TRIALS if lite else NEUROPROBE_FULL_SUBJECT_TRIALS
-    
-    for subject_id, trial_id in subject_trial_array:
-        if BRAINTREEBANK_SUBJECT_TRIAL_MOVIE_NAME_MAPPING[f"btbank{subject_id}_{trial_id}"] == test_movie_name and subject_id != test_subject_id:
-            other_subject_trials_list.append((subject_id, trial_id))
-
-    if len(other_subject_trials_list) == 0: raise ValueError(f"Trial {test_trial_id} of the test subject {test_subject_id} (movie name: {test_movie_name}) has no other subjects to train on which have the same movie trials.")
-
-    test_dataset = BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[test_subject_id], test_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                             output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                             lite=lite)
-    train_datasets = []
-    for other_subject_id, other_trial_id in other_subject_trials_list:
-        train_datasets.append(BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[other_subject_id], other_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                                        output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                                        lite=lite))
-    #train_dataset = ConcatDataset(train_datasets)
-    return train_datasets, test_dataset
     
 
 def generate_splits_SS_DM(test_subject, test_trial_id, eval_name, dtype=torch.float32,
