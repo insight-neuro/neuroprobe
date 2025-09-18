@@ -158,20 +158,17 @@ for eval_name in eval_names:
         }
 
         if splits_type == "WithinSession":
-            # train_datasets and test_datasets are arrays of length k_folds, each element is a BrainTreebankSubjectTrialBenchmarkDataset for the train/test split
-            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
+            folds = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                             lite=lite, max_samples=3500)
         elif splits_type == "CrossSession":
-            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
+            folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                             lite=lite, max_samples=3500, include_all_other_trials=True)
-            train_datasets = [train_datasets]
-            test_datasets = [test_datasets]
 
         for bin_start, bin_end in zip(bin_starts, bin_ends):
             data_idx_from = int((bin_start+bins_start_before_word_onset_seconds)*neuroprobe_config.SAMPLING_RATE)
@@ -184,9 +181,9 @@ for eval_name in eval_names:
             }
 
             # Loop over all folds
-            for fold_idx in range(len(train_datasets)):
-                train_dataset = train_datasets[fold_idx]
-                test_dataset = test_datasets[fold_idx]
+            for fold_idx, fold in enumerate(folds):
+                train_dataset = fold["train_dataset"]
+                test_dataset = fold["test_dataset"]
 
                 # Convert PyTorch dataset to numpy arrays for scikit-learn - now using proper preprocess_parameters
                 X_train = np.array([preprocess_data(item[0][:, data_idx_from:data_idx_to].float().numpy(), all_electrode_labels, preprocess_type, preprocess_parameters) for item in train_dataset])
