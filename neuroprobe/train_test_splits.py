@@ -27,8 +27,8 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
         test_trial_id (int): ID of the trial/movie to use as test set
         eval_name (str): Name of the evaluation metric to use (e.g. "rms")
         dtype (torch.dtype, optional): Data type for tensors. Defaults to torch.float32.
-        lite (bool): if True, the eval is Neuroprobe-Lite (the default), otherwise it is Neuroprobe-Full.
-        nano (bool): if True, the eval is Neuroprobe-Nano (the default), otherwise it is Neuroprobe-Lite (if lite is True)
+        lite (bool): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full.
+        nano (bool): if True, the eval is Neuroprobe-Nano (the default), otherwise it is Neuroprobe (if lite is True)
 
         # Dataset parameters
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
@@ -81,7 +81,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         test_trial_id (int): ID of the trial/movie to use as test set
         eval_name (str): Name of the evaluation metric to use (e.g. "rms")
         dtype (torch.dtype, optional): Data type for tensors. Defaults to torch.float32.
-        lite (bool): if True, the eval is Neuroprobe-Lite (the default), otherwise it is Neuroprobe-Full.
+        lite (bool): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full.
 
         # Dataset parameters
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
@@ -148,8 +148,8 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         test_trial_id (int): ID of the trial/movie to use
         eval_name (str): Name of the evaluation metric to use (e.g. "rms", "word_gap", "pitch", "delta_volume")
         dtype (torch.dtype, optional): Data type for tensors. Defaults to torch.float32.
-        lite (bool): if True, the eval is Neuroprobe-Lite (the default), otherwise it is Neuroprobe-Full.
-        nano (bool): if True, the eval is Neuroprobe-Nano (the default), otherwise it is Neuroprobe-Lite (if lite is True)
+        lite (bool): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full.
+        nano (bool): if True, the eval is Neuroprobe-Nano (the default), otherwise it is Neuroprobe (if lite is True)
 
         # Dataset parameters
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
