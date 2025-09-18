@@ -12,6 +12,24 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import zipfile
+import argparse
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Download and extract files from braintreebank.dev')
+parser.add_argument('--lite', action='store_true', 
+                    help='Only download specific sub_ files: that are needed for the Neuroprobe benchmark. This option will reduce the number of files by >50%')
+args = parser.parse_args()
+
+# Define lite mode file list
+NEUROPROBE_LITE_SUBJECT_TRIALS = [ # structured as (subject_id, trial_id)
+    (1, 1), (1, 2), 
+    (2, 0), (2, 4),
+    (3, 0), (3, 1),
+    (4, 0), (4, 1),
+    (7, 0), (7, 1),
+    (10, 0), (10, 1)
+]
+lite_files = [f'sub_{subject_id}_trial{trial_id:03}.h5.zip' for subject_id, trial_id in NEUROPROBE_LITE_SUBJECT_TRIALS]
 
 # Create braintreebank directory if it doesn't exist
 if not os.path.exists('braintreebank_zip'):
@@ -38,6 +56,13 @@ for link in links:
         if filename:  # Only proceed if there's a filename
             if (filename == 'brain_treebank_code_release') or (filename == '2411.08343'):
                 continue
+
+            # Check lite mode filtering
+            if args.lite:
+                # If filename starts with sub_ but is not in our lite list, skip it
+                if filename.startswith('sub_') and filename not in lite_files:
+                    print(f'Skipping {filename} - not in lite mode list')
+                    continue
 
             filepath = os.path.join('braintreebank_zip', filename)
             

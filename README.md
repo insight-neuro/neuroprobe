@@ -48,8 +48,9 @@ pip install neuroprobe
 
 2. If you haven't yet, download the BrainTreebank dataset from [the official release webpage](https://braintreebank.dev/), or using the following script:
 ```bash
-python braintreebank_download_extract.py
+python braintreebank_download_extract.py --lite
 ```
+(lite is an optional flag; if only using Neuroprobe as a benchmark, this flag will reduce the number of files by >50%.)
 
 3. Start experimenting with `quickstart.ipynb` to create datasets and evaluate models.
 
