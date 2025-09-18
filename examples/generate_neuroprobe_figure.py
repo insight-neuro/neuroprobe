@@ -11,8 +11,8 @@ import bfm.evaluation.neuroprobe.config as neuroprobe_config
 
 import argparse
 parser = argparse.ArgumentParser(description='Create performance figure for BTBench evaluation')
-parser.add_argument('--split_type', type=str, default='SS_DM', 
-                    help='Split type to use (SS_SM or SS_DM or DS_DM)')
+parser.add_argument('--split_type', type=str, default='CrossSession', 
+                    help='Split type to use (WithinSession or CrossSession or CrossSubject)')
 args = parser.parse_args()
 split_type = args.split_type
 
@@ -30,7 +30,6 @@ n_fig_legend_cols = 1
 
 ### DEFINE MODELS ###
 
-# assert split_type == 'SS_DM', 'Split type must be SS_DM'
 
 models = [
     {
@@ -95,7 +94,7 @@ task_name_mapping = {
 }
 
 subject_trials = neuroprobe_config.NEUROPROBE_LITE_SUBJECT_TRIALS
-if split_type == 'DS_DM':
+if split_type == 'CrossSubject':
     subject_trials = [(s, t) for s, t in subject_trials if s != neuroprobe_config.DS_DM_TRAIN_SUBJECT_ID]
 
 ### DEFINE RESULT PARSING FUNCTIONS ###

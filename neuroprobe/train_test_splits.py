@@ -7,7 +7,7 @@ from .datasets import BrainTreebankSubjectTrialBenchmarkDataset
 from .config import *
 
 
-def generate_splits_CrossSubject(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True, nano=False,
                           
                           # Dataset parameters
@@ -55,7 +55,7 @@ def generate_splits_CrossSubject(all_subjects, test_subject_id, test_trial_id, e
     return train_dataset, test_dataset
     
 
-def generate_splits_CrossSession(test_subject, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True,
                           
                           # Dataset parameters
@@ -120,7 +120,7 @@ def generate_splits_CrossSession(test_subject, test_trial_id, eval_name, dtype=t
     return train_dataset, test_dataset
 
 
-def generate_splits_WithinSession(test_subject, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True, nano=False,
                           
                           # Dataset parameters
@@ -175,6 +175,11 @@ def generate_splits_WithinSession(test_subject, test_trial_id, eval_name, dtype=
     return train_datasets, test_datasets
 
 # For backwards compatibility
-generate_splits_DS_DM = generate_splits_CrossSubject
-generate_splits_SS_DM = generate_splits_CrossSession
-generate_splits_SS_SM = generate_splits_WithinSession
+generate_splits_DS_DM = generate_splits_cross_subject
+generate_splits_SS_DM = generate_splits_cross_session
+generate_splits_SS_SM = generate_splits_within_session
+
+# For flexibility in function naming convention
+generate_splits_CrossSubject = generate_splits_cross_subject
+generate_splits_CrossSession = generate_splits_cross_session
+generate_splits_WithinSession = generate_splits_within_session

@@ -23,14 +23,14 @@ preprocess_options = [
     'downsample_200', # downsample to 200 Hz
 ]
 splits_options = [
-    'SS_SM', # same subject, same trial
-    'SS_DM', # same subject, different trial
-    'DS_DM', # different subject, different trial
+    'WithinSession', # same subject, same trial
+    'CrossSession', # same subject, different trial
+    'CrossSubject', # different subject, different trial
 ]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--eval_name', type=str, default='onset', help='Evaluation name(s) (e.g. onset, gpt2_surprisal). If multiple, separate with commas.')
-parser.add_argument('--split_type', type=str, choices=splits_options, default='SS_SM', help=f'Type of splits to use ({", ".join(splits_options)})')
+parser.add_argument('--split_type', type=str, choices=splits_options, default='WithinSession', help=f'Type of splits to use ({", ".join(splits_options)})')
 parser.add_argument('--subject_id', type=int, required=True, help='Subject ID')
 parser.add_argument('--trial_id', type=int, required=True, help='Trial ID')
 
@@ -66,7 +66,7 @@ seed = args.seed
 only_1second = bool(args.only_1second)
 lite = not bool(args.full)
 nano = bool(args.nano)
-assert (not nano) or (splits_type != "SS_DM"), "Nano only works with SS_SM or DS_DM splits; does not work with SS_DM."
+assert (not nano) or (splits_type != "CrossSession"), "Nano only works with WithinSession or CrossSubject splits; does not work with CrossSession."
 assert (not nano) or lite, "--nano and --full cannot be used together. Neuroprobe Full and Neuroprobe Nano are different evaluations."
 
 preprocess_type = getattr(args, 'preprocess.type')
@@ -147,15 +147,15 @@ for eval_name in eval_names:
     }
 
     # train_datasets and test_datasets are arrays of length k_folds, each element is a BrainTreebankSubjectTrialBenchmarkDataset for the train/test split
-    if splits_type == "SS_SM":
-        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_SS_SM(subject, trial_id, eval_name, dtype=torch.float32, 
+    if splits_type == "WithinSession":
+        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                         lite=lite, nano=nano)
         train_subject = subject
-    elif splits_type == "SS_DM":
-        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_SS_DM(subject, trial_id, eval_name, dtype=torch.float32, 
+    elif splits_type == "CrossSession":
+        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
@@ -163,7 +163,7 @@ for eval_name in eval_names:
         train_datasets = [train_datasets]
         test_datasets = [test_datasets]
         train_subject = subject
-    elif splits_type == "DS_DM":
+    elif splits_type == "CrossSubject":
         if verbose: log("Loading the training subject...", priority=0)
         train_subject_id = neuroprobe_config.DS_DM_TRAIN_SUBJECT_ID
         train_subject = BrainTreebankSubject(train_subject_id, allow_corrupted=False, cache=True, dtype=torch.float32)
@@ -174,7 +174,7 @@ for eval_name in eval_names:
             train_subject_id: train_subject,
         }
         if verbose: log("Subject loaded.", priority=0)
-        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_DS_DM(all_subjects, subject_id, trial_id, eval_name, dtype=torch.float32, 
+        train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_cross_subject(all_subjects, subject_id, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
@@ -208,7 +208,7 @@ for eval_name in eval_names:
             y_test = np.array([item[1] for item in test_dataset])
             gc.collect()  # Collect after creating large arrays
 
-            if splits_type == "DS_DM":
+            if splits_type == "CrossSubject":
                 if verbose: log("Combining regions...", priority=2, indent=1)
                 regions_train = get_region_labels(train_subject)
                 regions_test = get_region_labels(subject)

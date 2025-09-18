@@ -78,7 +78,7 @@ declare -a preprocess_stft_window=(
 
 
 declare -a splits_type=(
-    "SS_DM"
+    "CrossSession"
 )
 
 declare -a classifier_type=(

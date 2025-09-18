@@ -21,14 +21,14 @@ preprocess_options = [
     'downsample_200', # downsample to 200 Hz
 ]
 splits_options = [
-    'SS_SM', # same subject, same trial
-    'SS_DM', # same subject, different trial
+    'WithinSession', # same subject, same trial
+    'CrossSession', # same subject, different trial
 ]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--eval_name', type=str, default='onset', help='Evaluation name(s) (e.g. onset, gpt2_surprisal). If multiple, separate with commas.')
-parser.add_argument('--subject', type=int, required=True, help='Subject ID')
-parser.add_argument('--trial', type=int, required=True, help='Trial ID')
+parser.add_argument('--subject_id', type=int, required=True, help='Subject ID')
+parser.add_argument('--trial_id', type=int, required=True, help='Trial ID')
 parser.add_argument('--verbose', action='store_true', help='Whether to print progress')
 parser.add_argument('--save_dir', type=str, default='eval_results', help='Directory to save results')
 
@@ -39,7 +39,7 @@ parser.add_argument('--preprocess.stft.window', type=str, choices=['hann', 'boxc
 parser.add_argument('--preprocess.stft.max_frequency', type=int, default=150, help='Maximum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 parser.add_argument('--preprocess.stft.min_frequency', type=int, default=0, help='Minimum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 
-parser.add_argument('--splits_type', type=str, choices=splits_options, default='SS_SM', help=f'Type of splits to use ({", ".join(splits_options)})')
+parser.add_argument('--split_type', type=str, choices=splits_options, default='CrossSession', help=f'Type of splits to use ({", ".join(splits_options)})')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
 parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--lite', action='store_true', help='Whether to use the lite eval for Neuroprobe (which is the default)')
@@ -48,15 +48,15 @@ parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'tr
 args = parser.parse_args()
 
 eval_names = args.eval_name.split(',') if ',' in args.eval_name else [args.eval_name]
-subject_id = args.subject
-trial_id = args.trial 
+subject_id = args.subject_id
+trial_id = args.trial_id 
 verbose = bool(args.verbose)
 save_dir = args.save_dir
 only_1second = bool(args.only_1second)
 electrodes = args.electrodes.split(',') if ',' in args.electrodes else [args.electrodes]
 seed = args.seed
 lite = bool(args.lite)
-splits_type = args.splits_type
+splits_type = args.split_type
 classifier_type = args.classifier_type
 
 # Set up preprocessing parameters structure like in eval_population.py
@@ -157,19 +157,19 @@ for eval_name in eval_names:
             "time_bins": [],
         }
 
-        if splits_type == "SS_SM":
+        if splits_type == "WithinSession":
             # train_datasets and test_datasets are arrays of length k_folds, each element is a BrainTreebankSubjectTrialBenchmarkDataset for the train/test split
-            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_SS_SM(subject, trial_id, eval_name, k_folds=5, dtype=torch.float32, 
+            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                            lite=lite)
-        elif splits_type == "SS_DM":
-            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_SS_DM(subject, trial_id, eval_name, max_other_trials=3, dtype=torch.float32, 
+                                                                                            lite=lite, max_samples=3500)
+        elif splits_type == "CrossSession":
+            train_datasets, test_datasets = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                            lite=lite)
+                                                                                            lite=lite, max_samples=3500, include_all_other_trials=True)
             train_datasets = [train_datasets]
             test_datasets = [test_datasets]
 

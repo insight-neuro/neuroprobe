@@ -47,24 +47,24 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 Options for eval_name (from the Neuroprobe paper):
                     frame_brightness, global_flow, local_flow, global_flow_angle, local_flow_angle, face_num, volume, pitch, delta_volume, 
                     delta_pitch, speech, onset, gpt2_surprisal, word_length, word_gap, word_index, word_head_pos, word_part_speech, speaker
-            lite (bool): if True, the eval is Neuroprobe-Lite (the default), otherwise it is Neuroprobe-Full
-            nano (bool): if True, the eval is Neuroprobe-Nano (the default), otherwise it is Neuroprobe-Lite (if lite is True)
+            lite (bool, optional): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full
+            nano (bool, optional): if True, the eval is Neuroprobe-Nano, otherwise it is Neuroprobe-Lite (if lite is True - this is the default)
 
-            output_indices (bool): 
+            output_indices (bool, optional): 
                 if True, the dataset will output the indices of the samples in the neural data in a tuple: (index_from, index_to); 
                 if False, the dataset will output the neural data directly
 
-            output_dict (bool): 
+            output_dict (bool, optional): 
                 if True, the dataset will output a dictionary with the following keys:
                     "data": the neural data -- either directly or as a tuple (index_from, index_to)
                     "label": the label
                     "electrode_labels": the labels of the electrodes
                 If False, the dataset will output a tuple (input, label) or ((index_from, index_to), label) directly
             
-            start_neural_data_before_word_onset (int): the number of samples to start the neural data before each word onset
-            end_neural_data_after_word_onset (int): the number of samples to end the neural data after each word onset
-            random_seed (int): seed for random operations within this dataset
-            max_samples (int): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
+            start_neural_data_before_word_onset (int, optional): the number of samples to start the neural data before each word onset (defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE)
+            end_neural_data_after_word_onset (int, optional): the number of samples to end the neural data after each word onset (defaults to END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE)
+            random_seed (int, optional): seed for random operations within this dataset (defaults to NEUROPROBE_GLOBAL_RANDOM_SEED)
+            max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
         """
 
         # Set up a local random state with the provided seed
