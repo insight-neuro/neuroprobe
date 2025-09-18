@@ -3,23 +3,23 @@ from torch.utils.data import Dataset, DataLoader, Subset, ConcatDataset
 from sklearn.model_selection import KFold
 import numpy as np
 
-from .braintreebank_subject import BrainTreebankSubject
 from .datasets import BrainTreebankSubjectTrialBenchmarkDataset
 from .config import *
 
 
-def generate_splits_DS_DM(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_CrossSubject(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True, nano=False,
                           
                           # Dataset parameters
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
-                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE)):
-    """Generate train/test splits for Different Subject Different Movie (DS-DM) evaluation.
+                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
+                          max_samples=None):
+    """Generate train/test splits for Cross-Subject evaluation.
     
     This function creates train/test splits by using one subject and movie as the test set,
     and using all other subjects and movies (except the test movie) as the training set.
-    This evaluates generalization across both subjects and movie content.
+    This evaluates generalization across both subjects and movie content (i.e. the same subject but different movies).
 
     Args:
         all_subjects (dict): Dictionary mapping subject IDs to Subject objects
@@ -34,7 +34,8 @@ def generate_splits_DS_DM(all_subjects, test_subject_id, test_trial_id, eval_nam
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
         start_neural_data_before_word_onset (int, optional): Number of seconds before the word onset to start the neural data. Defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET.
         end_neural_data_after_word_onset (int, optional): Number of seconds after the word onset to end the neural data. Defaults to END_NEURAL_DATA_AFTER_WORD_ONSET.
-
+        max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
+        
     Returns:
         tuple: A tuple containing:
             - train_datasets (list): List of training datasets
@@ -44,30 +45,31 @@ def generate_splits_DS_DM(all_subjects, test_subject_id, test_trial_id, eval_nam
 
     test_dataset = BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[test_subject_id], test_trial_id, dtype=dtype, eval_name=eval_name, 
                                                              output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                             lite=lite, nano=nano)
+                                                             lite=lite, nano=nano, max_samples=max_samples)
     
     train_subject_id, train_trial_id = DS_DM_TRAIN_SUBJECT_ID, DS_DM_TRAIN_TRIAL_ID
     train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[train_subject_id], train_trial_id, dtype=dtype, eval_name=eval_name, 
                                                                 output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                                lite=lite, nano=nano)
+                                                                lite=lite, nano=nano, max_samples=max_samples)
 
     return train_dataset, test_dataset
     
 
-def generate_splits_SS_DM(test_subject, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_CrossSession(test_subject, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True,
                           
                           # Dataset parameters
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
-                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE)):
-    """Generate train/test splits for Single Subject Different Movies (SS-DM) evaluation.
+                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
+                          max_samples=None, include_all_other_trials=False):
+    """Generate train/test splits for Cross-Session evaluation.
     
     This function creates train/test splits by using one movie as the test set and all other
     movies from the same subject as the training set (trimmed at max_other_trials movies). 
-    Unlike SS-SM, this does not perform k-fold cross validation since movies are already naturally separated.
+    Unlike Cross-Session, this does not perform k-fold cross validation since movies are already naturally separated.
 
-    NOTE: Neuroprobe-Nano does not support SS-DM because it only contains one movie per subject.
+    NOTE: Neuroprobe-Nano does not support Cross-Session because it only contains one movie per subject.
 
     Args:
         test_subject (Subject): Subject object containing brain recording data
@@ -80,7 +82,8 @@ def generate_splits_SS_DM(test_subject, test_trial_id, eval_name, dtype=torch.fl
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
         start_neural_data_before_word_onset (int, optional): Number of seconds before the word onset to start the neural data. Defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET.
         end_neural_data_after_word_onset (int, optional): Number of seconds after the word onset to end the neural data. Defaults to END_NEURAL_DATA_AFTER_WORD_ONSET.
-
+        max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
+        include_all_other_trials (bool, optional): if True, include all other trials for training (defaults to False). If False, only include the longest trial for training (NOTE: for Neuroprobe, there is no choice).
     Returns:
         tuple: A tuple containing:
             - train_datasets (list): List of training datasets
@@ -90,36 +93,45 @@ def generate_splits_SS_DM(test_subject, test_trial_id, eval_name, dtype=torch.fl
     
     test_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
                                                              output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                             lite=lite)
+                                                             lite=lite, max_samples=max_samples)
         
-    if not lite:
-        train_trial_id = NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id][0]
-        if train_trial_id == test_trial_id:
-            train_trial_id = NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id][1] # If the longest trial is the test trial, use the second longest trial for training
-    else:
-        train_trial_id = [trial_id for subject_id, trial_id in NEUROPROBE_LITE_SUBJECT_TRIALS if subject_id == test_subject.subject_id and trial_id != test_trial_id][0] # Get the first other trial for the training set (there should only be one)
-    
+    if include_all_other_trials:
+        train_trial_ids = [trial_id for trial_id in NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id] if trial_id != test_trial_id]
 
-    train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                                output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                                lite=lite)
+        if max_samples is not None:
+            max_samples = max_samples // len(train_trial_ids)
+
+        train_datasets = [BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
+                                                                    output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                                    lite=lite, max_samples=max_samples) for train_trial_id in train_trial_ids]
+        train_dataset = ConcatDataset(train_datasets)
+    else:
+        if not lite:
+            train_trial_id = NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id][0]
+            if train_trial_id == test_trial_id:
+                train_trial_id = NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id][1] # If the longest trial is the test trial, use the second longest trial for training
+        else:
+            train_trial_id = [trial_id for subject_id, trial_id in NEUROPROBE_LITE_SUBJECT_TRIALS if subject_id == test_subject.subject_id and trial_id != test_trial_id][0] # Get the first other trial for the training set (there should only be one)
+        
+
+        train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
+                                                                    output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                                    lite=lite, max_samples=max_samples)
     return train_dataset, test_dataset
 
 
-def generate_splits_SS_SM(test_subject, test_trial_id, eval_name, dtype=torch.float32,
+def generate_splits_WithinSession(test_subject, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True, nano=False,
                           
                           # Dataset parameters
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
-                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE)):
-    """Generate train/test splits for Single Subject Single Movie (SS-SM) evaluation.
-    
+                          end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
+                          max_samples=None):
+    """Generate train/test splits for Within Session evaluation.
+
     This function performs k-fold cross validation on data from a single subject and movie.
-    If gap_length is specified and not None, it ensures temporal gaps between train and test sets to avoid
-    temporal correlation in the data. For example, if gap_length=300, there will be at least
-    300 seconds between any training and test samples. If gap_length is None, no temporal gap
-    is enforced between train and test sets.
+    
 
     Args:
         test_subject (Subject): Subject object containing brain recording data
@@ -133,6 +145,7 @@ def generate_splits_SS_SM(test_subject, test_trial_id, eval_name, dtype=torch.fl
         output_indices (bool, optional): Whether to output the indices of the neural data. Defaults to False.
         start_neural_data_before_word_onset (int, optional): Number of seconds before the word onset to start the neural data. Defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET.
         end_neural_data_after_word_onset (int, optional): Number of seconds after the word onset to end the neural data. Defaults to END_NEURAL_DATA_AFTER_WORD_ONSET.
+        max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
 
     Returns:
         tuple: A tuple containing:
@@ -145,7 +158,7 @@ def generate_splits_SS_SM(test_subject, test_trial_id, eval_name, dtype=torch.fl
 
     dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
                                                         output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                        lite=lite, nano=nano)
+                                                        lite=lite, nano=nano, max_samples=max_samples)
     
     k_folds = NEUROPROBE_LITE_N_FOLDS if not nano else NEUROPROBE_NANO_N_FOLDS
     kf = KFold(n_splits=k_folds, shuffle=False)  # shuffle=False is important to avoid correlated train/test splits!
@@ -160,3 +173,8 @@ def generate_splits_SS_SM(test_subject, test_trial_id, eval_name, dtype=torch.fl
         test_datasets.append(Subset(dataset, test_idx))
 
     return train_datasets, test_datasets
+
+# For backwards compatibility
+generate_splits_DS_DM = generate_splits_CrossSubject
+generate_splits_SS_DM = generate_splits_CrossSession
+generate_splits_SS_SM = generate_splits_WithinSession
