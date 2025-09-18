@@ -37,7 +37,7 @@ all_tasks = single_float_variables + four_way_cardinal_direction_variables + ["o
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
     def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, 
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
-                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None):
+                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None, always_cache_full_subject=False):
         """
         Args:
             subject (Subject): the subject to evaluate on
@@ -65,6 +65,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             end_neural_data_after_word_onset (int, optional): the number of samples to end the neural data after each word onset (defaults to END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE)
             random_seed (int, optional): seed for random operations within this dataset (defaults to NEUROPROBE_GLOBAL_RANDOM_SEED)
             max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
+            always_cache_full_subject (bool, optional): if True, the dataset will always cache the full subject's neural data (defaults to False)
         """
 
         # Set up a local random state with the provided seed
@@ -85,6 +86,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         self.n_classes = 2
         self.output_dict = output_dict
         self.max_samples = max_samples
+        self.always_cache_full_subject = always_cache_full_subject
 
         if self.nano:
             nano_electrodes = NEUROPROBE_NANO_ELECTRODES[subject.subject_identifier]
@@ -218,17 +220,28 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             n_samples_each = min(n_samples_each, NEUROPROBE_NANO_MAX_SAMPLES//2)
         self.positive_indices = np.sort(self.rng.choice(self.positive_indices, size=n_samples_each, replace=False))
         self.negative_indices = np.sort(self.rng.choice(self.negative_indices, size=n_samples_each, replace=False))
-
         if self.max_samples is not None: # if max_samples is set, we need to truncate the positive and negative indices to the max_samples
             n_samples_each = min(n_samples_each, self.max_samples//2)
             self.positive_indices = self.positive_indices[:n_samples_each] # truncation is sequential to minimize the amount of cached data in RAM.
             self.negative_indices = self.negative_indices[:n_samples_each]
-
         self.n_samples = len(self.positive_indices) + len(self.negative_indices)
+
+        self.cache_window_from = None
+        self.cache_window_to = None
+        if not self.always_cache_full_subject:
+            n_try_indices = self.n_classes # try some first and last samples to get a good estimate of the edges of the needed data in the dataset
+            window_indices = []
+            for i in list(range(n_try_indices))+list(range(self.n_samples-n_try_indices, self.n_samples)):
+                (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
+                window_indices.append(window_from)
+                window_indices.append(window_to)
+            self.cache_window_from = np.min(window_indices)
+            self.cache_window_to = np.max(window_indices)
+
         
 
     def _get_neural_data(self, window_from, window_to, force_output_indices=False):
-        self.subject.load_neural_data(self.trial_id)
+        self.subject.load_neural_data(self.trial_id, cache_window_from=self.cache_window_from, cache_window_to=self.cache_window_to)
         if not self.output_indices and not force_output_indices:
             input = self.subject.get_all_electrode_data(self.trial_id, window_from=window_from, window_to=window_to)
             if self.lite or self.nano:
