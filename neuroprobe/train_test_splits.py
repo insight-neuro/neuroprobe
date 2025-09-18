@@ -37,9 +37,9 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
         max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
         
     Returns:
-        tuple: A tuple containing:
-            - train_datasets (list): List of training datasets
-            - test_dataset (Dataset): Dataset for the test subject and trial
+        list: A list of dictionaries, each containing:
+            - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
     assert test_subject_id != DS_DM_TRAIN_SUBJECT_ID, "Test subject cannot be the same as the training subject."
 
@@ -52,7 +52,12 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
                                                                 output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                 lite=lite, nano=nano, max_samples=max_samples)
 
-    return train_dataset, test_dataset
+    return [
+        {
+            "train_dataset": train_dataset,
+            "test_dataset": test_dataset
+        }
+    ]
     
 
 def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=torch.float32,
@@ -85,9 +90,9 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
         include_all_other_trials (bool, optional): if True, include all other trials for training (defaults to False). If False, only include the longest trial for training (NOTE: for Neuroprobe, there is no choice).
     Returns:
-        tuple: A tuple containing:
-            - train_datasets (list): List of training datasets
-            - test_dataset (Dataset): Dataset for the test trial
+        list: A list of dictionaries, each containing:
+            - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
     assert len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id]) > 1, f"Training subject must have at least two trials. But subject {test_subject.subject_id} has only {len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id])} trials."
     
@@ -117,7 +122,12 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
                                                                     output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                     lite=lite, max_samples=max_samples)
-    return train_dataset, test_dataset
+    return [
+        {
+            "train_dataset": train_dataset,
+            "test_dataset": test_dataset
+        }
+    ]
 
 
 def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype=torch.float32,
@@ -148,9 +158,9 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
 
     Returns:
-        tuple: A tuple containing:
-            - train_datasets (list): List of k training dataset splits
-            - test_datasets (list): List of k test dataset splits, which correspond to the train datasets in the array above
+        list: A list of dictionaries, each containing:
+            - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
 
     train_datasets = []
@@ -172,7 +182,13 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         train_datasets.append(train_dataset)
         test_datasets.append(Subset(dataset, test_idx))
 
-    return train_datasets, test_datasets
+    return [
+        {
+            "train_dataset": train_dataset,
+            "test_dataset": test_dataset
+        }
+        for train_dataset, test_dataset in zip(train_datasets, test_datasets)
+    ]
 
 # For backwards compatibility
 generate_splits_DS_DM = generate_splits_cross_subject
