@@ -50,7 +50,7 @@ pip install neuroprobe
 ```bash
 python braintreebank_download_extract.py --lite
 ```
-(lite is an optional flag; if only using Neuroprobe as a benchmark, this flag will reduce the number of files by >50%.)
+(lite is an optional flag; if only using Neuroprobe as a benchmark, this flag will reduce the number of downloaded files by >50% by removing unnecessary files.)
 
 3. Start experimenting with `quickstart.ipynb` to create datasets and evaluate models.
 
