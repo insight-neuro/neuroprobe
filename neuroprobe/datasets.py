@@ -216,10 +216,14 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             n_samples_each = min(n_samples_each, NEUROPROBE_LITE_MAX_SAMPLES//2)
         elif self.nano:
             n_samples_each = min(n_samples_each, NEUROPROBE_NANO_MAX_SAMPLES//2)
-        if self.max_samples is not None:
-            n_samples_each = min(n_samples_each, self.max_samples//2)
         self.positive_indices = np.sort(self.rng.choice(self.positive_indices, size=n_samples_each, replace=False))
         self.negative_indices = np.sort(self.rng.choice(self.negative_indices, size=n_samples_each, replace=False))
+
+        if self.max_samples is not None: # if max_samples is set, we need to truncate the positive and negative indices to the max_samples
+            n_samples_each = min(n_samples_each, self.max_samples//2)
+            self.positive_indices = self.positive_indices[:n_samples_each] # truncation is sequential to minimize the amount of cached data in RAM.
+            self.negative_indices = self.negative_indices[:n_samples_each]
+
         self.n_samples = len(self.positive_indices) + len(self.negative_indices)
         
 
