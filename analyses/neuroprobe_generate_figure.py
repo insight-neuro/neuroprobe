@@ -24,7 +24,7 @@ other_axis_ylim = (0.48, 0.95)
 
 figure_size_multiplier = 1.8
 
-first_ax_n_cols = 3
+first_ax_n_cols = 2
 n_fig_legend_cols = 1
 
 ### DEFINE MODELS ###
@@ -33,13 +33,13 @@ n_fig_legend_cols = 1
 
 models = [
     {
-        'name': 'Linear (regression from raw voltage)',
+        'name': 'Linear (raw voltage)',
         'short_name': 'Linear (voltage)',
         'color_palette': 'viridis',
         'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_voltage/'
     },
     {
-        'name': 'Linear (spectrogram, best hyperparameters)',
+        'name': 'Linear (spectrogram)',
         'short_name': 'Linear (spectrogram)',
         'color_palette': 'viridis', 
         'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'

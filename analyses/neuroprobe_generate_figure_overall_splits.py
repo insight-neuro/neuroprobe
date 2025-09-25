@@ -24,12 +24,12 @@ for split_type in split_types:
 
 models = [
     {
-        'name': 'Linear (regression from raw voltage)',
+        'name': 'Linear (raw voltage)',
         'short_name': 'Linear (voltage)',
         'color_palette': 'viridis',
     },
     {
-        'name': 'Linear (spectrogram, best hyperparameters)',
+        'name': 'Linear (spectrogram)',
         'short_name': 'Linear (spectrogram)',
         'color_palette': 'viridis', 
     },
@@ -141,7 +141,7 @@ fig.legend(handles, [model['name'] for model in models] + ["Chance"],
            loc='upper center', 
            ncol=2,
            frameon=False,
-           bbox_to_anchor=(0.5, 0))
+           bbox_to_anchor=(0.5, 0.05))
 
 # Use tight_layout
 plt.tight_layout()
