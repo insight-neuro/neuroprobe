@@ -178,7 +178,7 @@ for model in models:
 
 # Add Arial font
 import matplotlib.font_manager as fm
-font_path = 'assets/font_arial.ttf'
+font_path = 'analyses/font_arial.ttf'
 fm.fontManager.addfont(font_path)
 plt.rcParams['font.family'] = 'Arial'
 plt.rcParams.update({'font.size': 12})
