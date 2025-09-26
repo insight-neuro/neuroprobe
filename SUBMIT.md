@@ -77,7 +77,7 @@ neuroprobe.config.NEUROPROBE_TASKS_MAPPING = {
 
 ## Submission guidelines
 Results are submitted to the Neuroprobe leaderboard via a pull request to the Neuroprobe github repository. Fork the Neuroprobe repository, then, in the folder `leaderboard`, make a directory with the following name: `MODELNAME_AUTHORFIRSTNAME_AUTHORLASTNAME_DAY_MONTH_YEAR`. This directory must contain:
-- Either a folder `Within-Session`, or a folder `Cross-Session`, or both (whichever exists will determine where the results will be uploaded on the Neuroprobe website). The contents of this folder must follow the structure from the section "Formatting results" above.
+- Either a folder `Within-Session`, or a folder `Cross-Session`, `Cross-Session`, or any combination (whichever exists will determine where the results will be uploaded on the Neuroprobe website). The contents of this folder must follow the structure from the section "Formatting results" above.
 - A file `metadata.json`, with the following structure:
 ```json
 {
