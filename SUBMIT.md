@@ -100,3 +100,6 @@ I attest that the submitted model was not pretrained on any data that intersects
 SIGN **Full Name Of Submitting Author**
 [If the data intersects, please explain here]
 ```
+
+Finally, submit a pull request from the repository to the Neuroprobe repository. We will review it as soon as possible. If the pull request gets merged, the results will be automatically updated on the Neuroprobe website. 
+NOTE: The Neuroprobe repository contains automatic tests to ensure the format of the submission is correct according to the 'Submission Guidelines' section above. If a test fails, please note what was the issue, withdraw the PR, fix the issue, and resubmit the PR. You may run the tests on your own local copy to ensure they pass before submitting the PR.
