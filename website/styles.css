@@ -252,6 +252,49 @@ tr:last-child td {
     border-bottom: none;
 }
 
+/* Rank Badges */
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-align: center;
+    min-width: 2rem;
+    justify-content: center;
+}
+
+.rank-badge.gold {
+    background-color: #fbbf24;
+    color: #92400e;
+}
+
+.rank-badge.gold::before {
+    content: "🥇";
+    margin-right: 0.25rem;
+}
+
+.rank-badge.silver {
+    background-color: #d1d5db;
+    color: #374151;
+}
+
+.rank-badge.silver::before {
+    content: "🥈";
+    margin-right: 0.25rem;
+}
+
+.rank-badge.bronze {
+    background-color: #d97706;
+    color: #92400e;
+}
+
+.rank-badge.bronze::before {
+    content: "🥉";
+    margin-right: 0.25rem;
+}
+
 .submit-section {
     text-align: center;
     margin-top: 2rem;

@@ -1,7 +1,7 @@
 {
   "model_name": "BrainBERT (untrained, frozen)",
   "description": "BrainBERT model with random initialization, frozen weights",
-  "author": "Andrii Zahorodnii",
+  "author": "-",
   "organization": "MIT",
   "organization_url": "https://mit.edu",
   "timestamp": 1758846454

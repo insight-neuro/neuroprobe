@@ -1,7 +1,7 @@
 {
   "model_name": "BrainBERT (frozen; Wang et al. 2023)",
   "description": "BrainBERT model with pretrained weights, frozen (Wang et al. 2023)",
-  "author": "Andrii Zahorodnii",
+  "author": "-",
   "organization": "MIT",
   "organization_url": "https://mit.edu",
   "timestamp": 1758846455
