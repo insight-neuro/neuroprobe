@@ -1,0 +1,93 @@
+name: Update Leaderboard Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'leaderboard/**'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-leaderboard:
+    runs-on: ubuntu-latest
+    
+    # Only run if there are changes to leaderboard directory
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # Use a token that can push back to the repo
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install any dependencies needed by the parser script
+        pip install pathlib
+    
+    - name: Run leaderboard parser
+      run: |
+        cd website
+        python parse_leaderboard_results.py
+    
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if git diff --quiet; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add website/index.html
+        git commit -m "🤖 Auto-update leaderboard website from latest submissions
+
+        Updated leaderboard tables based on changes in leaderboard directory.
+        
+        Triggered by: ${{ github.sha }}"
+        git push
+    
+    - name: Generate summary
+      if: always()
+      run: |
+        echo "## 🏆 Leaderboard Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Count submissions
+        SUBMISSION_COUNT=$(find leaderboard -maxdepth 1 -type d | wc -l)
+        SUBMISSION_COUNT=$((SUBMISSION_COUNT - 1))  # Subtract 1 for the leaderboard directory itself
+        echo "**Total submissions processed:** $SUBMISSION_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Show if changes were made
+        if [ "${{ steps.verify-changed-files.outputs.changed }}" = "true" ]; then
+          echo "✅ **Website updated successfully!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The leaderboard tables have been regenerated and committed back to the repository." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ **No changes detected**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The leaderboard parser ran successfully but no changes were needed to the website." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Submission directories:**" >> $GITHUB_STEP_SUMMARY
+        for dir in leaderboard/*/; do
+          if [ -d "$dir" ]; then
+            echo "- $(basename "$dir")" >> $GITHUB_STEP_SUMMARY
+          fi
+        done 
