@@ -18,7 +18,25 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 # Set a dummy environment variable to avoid import errors
 os.environ.setdefault('ROOT_DIR_BRAINTREEBANK', '/tmp')
 
-from neuroprobe.config import NEUROPROBE_TASKS_MAPPING
+NEUROPROBE_TASKS_MAPPING = {    
+    'onset': 'Sentence Onset',
+    'speech': 'Speech',
+    'volume': 'Volume', 
+    'delta_volume': 'Delta Volume',
+    'pitch': 'Voice Pitch',
+
+    'word_index': 'Word Position',
+    'word_gap': 'Inter-word Gap',
+    'gpt2_surprisal': 'GPT-2 Surprisal',
+    'word_head_pos': 'Head Word Position',
+    'word_part_speech': 'Part of Speech',
+
+    'word_length': 'Word Length',
+    'global_flow': 'Global Optical Flow',
+    'local_flow': 'Local Optical Flow',
+    'frame_brightness': 'Frame Brightness',
+    'face_num': 'Number of Faces',
+}
 
 class TestSubmissionFormat:
     """Test class to validate submission format requirements."""
