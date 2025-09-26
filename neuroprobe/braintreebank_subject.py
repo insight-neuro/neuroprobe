@@ -12,13 +12,15 @@ class BrainTreebankSubject:
         This class is used to load the neural data for a given subject and trial.
         It also contains methods to get the data for a given electrode and trial, and to get the spectrogram for a given electrode and trial.
     """
-    def __init__(self, subject_id, allow_corrupted=False, allow_missing_coordinates=False, cache=False, dtype=torch.float32):
+    def __init__(self, subject_id, allow_corrupted=False, allow_missing_coordinates=False, cache=False, dtype=torch.float32, coordinates_type="cortical"):
         self.subject_id = subject_id
         self.subject_identifier = f'btbank{subject_id}'
         self.allow_corrupted = allow_corrupted
         self.allow_missing_coordinates = allow_missing_coordinates
         self.cache = cache
         self.dtype = dtype  # Store dtype as instance variable
+        self.coordinates_type = coordinates_type
+        assert coordinates_type in ["cortical", "mni", "lpi"], "Invalid coordinates type. Must be one of: 'cortical', 'mni', 'lpi'"
 
         self.localization_data = self._load_localization_data()
         self.electrode_labels = self._get_all_electrode_names()
@@ -165,10 +167,19 @@ class BrainTreebankSubject:
         else: self.open_neural_data_file(trial_id)
     
     def get_electrode_coordinates(self):
+        if self.coordinates_type == "cortical":
+            return self.get_electrode_coordinates_cortical()
+        elif self.coordinates_type == "mni":
+            return self.get_electrode_coordinates_mni()
+        elif self.coordinates_type == "lpi":
+            return self.get_electrode_coordinates_lpi()
+        else:
+            raise ValueError(f"Invalid coordinates type: {self.coordinates_type}")
+    def get_electrode_coordinates_cortical(self):
         """
             Get the coordinates of the electrodes for this subject
             Returns:
-                coordinates: (n_electrodes, 3) tensor of MNI coordinates (X, Y, Z) in mm
+                coordinates: (n_electrodes, 3) tensor of STANDARDIZED BRAIN ATLAS CORTICAL PROJECTION OF THE coordinates (X, Y, Z) in mm
         """
         loc_file = os.path.join(ROOT_DIR, f'localization/elec_coords_full.csv')
         df = pd.read_csv(loc_file)
@@ -189,6 +200,21 @@ class BrainTreebankSubject:
                     electrode_row.iloc[0]['Z']
                 ], dtype=self.dtype)
         return electrode_coordinates
+    def get_electrode_coordinates_mni(self):
+        raise NotImplementedError("Direct MNI coordinates are not yet available for the Braintreebank dataset. Will be added in the future ASAP!")
+    def get_electrode_coordinates_lpi(self):
+        """
+            Get the coordinates of the electrodes for this subject
+            Returns:
+                coordinates: (n_electrodes, 3) tensor of coordinates (L, P, I) without any preprocessing of the coordinates
+                All coordinates are in between 50mm and 200mm for this dataset
+        """
+        # Create tensor of coordinates in same order as electrode_labels
+        coordinates = torch.zeros((len(self.electrode_labels), 3), dtype=self.dtype)
+        for i, label in enumerate(self.electrode_labels):
+            row = self.get_electrode_metadata(label)
+            coordinates[i] = torch.tensor([row['L'], row['P'], row['I']], dtype=self.dtype)
+        return coordinates
 
     def get_electrode_metadata(self, electrode_label):
         """
