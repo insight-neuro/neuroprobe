@@ -1,6 +1,9 @@
 # Submitting to the Neuroprobe Leaderboard
 
-This document describes the steps which you must follow to submit your results to the public Neuroprobe leaderboard at [https://neuroprobe.dev](https://neuroprobe.dev).
+This document describes the steps which you must follow to submit your results to the public Neuroprobe leaderboard at [https://neuroprobe.dev](https://neuroprobe.dev). 
+
+To get a sense of how to use Neuroprobe to evaluate your models, please check out the `quickstart.ipynb` notebook at [examples/quickstart.ipynb](https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb).
+For more advanced examples, please see the rest of the [examples/](https://github.com/azaho/neuroprobe/blob/main/examples/) directory!
 
 ## Pretraining guidelines
 For the validity of the evaluation on Neuroprobe, **no models can be pretrained on the same data that underlies the Neuroprobe evaluation**. So, the following sessions are off-limits, with pretraining on them NOT allowed:
