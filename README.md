@@ -21,10 +21,10 @@
 <p align="center"><strong>Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli</strong></p>
 
 <p align="center">
-    <a href="https://neuroprobe.dev">Website</a> |
-    <a href="https://azaho.org/papers/NeurIPS_2025__BTBench_paper.pdf">Paper</a> |
-    <a href="https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb">Example Usage</a> |
-    <a href="https://github.com/azaho/neuroprobe/blob/main/SUBMIT.md">Submit</a>
+    <a href="https://neuroprobe.dev">🌐 Website</a> |
+    <a href="https://azaho.org/papers/NeurIPS_2025__BTBench_paper.pdf">📄 Paper</a> |
+    <a href="https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb">🚀 Example Usage</a> |
+    <a href="https://github.com/azaho/neuroprobe/blob/main/SUBMIT.md">📤 Submit</a>
 </p>
 
 ---
@@ -55,7 +55,7 @@ python braintreebank_download_extract.py --lite
 
 3. Start experimenting with `quickstart.ipynb` to create datasets and evaluate models.
 
-## 📊 Evaluation
+## Evaluation
 
 Run the linear regression model evaluation:
 ```bash
