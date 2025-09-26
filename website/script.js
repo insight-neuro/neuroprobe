@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle submit button
-    const submitButton = document.querySelector('.submit-button');
-    submitButton.addEventListener('click', () => {
-        // Here you can add the logic for submitting results
-        alert('Submit functionality will be implemented soon!');
-    });
+    // const submitButton = document.querySelector('.submit-button');
+    // submitButton.addEventListener('click', () => {
+    //     // Here you can add the logic for submitting results
+    //     alert('Submit functionality will be implemented soon!');
+    // });
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

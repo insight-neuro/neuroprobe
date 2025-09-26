@@ -46,6 +46,10 @@ header {
     color: var(--primary-color);
 }
 
+.logo-font {
+    font-family: 'Courier New', monospace;
+}
+
 .nav-links a {
     margin-left: 2rem;
     text-decoration: none;
@@ -60,13 +64,13 @@ header {
 
 /* Hero Section */
 .hero {
-    padding: 8rem 2rem 4rem;
+    padding: 8rem 2rem 0rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
-    min-height: 80vh;
+    min-height: 40vh;
 }
 
 .hero-content {
@@ -255,17 +259,18 @@ tr:last-child td {
 
 .submit-button {
     padding: 0.75rem 2rem;
-    background-color: var(--primary-color);
+    background-color: #000000;
     color: white;
     border: none;
     border-radius: 0.5rem;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
 }
 
 .submit-button:hover {
-    background-color: var(--secondary-color);
+    background-color: #374151;
 }
 
 /* Paper Section */
@@ -343,14 +348,14 @@ footer {
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero {
-        flex-direction: column;
+        flex-direction: column-reverse;
         text-align: center;
         padding-top: 6rem;
     }
 
     .hero-content {
         padding-right: 0;
-        margin-bottom: 2rem;
+        margin-top: 2rem;
     }
 
     .hero-buttons {
