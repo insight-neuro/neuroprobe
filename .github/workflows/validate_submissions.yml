@@ -1,0 +1,104 @@
+name: Validate Leaderboard Submissions
+
+on:
+  push:
+    paths:
+      - 'leaderboard/**'
+  pull_request:
+    paths:
+      - 'leaderboard/**'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  validate-submissions:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        pip install -e .  # Install the neuroprobe package in editable mode
+    
+    - name: Run submission format validation tests
+      run: |
+        python -m pytest tests/test_submission_format.py -v --tb=long --no-header
+    
+    - name: Generate test report
+      if: always()  # Run even if tests fail
+      run: |
+        echo "## Submission Validation Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Count submissions
+        SUBMISSION_COUNT=$(find leaderboard -maxdepth 1 -type d | wc -l)
+        SUBMISSION_COUNT=$((SUBMISSION_COUNT - 1))  # Subtract 1 for the leaderboard directory itself
+        echo "**Total submissions found:** $SUBMISSION_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # List all submissions
+        echo "**Submission directories:**" >> $GITHUB_STEP_SUMMARY
+        for dir in leaderboard/*/; do
+          if [ -d "$dir" ]; then
+            basename "$dir" >> $GITHUB_STEP_SUMMARY
+          fi
+        done
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Run tests again with detailed output for the summary
+        echo "**Test Results:**" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        python -m pytest tests/test_submission_format.py -v --tb=no || true >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+    
+    - name: Comment on PR with validation results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const { execSync } = require('child_process');
+          
+          // Run tests and capture output
+          let testOutput = '';
+          try {
+            testOutput = execSync('python -m pytest tests/test_submission_format.py -v --tb=long --no-header', 
+                                 { encoding: 'utf8', cwd: process.cwd() });
+          } catch (error) {
+            testOutput = error.stdout + '\n' + error.stderr;
+          }
+          
+          // Count submissions
+          const submissionDirs = fs.readdirSync('leaderboard', { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name);
+          
+          const comment = `## 🔍 Submission Validation Results
+          
+          **Submissions found:** ${submissionDirs.length}
+          
+          **Directories:**
+          ${submissionDirs.map(dir => `- \`${dir}\``).join('\n')}
+          
+          **Test Output:**
+          \`\`\`
+          ${testOutput}
+          \`\`\`
+          
+          ${testOutput.includes('FAILED') ? '❌ Some validation tests failed. Please fix the issues above.' : '✅ All validation tests passed!'}
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          }); 
