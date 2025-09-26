@@ -29,7 +29,7 @@
 
 ---
 
-By **Andrii Zahorodnii¹²***, **Bennett Stankovits¹***, **Christopher Wang¹***, **Charikleia Moraitaki¹**, **Geeling Chau³**, **Ila R Fiete¹²**, **Boris Katz¹**, **Andrei Barbu¹**
+By **Andrii Zahorodnii¹²***, **Christopher Wang¹***, **Bennett Stankovits¹***, **Charikleia Moraitaki¹**, **Geeling Chau³**, **Andrei Barbu¹**, **Boris Katz¹**, **Ila R Fiete¹²**,
 
 ¹MIT CSAIL, CBMM  |  ²MIT McGovern Institute  |  ³Caltech  |  *Equal contribution
 
