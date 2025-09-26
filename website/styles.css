@@ -227,14 +227,45 @@ section h2 {
     display: block;
 }
 
+/* Table container for horizontal scrolling */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Smooth scrolling for better UX */
+    scroll-behavior: smooth;
+    /* Style the scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f8fafc;
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
 table {
     width: 100%;
+    min-width: 800px; /* Ensure table maintains minimum width for readability */
     border-collapse: collapse;
-    margin-bottom: 2rem;
     background-color: white;
     border-radius: 0.5rem;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
@@ -413,9 +444,13 @@ footer {
         display: none;
     }
 
+    .table-container {
+        /* On mobile, reduce minimum table width for better fit */
+        /* but still maintain horizontal scroll when needed */
+    }
+    
     table {
-        display: block;
-        overflow-x: auto;
+        min-width: 600px; /* Slightly smaller minimum width on mobile */
     }
 
     .paper-links {

@@ -163,6 +163,7 @@ class LeaderboardParser:
         
         if not ranked_submissions:
             return """
+                    <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
@@ -180,6 +181,7 @@ class LeaderboardParser:
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
             """
         
         # Get all unique tasks across all submissions for this split
@@ -194,6 +196,7 @@ class LeaderboardParser:
         
         # Generate table header
         header_html = """
+                    <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
@@ -253,7 +256,8 @@ class LeaderboardParser:
         # Close table
         footer_html = """
                             </tbody>
-                        </table>"""
+                        </table>
+                    </div>"""
         
         return header_html + rows_html + footer_html
     
@@ -268,6 +272,7 @@ class LeaderboardParser:
         # Find and replace Cross-Session table
         cross_session_start = html_content.find('<div class="tab-content active" id="population_cross_session">')
         cross_session_end = html_content.find('</div>', cross_session_start)
+        cross_session_end = html_content.find('</div>', cross_session_end) # find second </div>
         
         if cross_session_start != -1 and cross_session_end != -1:
             cross_session_content = f"""<div class="tab-content active" id="population_cross_session">
@@ -280,6 +285,7 @@ class LeaderboardParser:
         # Find and replace Cross-Subject table
         cross_subject_start = html_content.find('<div class="tab-content" id="population_cross_subject">')
         cross_subject_end = html_content.find('</div>', cross_subject_start)
+        cross_subject_end = html_content.find('</div>', cross_subject_end) # find second </div>
         
         if cross_subject_start != -1 and cross_subject_end != -1:
             cross_subject_content = f"""<div class="tab-content" id="population_cross_subject">
