@@ -12,6 +12,11 @@ jobs:
   update-leaderboard:
     runs-on: ubuntu-latest
     
+    # Grant write permissions to contents and actions
+    permissions:
+      contents: write
+      actions: read
+    
     # Only run if there are changes to leaderboard directory
     if: github.ref == 'refs/heads/main'
     
@@ -51,15 +56,24 @@ jobs:
     - name: Commit and push changes
       if: steps.verify-changed-files.outputs.changed == 'true'
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git config --global init.defaultBranch main
+        
+        # Show git status for debugging
+        echo "Git status before commit:"
+        git status
+        
+        # Add and commit changes
         git add website/index.html
         git commit -m "🤖 Auto-update leaderboard website from latest submissions
 
         Updated leaderboard tables based on changes in leaderboard directory.
         
         Triggered by: ${{ github.sha }}"
-        git push
+        
+        # Push changes
+        git push origin main
     
     - name: Generate summary
       if: always()
