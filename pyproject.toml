@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,9 +11,9 @@ authors = [
     {name = "Bennett Stankovits"},
     {name = "Charikleia Moraitaki"},
     {name = "Geeling Chau"},
-    {name = "Ila R Fiete"},
-    {name = "Boris Katz"},
     {name = "Andrei Barbu"},
+    {name = "Boris Katz"},
+    {name = "Ila R Fiete"},
 ]
 description = "A benchmark for evaluating intracranial brain responses to naturalistic stimuli"
 readme = "README.md"
