@@ -6,3 +6,8 @@ data/
 
 **/__pycache__
 *.egg-info/
+
+# do not commit figures
+**/*.png
+**/*.pdf
+**/*.jpg
