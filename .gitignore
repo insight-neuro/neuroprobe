@@ -11,3 +11,6 @@ data/
 **/*.png
 **/*.pdf
 **/*.jpg
+
+# do not commit dist
+dist/
