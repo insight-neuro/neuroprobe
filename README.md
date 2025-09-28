@@ -22,7 +22,7 @@
 
 <p align="center">
     <a href="https://neuroprobe.dev">🌐 Website</a> |
-    <a href="https://azaho.org/papers/NeurIPS_2025__BTBench_paper.pdf">📄 Paper</a> |
+    <a href="https://azaho.org/papers/Neuroprobe_paper.pdf">📄 Paper</a> |
     <a href="https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb">🚀 Example Usage</a> |
     <a href="https://github.com/azaho/neuroprobe/blob/main/SUBMIT.md">📤 Submit</a>
 </p>
