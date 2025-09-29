@@ -54,7 +54,34 @@ python braintreebank_download_extract.py --lite
 ```
 (lite is an optional flag; if only using Neuroprobe as a benchmark, this flag will reduce the number of downloaded files by >50% by removing unnecessary files.)
 
-3. Start experimenting with `quickstart.ipynb` to create datasets and evaluate models.
+3. Start experimenting with [quickstart.ipynb](https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb) to create datasets and evaluate models. For example:
+```python
+import os, torch
+os.environ['ROOT_DIR_BRAINTREEBANK'] = '/path/to/braintreebank/'  # NOTE: Change this to your own path, or define an environment variable elsewhere
+
+from neuroprobe import BrainTreebankSubject, BrainTreebankSubjectTrialBenchmarkDataset
+subject = BrainTreebankSubject(subject_id=1, cache=True, dtype=torch.float32, coordinates_type="cortical")
+dataset = BrainTreebankSubjectTrialBenchmarkDataset(subject, trial_id=2, dtype=torch.float32, eval_name="gpt2_surprisal") 
+
+data_electrode_labels = dataset.electrode_labels 
+data_electrode_coordinates = dataset.electrode_coordinates 
+
+
+dataset.output_dict = True # Optionally, you can request the output_dict=True to get the data as a dictionary with a bunch of metadata.
+dataset.output_indices = False # Optionally, you can request to output indices into the original BrainTreebank h5 files of the sessions, instead of raw data.
+
+print(dataset[0])
+```
+will give the following output:
+```python
+{
+	'data': torch.tensor, # shape: (n_electrodes, 2048), where 2048 = 1 second at 2048 Hz
+	'label': int, # 0 ot 1 
+	'electrode_labels': list[str], # length: (n_electrodes, )
+	'electrode_coordinates': torch.tensor, # shape: (n_electrodes, 3)
+	'metadata': {'subject_identifier': 'btbank1', 'trial_id': 2, 'sampling_rate': 2048}
+}
+```
 
 ## Evaluation
 
