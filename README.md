@@ -54,7 +54,9 @@ python braintreebank_download_extract.py --lite
 ```
 (lite is an optional flag; if only using Neuroprobe as a benchmark, this flag will reduce the number of downloaded files by >50% by removing unnecessary files.)
 
-3. Start experimenting with [quickstart.ipynb](https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb) to create datasets and evaluate models. For example:
+### Code Example
+
+Start experimenting with [quickstart.ipynb](https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb) to create datasets and evaluate models. For example:
 ```python
 import os, torch
 os.environ['ROOT_DIR_BRAINTREEBANK'] = '/path/to/braintreebank/'  # NOTE: Change this to your own path, or define an environment variable elsewhere
@@ -66,10 +68,8 @@ dataset = BrainTreebankSubjectTrialBenchmarkDataset(subject, trial_id=2, dtype=t
 data_electrode_labels = dataset.electrode_labels 
 data_electrode_coordinates = dataset.electrode_coordinates 
 
-
 dataset.output_dict = True # Optionally, you can request the output_dict=True to get the data as a dictionary with a bunch of metadata.
 dataset.output_indices = False # Optionally, you can request to output indices into the original BrainTreebank h5 files of the sessions, instead of raw data.
-
 print(dataset[0])
 ```
 will give the following output:
@@ -83,7 +83,7 @@ will give the following output:
 }
 ```
 
-## Evaluation
+### Evaluation Example
 
 Run the linear regression model evaluation:
 ```bash
