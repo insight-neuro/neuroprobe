@@ -18,11 +18,12 @@
     </a>
 </p>
 
-<p align="center"><strong>Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli</strong></p>
+<p align="center"><strong>Neuroprobe: Benchmark for Evaluating iEEG Foundation Models.</strong></p>
+<p align="center"><strong>Evaluating Intracranial Brain Responses to Naturalistic Stimuli</strong></p>
 
 <p align="center">
     <a href="https://neuroprobe.dev">🌐 Website</a> |
-    <a href="https://azaho.org/papers/Neuroprobe_paper.pdf">📄 Paper</a> |
+    <a href="https://www.arxiv.org/abs/2509.21671">📄 Paper</a> |
     <a href="https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb">🚀 Example Usage</a> |
     <a href="https://github.com/azaho/neuroprobe/blob/main/SUBMIT.md">📤 Submit</a>
 </p>
@@ -68,5 +69,13 @@ Results will be saved in the `eval_results` directory according to `leaderboard_
 
 If you use Neuroprobe in your work, please cite our paper:
 ```bibtex
-[Citation TBD]
+@misc{neuroprobe,
+      title={Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli}, 
+      author={Andrii Zahorodnii and Christopher Wang and Bennett Stankovits and Charikleia Moraitaki and Geeling Chau and Andrei Barbu and Boris Katz and Ila R Fiete},
+      year={2025},
+      eprint={2509.21671},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2509.21671}, 
+}
 ```
