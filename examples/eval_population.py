@@ -50,7 +50,7 @@ parser.add_argument('--preprocess.stft.window', type=str, choices=['hann', 'boxc
 parser.add_argument('--preprocess.stft.max_frequency', type=int, default=150, help='Maximum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 parser.add_argument('--preprocess.stft.min_frequency', type=int, default=0, help='Minimum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 
-parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
 args = parser.parse_args()
 
 eval_names = args.eval_name.split(',')
@@ -236,6 +236,10 @@ for eval_name in eval_names:
                 X_train = X_train.reshape(original_X_train_shape)
                 X_test = X_test.reshape(original_X_test_shape)
                 clf = TransformerClassifier(random_state=seed)
+            elif classifier_type == 'mlp':
+                X_train = X_train.reshape(original_X_train_shape)
+                X_test = X_test.reshape(original_X_test_shape)
+                clf = MLPClassifier(random_state=seed)
             clf.fit(X_train, y_train)
 
             torch.cuda.empty_cache()

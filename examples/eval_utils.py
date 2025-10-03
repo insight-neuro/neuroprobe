@@ -16,6 +16,8 @@ def model_name_from_classifier_type(classifier_type):
         return "CNN"
     elif classifier_type == 'transformer':
         return "Transformer"
+    elif classifier_type == 'mlp':
+        return "MLP"
     else:
         raise ValueError(f"Invalid classifier type: {classifier_type}")
 
@@ -688,6 +690,150 @@ class CNNClassifier:
         predictions = self.predict(X)
         return np.mean(predictions == y)
 
+
+class MLPClassifier:
+    def __init__(self, random_state=42, max_iter=100, batch_size=3500, learning_rate=0.001, 
+                 tol=1e-8, patience=10, hidden_dims=None):
+        """
+        MLP Classifier with configurable hidden layers.
+        
+        Args:
+            hidden_dims: list of integers specifying hidden layer dimensions.
+                        If None or empty list, creates a linear model (no hidden layers).
+                        E.g., [128, 64] creates two hidden layers with 128 and 64 units.
+        """
+        self.random_state = random_state
+        self.max_iter = max_iter
+        self.batch_size = batch_size
+        self.learning_rate = learning_rate
+        self.tol = tol
+        self.patience = patience
+        self.hidden_dims = hidden_dims if hidden_dims is not None else []
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = None
+        self.classes_ = None
+        self.best_val_auroc = 0.0
+        
+    def _create_model(self, input_size, n_classes):
+        class MLP(torch.nn.Module):
+            def __init__(self, input_size, n_classes, hidden_dims):
+                super().__init__()
+                layers = []
+                
+                if len(hidden_dims) == 0:
+                    # Linear model (logistic regression)
+                    layers.append(torch.nn.Linear(input_size, n_classes))
+                else:
+                    # MLP with hidden layers
+                    prev_dim = input_size
+                    for hidden_dim in hidden_dims:
+                        layers.append(torch.nn.Linear(prev_dim, hidden_dim))
+                        layers.append(torch.nn.ReLU())
+                        layers.append(torch.nn.Dropout(0.5))
+                        prev_dim = hidden_dim
+                    
+                    # Output layer
+                    layers.append(torch.nn.Linear(prev_dim, n_classes))
+                
+                self.network = torch.nn.Sequential(*layers)
+                
+            def forward(self, x):
+                # Flatten all dimensions except batch
+                x = x.view(x.size(0), -1)
+                return self.network(x)
+        
+        return MLP(input_size, n_classes, self.hidden_dims)
+    
+    def fit(self, X, y):
+        # Convert to torch tensors
+        X = torch.FloatTensor(X)
+        y = torch.LongTensor(y)
+
+        # Get unique classes
+        self.classes_ = np.unique(y)
+        n_classes = len(self.classes_)
+
+        model_type = "Linear" if len(self.hidden_dims) == 0 else f"MLP{self.hidden_dims}"
+        log(f"Training {model_type} on full dataset with {len(X)} samples", priority=3, indent=2)
+
+        # Create model - flatten input to get total size
+        input_size = np.prod(X.shape[1:])
+        self.model = self._create_model(input_size, n_classes)
+        self.model = self.model.to(self.device)
+
+        # Setup training
+        criterion = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+
+        # Training loop
+        best_train_loss = 0.0
+        best_model_state = None
+        patience_counter = 0
+
+        for epoch in range(self.max_iter):
+            self.model.train()
+            train_loss = 0.0
+            train_correct = 0
+            train_total = 0
+
+            for i in range(0, len(X), self.batch_size):
+                batch_X = X[i:i+self.batch_size].to(self.device)
+                batch_y = y[i:i+self.batch_size].to(self.device)
+
+                optimizer.zero_grad()
+                outputs = self.model(batch_X)
+                loss = criterion(outputs, batch_y)
+                loss.backward()
+                optimizer.step()
+
+                train_loss += loss.item() * batch_X.size(0)
+                _, predicted = torch.max(outputs.data, 1)
+                train_total += batch_y.size(0)
+                train_correct += (predicted == batch_y).sum().item()
+
+            train_loss = train_loss / train_total
+            train_acc = train_correct / train_total
+
+            log(f"Epoch {epoch+1}/{self.max_iter}: Train loss: {train_loss:.8f}, Train acc: {train_acc:.4f}", priority=3, indent=2)
+
+            # Early stopping based on training accuracy
+            if train_loss < best_train_loss + self.tol:
+                best_train_loss = train_loss
+                best_model_state = self.model.state_dict().copy()
+                patience_counter = 0
+                log(f"New best model saved with train acc: {best_train_acc:.4f} (loss: {best_train_loss:.8f})", priority=3, indent=2)
+            else:
+                patience_counter += 1
+                if patience_counter >= self.patience:
+                    log(f"Early stopping triggered after {epoch+1} epochs", priority=3, indent=2)
+                    break
+
+        # Load best model
+        if best_model_state is not None:
+            self.model.load_state_dict(best_model_state)
+        log(f"Training complete. Best training accuracy: {best_train_acc:.4f}", priority=3, indent=2)
+        return self
+    
+    def predict_proba(self, X):
+        self.model.eval()
+        all_probs = []
+        with torch.no_grad():
+            X = torch.FloatTensor(X)
+            # Process in batches
+            for i in range(0, len(X), self.batch_size):
+                batch_X = X[i:i+self.batch_size].to(self.device)
+                outputs = self.model(batch_X)
+                probs = torch.nn.functional.softmax(outputs, dim=1)
+                all_probs.append(probs.cpu().numpy())
+        return np.concatenate(all_probs, axis=0)
+    
+    def predict(self, X):
+        probs = self.predict_proba(X)
+        return self.classes_[np.argmax(probs, axis=1)]
+    
+    def score(self, X, y):
+        predictions = self.predict(X)
+        return np.mean(predictions == y)
 
 
 ############## REGION AVERAGING (FOR DS/DM SPLITS) ###############
