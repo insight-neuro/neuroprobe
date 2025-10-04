@@ -690,10 +690,9 @@ class CNNClassifier:
         predictions = self.predict(X)
         return np.mean(predictions == y)
 
-
 class MLPClassifier:
-    def __init__(self, random_state=42, max_iter=100, batch_size=3500, learning_rate=0.001, 
-                 tol=1e-8, patience=10, hidden_dims=None):
+    def __init__(self, random_state=42, max_iter=30, batch_size=200, learning_rate=0.00001, 
+                 tol=1e-8, patience=10, hidden_dims=[256, 256, 256]):
         """
         MLP Classifier with configurable hidden layers.
         
@@ -766,7 +765,7 @@ class MLPClassifier:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         # Training loop
-        best_train_loss = 0.0
+        best_train_loss = 100.0
         best_model_state = None
         patience_counter = 0
 
@@ -797,11 +796,11 @@ class MLPClassifier:
             log(f"Epoch {epoch+1}/{self.max_iter}: Train loss: {train_loss:.8f}, Train acc: {train_acc:.4f}", priority=3, indent=2)
 
             # Early stopping based on training accuracy
-            if train_loss < best_train_loss + self.tol:
+            if train_loss < best_train_loss - self.tol:
                 best_train_loss = train_loss
                 best_model_state = self.model.state_dict().copy()
                 patience_counter = 0
-                log(f"New best model saved with train acc: {best_train_acc:.4f} (loss: {best_train_loss:.8f})", priority=3, indent=2)
+                log(f"New best model saved with train loss: {best_train_loss:.4f}", priority=3, indent=2)
             else:
                 patience_counter += 1
                 if patience_counter >= self.patience:
@@ -811,7 +810,7 @@ class MLPClassifier:
         # Load best model
         if best_model_state is not None:
             self.model.load_state_dict(best_model_state)
-        log(f"Training complete. Best training accuracy: {best_train_acc:.4f}", priority=3, indent=2)
+        log(f"Training complete. Best training loss: {best_train_loss:.4f}", priority=3, indent=2)
         return self
     
     def predict_proba(self, X):
