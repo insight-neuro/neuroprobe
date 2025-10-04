@@ -14,3 +14,5 @@ data/
 
 # do not commit dist
 dist/
+
+.env
