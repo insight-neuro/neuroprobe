@@ -15,7 +15,7 @@ authors = [
     {name = "Boris Katz"},
     {name = "Ila R Fiete"},
 ]
-description = "A benchmark for evaluating intracranial brain responses to naturalistic stimuli"
+description = "Neuroprobe: Benchmark for Evaluating iEEG Foundation Models. Evaluating intracranial brain responses to naturalistic stimuli."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
