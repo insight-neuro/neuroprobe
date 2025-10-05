@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neuroprobe"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
     {name = "Andrii Zahorodnii", email = "zaho@csail.mit.edu"},
     {name = "Christopher Wang"},

@@ -90,13 +90,6 @@ class BrainTreebankSubject:
     def cache_neural_data(self, trial_id, cache_window_from=None, cache_window_to=None, force_cache=False):
         assert self.cache, "Cache is not enabled; not able to cache neural data."
 
-        if cache_window_from is None: cache_window_from = 0
-        if (trial_id in self.neural_data_cache) and \
-             (not force_cache) and \
-             ((self.cache_neural_data_window_from is None) or (self.cache_neural_data_window_from <= cache_window_from)) and \
-             ((self.cache_neural_data_window_to is None) or ((cache_window_to is not None) and (self.cache_neural_data_window_to >= cache_window_to))): 
-             return  # no need to cache again
-
         # Open file with context manager to ensure proper closing
         neural_data_file = os.path.join(ROOT_DIR, f'sub_{self.subject_id}_trial{trial_id:03}.h5')
         with h5py.File(neural_data_file, 'r') as f:
@@ -104,6 +97,13 @@ class BrainTreebankSubject:
             self.electrode_data_length[trial_id] = f['data'][self.h5_neural_data_keys[self.electrode_labels[0]]].shape[0]
             if cache_window_to is None: cache_window_to = self.electrode_data_length[trial_id]
             
+            if cache_window_from is None: cache_window_from = 0
+            if (trial_id in self.neural_data_cache) and \
+                (not force_cache) and \
+                ((self.cache_neural_data_window_from is None) or (self.cache_neural_data_window_from <= cache_window_from)) and \
+                ((self.cache_neural_data_window_to is None) or (self.cache_neural_data_window_to >= cache_window_to)): 
+                return  # no need to cache again
+
             self.cache_neural_data_window_from = cache_window_from
             self.cache_neural_data_window_to = cache_window_to
             

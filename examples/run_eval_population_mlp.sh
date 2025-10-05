@@ -4,18 +4,16 @@
 #SBATCH --cpus-per-task=2  
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
-#SBATCH -t 12:00:00
-#SBATCH --constraint=24GB
-#SBATCH --exclude=dgx001,dgx002
-#SBATCH --array=1-180
+#SBATCH -t 4:00:00
+#SBATCH --array=1-12
 #SBATCH --output data/logs/%A_%a.out # STDOUT
 #SBATCH --error data/logs/%A_%a.err # STDERR
-#SBATCH -p use-everything
+#SBATCH -p ou_bcs_low
 
 nvidia-smi
 
 export PYTHONUNBUFFERED=1
-export ROOT_DIR_BRAINTREEBANK=/om2/user/zaho/braintreebank/braintreebank/
+export ROOT_DIR_BRAINTREEBANK=/orcd/data/fiete/001/zaho/braintreebank/ # Engaging
 source .venv/bin/activate
 
 # Use the BTBENCH_LITE_SUBJECT_TRIALS from btbench_config.py
@@ -39,10 +37,10 @@ declare -a eval_names=(
     "word_head_pos"
     "word_part_speech"
 )
-# # to make it sequential, just aggregate the eval_names separating with a comma
-# eval_names=(
-#     $(IFS=,; echo "${eval_names[*]}")
-# )
+# to make it sequential, just aggregate the eval_names separating with a comma
+eval_names=(
+    $(IFS=,; echo "${eval_names[*]}")
+)
 
 declare -a preprocess=(
     # 'none' # no preprocessing, just raw voltage
