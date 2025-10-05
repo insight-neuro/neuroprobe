@@ -32,7 +32,7 @@ parser.add_argument('--trial_id', type=int, required=True, help='Trial ID')
 parser.add_argument('--verbose', action='store_true', help='Whether to print progress')
 parser.add_argument('--save_dir', type=str, default='eval_results', help='Directory to save results')
 
-parser.add_argument('--preprocess.type', type=str, default='none', help=f'Preprocessing to apply to neural data ({", ".join(preprocess_options)})')
+parser.add_argument('--preprocess.type', type=str, default='laplacian-stft_abs', help=f'Preprocessing to apply to neural data ({", ".join(preprocess_options)})')
 parser.add_argument('--preprocess.stft.nperseg', type=int, default=512, help='Length of each segment for FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 parser.add_argument('--preprocess.stft.poverlap', type=float, default=0.75, help='Overlap percentage for FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 parser.add_argument('--preprocess.stft.window', type=str, choices=['hann', 'boxcar'], default='hann', help='Window type for FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
@@ -44,7 +44,7 @@ parser.add_argument('--seed', type=int, default=42, help='Random seed')
 parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--lite', action='store_true', help='Whether to use the lite eval for Neuroprobe (which is the default)')
 parser.add_argument('--electrodes', type=str, default='all', help='Electrode labels to evaluate on. If multiple, separate with commas.')
-parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
 args = parser.parse_args()
 
 eval_names = args.eval_name.split(',') if ',' in args.eval_name else [args.eval_name]
@@ -213,6 +213,10 @@ for eval_name in eval_names:
                     X_train = X_train.reshape(original_X_train_shape)
                     X_test = X_test.reshape(original_X_test_shape)
                     clf = TransformerClassifier(random_state=seed)
+                elif classifier_type == 'mlp':
+                    X_train = X_train.reshape(original_X_train_shape)
+                    X_test = X_test.reshape(original_X_test_shape)
+                    clf = MLPClassifier(random_state=seed)
                 else:
                     raise ValueError(f"Invalid classifier type: {classifier_type}")
                 clf.fit(X_train, y_train)

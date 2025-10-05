@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://neuroprobe.dev">
-    <img src="website/neuroprobe_animation.gif" alt="Neuroprobe Logo" style="height: 10em" />
+    <img src="https://github.com/azaho/neuroprobe/blob/main/website/neuroprobe_animation.gif?raw=True" alt="Neuroprobe Logo" style="height: 10em" />
   </a>
 </p>
 
@@ -48,7 +48,7 @@ Please see the full technical paper for more details.
 pip install neuroprobe
 ```
 
-2. If you haven't yet, download the BrainTreebank dataset from [the official release webpage](https://braintreebank.dev/), or using the following script:
+2. If you haven't yet, download the BrainTreebank dataset from [the official release webpage](https://braintreebank.dev/), or using the following script (located [here](https://github.com/azaho/neuroprobe/blob/main/braintreebank_download_extract.py)):
 ```bash
 python braintreebank_download_extract.py --lite
 ```
@@ -85,9 +85,9 @@ will give the following output:
 
 ### Evaluation Example
 
-Run the linear regression model evaluation:
+Run the linear regression model evaluation using the following example script (located [here](https://github.com/azaho/neuroprobe/blob/main/examples/eval_population.py)):
 ```bash
-python single_electrode.py --subject SUBJECT_ID --trial TRIAL_ID --verbose --lite --eval_name onset --split_type CrossSession
+python eval_population.py --subject_id SUBJECT_ID --trial_id TRIAL_ID --verbose --eval_name gpt2_surprisal --split_type CrossSession
 ```
 
 Results will be saved in the `eval_results` directory according to `leaderboard_schema.json`.
