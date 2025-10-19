@@ -11,6 +11,7 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
                           lite=True, nano=False,
                           
                           # Dataset parameters
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -44,12 +45,12 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
     assert test_subject_id != DS_DM_TRAIN_SUBJECT_ID, "Test subject cannot be the same as the training subject."
 
     test_dataset = BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[test_subject_id], test_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                             output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                             binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                              lite=lite, nano=nano, max_samples=max_samples)
     
     train_subject_id, train_trial_id = DS_DM_TRAIN_SUBJECT_ID, DS_DM_TRAIN_TRIAL_ID
     train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(all_subjects[train_subject_id], train_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                                output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                                binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                 lite=lite, nano=nano, max_samples=max_samples)
 
     return [
@@ -64,6 +65,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
                           lite=True,
                           
                           # Dataset parameters
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -97,7 +99,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
     assert len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id]) > 1, f"Training subject must have at least two trials. But subject {test_subject.subject_id} has only {len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id])} trials."
     
     test_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                             output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                             binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                              lite=lite, max_samples=max_samples)
         
     if include_all_other_trials:
@@ -107,7 +109,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
             max_samples = max_samples // len(train_trial_ids)
 
         train_datasets = [BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                                    output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                                    binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                     lite=lite, max_samples=max_samples) for train_trial_id in train_trial_ids]
         train_dataset = ConcatDataset(train_datasets)
     else:
@@ -120,7 +122,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         
 
         train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                                    output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                                    binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                     lite=lite, max_samples=max_samples)
     return [
         {
@@ -134,6 +136,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
                           lite=True, nano=False,
                           
                           # Dataset parameters
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -167,7 +170,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
     test_datasets = []
 
     dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                        output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+                                                        binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                         lite=lite, nano=nano, max_samples=max_samples)
     
     k_folds = NEUROPROBE_LITE_N_FOLDS if not nano else NEUROPROBE_NANO_N_FOLDS
