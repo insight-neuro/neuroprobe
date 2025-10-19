@@ -42,6 +42,7 @@ parser.add_argument('--seed', type=int, default=42, help='Random seed')
 parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--full', action='store_true', help='Whether to use the full eval for Neuroprobe (NOTE: Lite is the default!)')
 parser.add_argument('--nano', action='store_true', help='Whether to use Neuroprobe Nano for faster evaluation')
+parser.add_argument('--binary_tasks', type=lambda x: x.lower() == 'true', default=True, help='Whether to use binary classification for tasks that support it')
 
 parser.add_argument('--preprocess.type', type=str, default='laplacian-stft_abs', help=f'Preprocessing to apply to neural data ({", ".join(preprocess_options)})')
 parser.add_argument('--preprocess.stft.nperseg', type=int, default=512, help='Length of each segment for FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
@@ -68,6 +69,7 @@ lite = not bool(args.full)
 nano = bool(args.nano)
 assert (not nano) or (splits_type != "CrossSession"), "Nano only works with WithinSession or CrossSubject splits; does not work with CrossSession."
 assert (not nano) or lite, "--nano and --full cannot be used together. Neuroprobe Full and Neuroprobe Nano are different evaluations."
+binary_tasks = bool(args.binary_tasks)
 
 preprocess_type = getattr(args, 'preprocess.type')
 preprocess_parameters = {
@@ -151,14 +153,14 @@ for eval_name in eval_names:
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                        lite=lite, nano=nano)
+                                                                                        lite=lite, nano=nano, binary_tasks=binary_tasks)
         train_subject = subject
     elif splits_type == "CrossSession":
         folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                        lite=lite)
+                                                                                        lite=lite, binary_tasks=binary_tasks)
         train_subject = subject
     elif splits_type == "CrossSubject":
         if verbose: log("Loading the training subject...", priority=0)
@@ -175,7 +177,7 @@ for eval_name in eval_names:
                                                                                         output_indices=False, 
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                        lite=lite, nano=nano)
+                                                                                        lite=lite, nano=nano, binary_tasks=binary_tasks)
 
 
     for bin_start, bin_end in zip(bin_starts, bin_ends):
@@ -228,19 +230,22 @@ for eval_name in eval_names:
             # Train logistic regression
             if classifier_type == 'linear':
                 clf = LogisticRegression(random_state=seed, max_iter=10000, tol=1e-3)
+                clf.fit(X_train, y_train)
             elif classifier_type == 'cnn':
                 X_train = X_train.reshape(original_X_train_shape)
                 X_test = X_test.reshape(original_X_test_shape)
                 clf = CNNClassifier(random_state=seed)
+                clf.fit(X_train, y_train)
             elif classifier_type == 'transformer':
                 X_train = X_train.reshape(original_X_train_shape)
                 X_test = X_test.reshape(original_X_test_shape)
                 clf = TransformerClassifier(random_state=seed)
+                clf.fit(X_train, y_train)
             elif classifier_type == 'mlp':
                 X_train = X_train.reshape(original_X_train_shape)
                 X_test = X_test.reshape(original_X_test_shape)
                 clf = MLPClassifier(random_state=seed)
-            clf.fit(X_train, y_train)
+                clf.fit(X_train, y_train, X_val=X_test, y_val=y_test)
 
             torch.cuda.empty_cache()
             gc.collect()

@@ -471,7 +471,7 @@ class TransformerClassifier:
                 # Check if validation AUROC improved
                 if val_auroc > best_val_auroc + self.tol:
                     best_val_auroc = val_auroc
-                    best_model_state = self.model.state_dict().copy()
+                    best_model_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                     patience_counter = 0
                     log(f"New best model saved with val AUROC: {best_val_auroc:.4f}", priority=3, indent=2)
                 else:
@@ -655,7 +655,7 @@ class CNNClassifier:
                 # Check if validation AUROC improved
                 if val_auroc > best_val_auroc + self.tol:
                     best_val_auroc = val_auroc
-                    best_model_state = self.model.state_dict().copy()
+                    best_model_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                     patience_counter = 0
                     log(f"New best model saved with val AUROC: {best_val_auroc:.4f}", priority=3, indent=2)
                 else:
@@ -691,8 +691,8 @@ class CNNClassifier:
         return np.mean(predictions == y)
 
 class MLPClassifier:
-    def __init__(self, random_state=42, max_iter=30, batch_size=200, learning_rate=0.00001, 
-                 tol=1e-8, patience=10, hidden_dims=[256, 256, 256]):
+    def __init__(self, random_state=42, max_iter=100, batch_size=200, learning_rate=0.00001, hidden_dims=[1024, 1024],
+                 tol=1e-8, patience=100):
         """
         MLP Classifier with configurable hidden layers.
         
@@ -711,7 +711,6 @@ class MLPClassifier:
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = None
         self.classes_ = None
-        self.best_val_auroc = 0.0
         
     def _create_model(self, input_size, n_classes):
         class MLP(torch.nn.Module):
@@ -728,7 +727,7 @@ class MLPClassifier:
                     for hidden_dim in hidden_dims:
                         layers.append(torch.nn.Linear(prev_dim, hidden_dim))
                         layers.append(torch.nn.ReLU())
-                        layers.append(torch.nn.Dropout(0.5))
+                        layers.append(torch.nn.Dropout(0.2))
                         prev_dim = hidden_dim
                     
                     # Output layer
@@ -743,10 +742,14 @@ class MLPClassifier:
         
         return MLP(input_size, n_classes, self.hidden_dims)
     
-    def fit(self, X, y):
+    def fit(self, X, y, X_val=None, y_val=None):
         # Convert to torch tensors
         X = torch.FloatTensor(X)
         y = torch.LongTensor(y)
+
+        if X_val is not None and y_val is not None:
+            X_val = torch.FloatTensor(X_val)
+            y_val = torch.LongTensor(y_val)
 
         # Get unique classes
         self.classes_ = np.unique(y)
@@ -765,9 +768,9 @@ class MLPClassifier:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         # Training loop
-        best_train_loss = 100.0
         best_model_state = None
         patience_counter = 0
+        best_val_auroc = 0.0
 
         for epoch in range(self.max_iter):
             self.model.train()
@@ -791,16 +794,29 @@ class MLPClassifier:
                 train_correct += (predicted == batch_y).sum().item()
 
             train_loss = train_loss / train_total
-            train_acc = train_correct / train_total
+            train_probs = self.predict_proba(X)
+            train_auroc = roc_auc_score(y, train_probs[:, 1], multi_class='ovr', average='macro')
+            
+            # Calculate val AUROC if val data is provided
+            if X_val is not None and y_val is not None:
+                all_val_probs = []
+                with torch.no_grad():
+                    for i in range(0, len(X_val), self.batch_size):
+                        batch_X = X_val[i:i+self.batch_size].to(self.device)
+                        outputs = self.model(batch_X)
+                        probs = torch.nn.functional.softmax(outputs, dim=1)
+                        all_val_probs.append(probs.cpu().numpy())
+                val_probs = np.concatenate(all_val_probs, axis=0)
+                val_auroc = roc_auc_score(y_val, val_probs[:, 1], multi_class='ovr', average='macro')
 
-            log(f"Epoch {epoch+1}/{self.max_iter}: Train loss: {train_loss:.8f}, Train acc: {train_acc:.4f}", priority=3, indent=2)
+            log(f"Epoch {epoch+1}/{self.max_iter}: Train loss: {train_loss:.8f}, Train AUROC: {train_auroc:.4f}, Val AUROC: {val_auroc:.4f}", priority=3, indent=2)
 
-            # Early stopping based on training accuracy
-            if train_loss < best_train_loss - self.tol:
-                best_train_loss = train_loss
-                best_model_state = self.model.state_dict().copy()
+            # Early stopping based on validation AUROC
+            if val_auroc > best_val_auroc + self.tol:
+                best_val_auroc = val_auroc
+                best_model_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                 patience_counter = 0
-                log(f"New best model saved with train loss: {best_train_loss:.4f}", priority=3, indent=2)
+                log(f"New best model saved with val AUROC: {best_val_auroc:.4f}", priority=3, indent=2)
             else:
                 patience_counter += 1
                 if patience_counter >= self.patience:
@@ -810,7 +826,7 @@ class MLPClassifier:
         # Load best model
         if best_model_state is not None:
             self.model.load_state_dict(best_model_state)
-        log(f"Training complete. Best training loss: {best_train_loss:.4f}", priority=3, indent=2)
+        log(f"Training complete. Best validation AUROC: {best_val_auroc:.4f}", priority=3, indent=2)
         return self
     
     def predict_proba(self, X):

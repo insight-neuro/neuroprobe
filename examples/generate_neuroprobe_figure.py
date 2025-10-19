@@ -5,7 +5,9 @@ import json
 import os
 import glob, math
 import pandas as pd
-import bfm.evaluation.neuroprobe.config as neuroprobe_config
+from dotenv import load_dotenv
+load_dotenv()
+import neuroprobe.config as neuroprobe_config
 
 ### PARSE ARGUMENTS ###
 
@@ -35,33 +37,38 @@ models = [
     {
         'name': 'Linear (regression from raw voltage)',
         'color_palette': 'viridis',
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_voltage/'
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_voltage/'
     },
     {
         'name': 'Linear (spectrogram, best hyperparameters)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
     },
     {
         'name': 'Linear (Laplacian re-referencing + spectrogram)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+    },
+    {
+        'name': 'MLP (Laplacian re-referencing + spectrogram, latest)',
+        'color_palette': 'viridis', 
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/mlp_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
     },
     {
         'name': 'BrainBERT (untrained, frozen)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/BrainBERT/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
+        'eval_results_path': f'./data/eval_results_brainbert_{split_type}/brainbert_randomly_initialized_keepall/',
         'pad_x': 1,
     },
     {
         'name': 'BrainBERT (frozen; Wang et al. 2023)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/BrainBERT/eval_results_{split_type}/brainbert_keepall/',
+        'eval_results_path': f'./data/eval_results_brainbert_{split_type}/brainbert_keepall/',
     },
     {
         'name': 'PopulationTransformer (Chau et al. 2024)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/PopTCameraReadyPrep/outputs/neuroprobe_popt_lite/eval_results_{split_type}/',
+        'eval_results_path': f'./data/eval_results_popt_{split_type}/',
         'pad_x': 1,
     },
 ]

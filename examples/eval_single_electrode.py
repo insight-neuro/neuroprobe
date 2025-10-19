@@ -45,6 +45,7 @@ parser.add_argument('--only_1second', action='store_true', help='Whether to only
 parser.add_argument('--lite', action='store_true', help='Whether to use the lite eval for Neuroprobe (which is the default)')
 parser.add_argument('--electrodes', type=str, default='all', help='Electrode labels to evaluate on. If multiple, separate with commas.')
 parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--binary_tasks', type=lambda x: x.lower() == 'true', default=True, help='Whether to use binary classification for tasks that support it')
 args = parser.parse_args()
 
 eval_names = args.eval_name.split(',') if ',' in args.eval_name else [args.eval_name]
@@ -58,6 +59,7 @@ seed = args.seed
 lite = bool(args.lite)
 splits_type = args.split_type
 classifier_type = args.classifier_type
+binary_tasks = bool(args.binary_tasks)
 
 # Set up preprocessing parameters structure like in eval_population.py
 preprocess_type = getattr(args, 'preprocess.type')
@@ -162,13 +164,13 @@ for eval_name in eval_names:
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                            lite=lite, max_samples=3500)
+                                                                                            lite=lite, max_samples=3500, binary_tasks=binary_tasks)
         elif splits_type == "CrossSession":
             folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, 
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                            lite=lite, max_samples=3500, include_all_other_trials=True)
+                                                                                            lite=lite, max_samples=3500, include_all_other_trials=True, binary_tasks=binary_tasks)
 
         for bin_start, bin_end in zip(bin_starts, bin_ends):
             data_idx_from = int((bin_start+bins_start_before_word_onset_seconds)*neuroprobe_config.SAMPLING_RATE)

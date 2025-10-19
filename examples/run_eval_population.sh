@@ -2,15 +2,14 @@
 #SBATCH --job-name=e_p_lite
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2  
-#SBATCH --mem=64G
-#####SBATCH --gres=gpu:1
-#SBATCH -t 1:20:00
-#####SBATCH --constraint=24GB
-#SBATCH --exclude=dgx001,dgx002
+#SBATCH --mem=48G
+#SBATCH -t 2:40:00
 #SBATCH --array=1-108
 #SBATCH --output data/logs/%A_%a.out # STDOUT
 #SBATCH --error data/logs/%A_%a.err # STDERR
-#SBATCH -p use-everything
+#SBATCH --open-mode=append  # Append to output files instead of overwriting
+#SBATCH --requeue
+#SBATCH -p mit_preemptable
 
 nvidia-smi
 
@@ -82,7 +81,7 @@ TRIAL=${trials[$PAIR_IDX]}
 PREPROCESS=${preprocess[$PREPROCESS_IDX]}
 SPLITS_TYPE=${splits_type[$SPLITS_TYPE_IDX]}
 CLASSIFIER_TYPE=${classifier_type[$CLASSIFIER_TYPE_IDX]}
-save_dir="data/eval_results_lite_${SPLITS_TYPE}"
+save_dir="data/eval_results_lite_${SPLITS_TYPE}_multiclass"
 
 echo "Running eval for eval $EVAL_NAME, subject $SUBJECT, trial $TRIAL, preprocess $PREPROCESS, classifier $CLASSIFIER_TYPE"
 echo "Save dir: $save_dir"
