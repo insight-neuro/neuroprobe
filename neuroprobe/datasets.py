@@ -29,7 +29,7 @@ all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_ga
 
 
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
-    def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, 
+    def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, binary_tasks=True,
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
                  lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None, always_cache_full_subject=False):
         """
@@ -47,6 +47,10 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             output_indices (bool, optional): 
                 if True, the dataset will output the indices of the samples in the neural data in a tuple: (index_from, index_to); 
                 if False, the dataset will output the neural data directly
+
+            binary_tasks (bool, optional):
+                if True, the tasks will all be binary (default).
+                if False, the tasks will be multi-class classification with a variable number of classes, as described in the technical paper.
 
             output_dict (bool, optional): 
                 if True, the dataset will output a dictionary with the following keys:
@@ -72,6 +76,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         self.trial_id = trial_id
         self.eval_name = eval_name
         self.dtype = dtype
+        self.binary_tasks = binary_tasks
         self.output_indices = output_indices
         self.start_neural_data_before_word_onset = start_neural_data_before_word_onset
         self.end_neural_data_after_word_onset = end_neural_data_after_word_onset
@@ -146,10 +151,17 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
             # Get indices for words in top and bottom quartiles
             label_percentiles = np.array([np.mean(all_labels < x) for x in all_labels])
-            self.label_indices = {
-                1: np.where(label_percentiles > 0.75)[0],
-                0: np.where(label_percentiles < 0.25)[0]
-            }
+            if self.binary_tasks:
+                self.label_indices = {
+                    1: np.where(label_percentiles > 0.75)[0],
+                    0: np.where(label_percentiles < 0.25)[0]
+                }
+            else:
+                self.label_indices = {
+                    2: np.where(label_percentiles > 0.75)[0],
+                    1: np.where((label_percentiles < 0.625) & (label_percentiles > 0.375))[0],
+                    0: np.where(label_percentiles < 0.25)[0]
+                }
         elif eval_name in ["onset", "speech"]:
             self.label_indices = {
                 1: np.where(self.all_words_df["is_onset"].to_numpy() == 1)[0] if eval_name == "onset" else np.arange(len(self.all_words_df)), # positive indices
@@ -157,16 +169,30 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             }
         elif eval_name == "face_num":
             face_nums = self.all_words_df["face_num"].to_numpy().astype(int)
-            self.label_indices = {
-                1: np.where(face_nums > 0)[0],
-                0: np.where(face_nums == 0)[0]
-            }
+            if self.binary_tasks:
+                self.label_indices = {
+                    1: np.where(face_nums > 0)[0],
+                    0: np.where(face_nums == 0)[0]
+                }
+            else:
+                self.label_indices = {
+                    2: np.where(face_nums > 1)[0],
+                    1: np.where(face_nums == 1)[0],
+                    0: np.where(face_nums == 0)[0]
+                }
         elif eval_name == "word_index":
             word_indices = self.all_words_df["idx_in_sentence"].to_numpy().astype(int)
-            self.label_indices = {
-                1: np.where(word_indices == 0)[0],
-                0: np.where(word_indices == 1)[0]
-            }
+            if self.binary_tasks:
+                self.label_indices = {
+                    1: np.where(word_indices == 0)[0],
+                    0: np.where(word_indices == 1)[0]
+                }
+            else:
+                self.label_indices = {
+                    2: np.where(word_indices >= 2)[0],
+                    1: np.where(word_indices == 1)[0],
+                    0: np.where(word_indices == 0)[0]
+                }
         elif eval_name == "word_head_pos":
             head_pos = self.all_words_df[self.eval_name_remapped].to_numpy().astype(int)
             self.label_indices = {
@@ -174,11 +200,20 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 0: np.where(head_pos == 1)[0]
             }
         elif eval_name == "word_part_speech":
-            pos = self.all_words_df[self.eval_name_remapped].to_numpy()   
-            self.label_indices = {
-                1: np.where(pos == "VERB")[0],
-                0: np.where(pos == "NOUN")[0]
-            }
+            pos = self.all_words_df[self.eval_name_remapped].to_numpy()  
+            if self.binary_tasks: 
+                self.label_indices = {
+                    1: np.where(pos == "VERB")[0],
+                    0: np.where(pos == "NOUN")[0]
+                }
+            else:
+                self.label_indices = {
+                    4: np.where(pos == "ADV")[0],
+                    3: np.where(pos == "ADJ")[0],
+                    2: np.where(pos == "PRON")[0],
+                    1: np.where(pos == "VERB")[0],
+                    0: np.where(pos == "NOUN")[0]
+                }
         elif eval_name == "word_gap":
             word_gap_distribution = []
             for i in range(1, len(self.all_words_df)):
@@ -189,18 +224,28 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
             positive_indices = []
             negative_indices = []
+            middle_indices = []
             for i in range(1, len(self.all_words_df)):
                 if self.all_words_df.iloc[i]['sentence'] != self.all_words_df.iloc[i-1]['sentence']: continue
                 gap = self.all_words_df.iloc[i]['start'] - self.all_words_df.iloc[i-1]['end']
                 gap_percentile = np.mean(word_gap_distribution < gap)
                 if gap_percentile > 0.75:
                     positive_indices.append(i)
+                elif (gap_percentile > 0.375) and (gap_percentile < 0.625):
+                    middle_indices.append(i)
                 elif gap_percentile < 0.25:
                     negative_indices.append(i)
-            self.label_indices = {
-                1: positive_indices,
-                0: negative_indices
-            }
+            if self.binary_tasks:
+                self.label_indices = {
+                    1: positive_indices,
+                    0: negative_indices
+                }
+            else:
+                self.label_indices = {
+                    2: positive_indices,
+                    1: middle_indices,
+                    0: negative_indices
+                }
         else:
             raise ValueError(f"Invalid eval_name: {eval_name}")
 
@@ -242,15 +287,16 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
     def _positive_negative_getitem__(self, idx, force_output_indices=False):
         # even indices are positive samples, odd indices are negative samples
-        word_index = self.label_indices[1][idx//2] if idx % 2 == 0 else self.label_indices[0][idx//2]
-        if self.eval_name in ["onset", "speech"] and idx % 2 == 1: # for onset and speech, we need to get the nonverbal data
+        current_label = (idx+1) % self.n_classes
+        word_index = self.label_indices[current_label][idx//self.n_classes]
+        if self.eval_name in ["onset", "speech"] and (current_label == 0): # for onset and speech, we need to get the nonverbal data
             row = self.nonverbal_df.iloc[word_index]
         else:
             row = self.all_words_df.iloc[word_index]
         est_idx = int(row['est_idx']) - int(self.start_neural_data_before_word_onset)
         est_end_idx = est_idx + int(self.start_neural_data_before_word_onset) + int(self.end_neural_data_after_word_onset)
         input = self._get_neural_data(est_idx, est_end_idx, force_output_indices=force_output_indices)
-        return input, (1 if idx % 2 == 0 else 0)
+        return input, current_label
         
         
     def __len__(self):
