@@ -254,7 +254,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 "electrode_labels": self.electrode_labels,
                 "electrode_coordinates": self.electrode_coordinates,
                 "metadata": {
-                    "subject_identifier": self.subject.subject_identifier,
+                    "dataset_identifier": "braintreebank",
+                    "subject_id": self.subject.subject_id,
                     "trial_id": self.trial_id,
                     "sampling_rate": 2048,
                 }

@@ -79,7 +79,7 @@ will give the following output:
 	'label': int, # 0 ot 1 
 	'electrode_labels': list[str], # length: (n_electrodes, )
 	'electrode_coordinates': torch.tensor, # shape: (n_electrodes, 3)
-	'metadata': {'subject_identifier': 'btbank1', 'trial_id': 2, 'sampling_rate': 2048}
+	'metadata': {'dataset_identifier': 'braintreebank', 'subject_id': 1, 'trial_id': 2, 'sampling_rate': 2048}
 }
 ```
 
