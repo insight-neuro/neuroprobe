@@ -80,12 +80,6 @@ NEUROPROBE_TASKS_MAPPING = {
     'local_flow': 'Local Optical Flow',
     'frame_brightness': 'Frame Brightness',
     'face_num': 'Number of Faces',
-    
-    # Tasks which are not used in the Neuroprobe benchmark, but are available in the dataset class
-    # 'delta_pitch': 'Delta Pitch',
-    # 'speaker': 'Speaker Identity',
-    # 'global_flow_angle': 'Global Flow Angle',
-    # 'local_flow_angle': 'Local Flow Angle',
 }
 NEUROPROBE_TASKS = list(NEUROPROBE_TASKS_MAPPING.keys())
 

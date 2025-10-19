@@ -15,13 +15,8 @@ single_float_variables_name_remapping = {
     "global_flow": "max_global_magnitude",
     "local_flow": "max_vector_magnitude",
     "delta_volume": "delta_rms",
-    "delta_pitch": "delta_enhanced_pitch",
     "gpt2_surprisal": "gpt2_surprisal",
     "word_length": "word_length"
-}
-four_way_cardinal_directions_name_remapping = {
-    "global_flow_angle": "max_global_angle",
-    "local_flow_angle": "max_vector_angle",
 }
 classification_variables_name_remapping = {
     "word_head_pos": "bin_head",
@@ -29,9 +24,8 @@ classification_variables_name_remapping = {
 }
 new_pitch_variables = ['enhanced_pitch', 'enhanced_volume', 'delta_enhanced_pitch', 'delta_enhanced_volume', 'raw_pitch', 'raw_volume', 'delta_raw_pitch', 'delta_raw_volume']
 single_float_variables = list(single_float_variables_name_remapping.values()) + list(single_float_variables_name_remapping.keys()) + new_pitch_variables
-four_way_cardinal_direction_variables = list(four_way_cardinal_directions_name_remapping.values()) + list(four_way_cardinal_directions_name_remapping.keys())
 classification_variables = list(classification_variables_name_remapping.values()) + list(classification_variables_name_remapping.keys())
-all_tasks = single_float_variables + four_way_cardinal_direction_variables + ["onset", "speech"] + ["face_num", "word_gap", "word_index", "speaker"] + classification_variables
+all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_gap", "word_index"] + classification_variables
 
 
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
@@ -45,8 +39,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             dtype (torch.dtype): the data type of the returned data
             eval_name (str): the name of the variable to evaluate on
                 Options for eval_name (from the Neuroprobe paper):
-                    frame_brightness, global_flow, local_flow, global_flow_angle, local_flow_angle, face_num, volume, pitch, delta_volume, 
-                    delta_pitch, speech, onset, gpt2_surprisal, word_length, word_gap, word_index, word_head_pos, word_part_speech, speaker
+                    frame_brightness, global_flow, local_flow, face_num, volume, pitch, delta_volume, 
+                    speech, onset, gpt2_surprisal, word_length, word_gap, word_index, word_head_pos, word_part_speech
             lite (bool, optional): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full
             nano (bool, optional): if True, the eval is Neuroprobe-Nano, otherwise it is Neuroprobe-Lite (if lite is True - this is the default)
 
@@ -108,7 +102,6 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
         eval_name_remapped = eval_name
         if eval_name in single_float_variables_name_remapping: eval_name_remapped = single_float_variables_name_remapping[eval_name]
-        if eval_name in four_way_cardinal_directions_name_remapping: eval_name_remapped = four_way_cardinal_directions_name_remapping[eval_name]
         if eval_name in classification_variables_name_remapping: eval_name_remapped = classification_variables_name_remapping[eval_name]
         self.eval_name_remapped = eval_name_remapped
 
@@ -159,16 +152,6 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         elif eval_name in ["onset", "speech"]:
             self.positive_indices = np.where(self.all_words_df["is_onset"].to_numpy() == 1)[0] if eval_name == "onset" else np.arange(len(self.all_words_df))
             self.negative_indices = np.arange(len(self.nonverbal_df))
-        elif eval_name in four_way_cardinal_direction_variables: 
-            self.class_labels = np.zeros(len(self.all_words_df), dtype=int)
-            angles = self.all_words_df[self.eval_name_remapped].to_numpy()
-            cardinal_directions = np.array([0, 90, 180, 270])
-            angles_expanded = angles[:, np.newaxis]
-            distances = np.minimum(np.abs(angles_expanded - cardinal_directions),
-                                360 - np.abs(angles_expanded - cardinal_directions))
-            class_labels = np.argmin(distances, axis=1)
-            self.positive_indices = np.where(class_labels == 0)[0]
-            self.negative_indices = np.where(class_labels == 2)[0]
         elif eval_name == "face_num":
             face_nums = self.all_words_df["face_num"].to_numpy().astype(int)
             self.positive_indices = np.where(face_nums > 0)[0]
@@ -185,11 +168,6 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             pos = self.all_words_df[self.eval_name_remapped].to_numpy()         
             self.positive_indices = np.where(pos == "VERB")[0]
             self.negative_indices = np.where(pos == "NOUN")[0]
-        elif eval_name == "speaker":
-            speakers = self.all_words_df['speaker']
-            most_frequent_speaker = speakers.value_counts().index[0]
-            self.positive_indices = np.where(speakers == most_frequent_speaker)[0]
-            self.negative_indices = np.where(speakers != most_frequent_speaker)[0]
         elif eval_name == "word_gap":
             word_gap_distribution = []
             for i in range(1, len(self.all_words_df)):
