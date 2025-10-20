@@ -210,6 +210,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 self.label_indices = {
                     4: np.where(pos == "ADV")[0],
                     3: np.where(pos == "ADJ")[0],
+                    3: np.where(pos == "DET")[0],
                     2: np.where(pos == "PRON")[0],
                     1: np.where(pos == "VERB")[0],
                     0: np.where(pos == "NOUN")[0]

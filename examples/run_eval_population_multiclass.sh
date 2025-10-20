@@ -81,7 +81,7 @@ TRIAL=${trials[$PAIR_IDX]}
 PREPROCESS=${preprocess[$PREPROCESS_IDX]}
 SPLITS_TYPE=${splits_type[$SPLITS_TYPE_IDX]}
 CLASSIFIER_TYPE=${classifier_type[$CLASSIFIER_TYPE_IDX]}
-save_dir="data/eval_results_lite_${SPLITS_TYPE}"
+save_dir="data/eval_results_lite_${SPLITS_TYPE}_multiclass"
 
 echo "Running eval for eval $EVAL_NAME, subject $SUBJECT, trial $TRIAL, preprocess $PREPROCESS, classifier $CLASSIFIER_TYPE"
 echo "Save dir: $save_dir"
@@ -104,4 +104,5 @@ python -u examples/eval_population.py \
     --save_dir $save_dir \
     --split_type $SPLITS_TYPE \
     --classifier_type $CLASSIFIER_TYPE \
+    --binary_tasks False \
     --only_1second
