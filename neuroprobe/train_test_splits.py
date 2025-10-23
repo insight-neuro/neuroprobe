@@ -53,9 +53,15 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
                                                                 binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                 lite=lite, nano=nano, max_samples=max_samples)
 
+    test_size = len(test_dataset)
+    val_size = test_size // 2
+    val_dataset = test_dataset[:val_size]
+    test_dataset = test_dataset[val_size:]
+
     return [
         {
             "train_dataset": train_dataset,
+            "val_dataset": val_dataset,
             "test_dataset": test_dataset
         }
     ]
@@ -124,9 +130,16 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
                                                                     binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                     lite=lite, max_samples=max_samples)
+        
+    test_size = len(test_dataset)
+    val_size = test_size // 2
+    val_dataset = test_dataset[:val_size]
+    test_dataset = test_dataset[val_size:]
+
     return [
         {
             "train_dataset": train_dataset,
+            "val_dataset": val_dataset,
             "test_dataset": test_dataset
         }
     ]
@@ -168,6 +181,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
 
     train_datasets = []
     test_datasets = []
+    val_datasets = []
 
     dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
                                                         binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
@@ -183,14 +197,20 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         
         train_dataset = Subset(dataset, train_idx)
         train_datasets.append(train_dataset)
-        test_datasets.append(Subset(dataset, test_idx))
+        test_dataset = Subset(dataset, test_idx)
+
+        val_size = len(test_dataset) // 2
+        val_dataset = test_dataset[:val_size]
+        test_dataset = test_dataset[val_size:]
+        test_datasets.append(test_dataset)
+        val_datasets.append(val_dataset)
 
     return [
         {
-            "train_dataset": train_dataset,
+            "train_dataset": train_dataset, 
+            "val_dataset": val_dataset, 
             "test_dataset": test_dataset
-        }
-        for train_dataset, test_dataset in zip(train_datasets, test_datasets)
+        } for train_dataset, val_dataset, test_dataset in zip(train_datasets, val_datasets, test_datasets)
     ]
 
 # For backwards compatibility
