@@ -11,7 +11,7 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
                           lite=True, nano=False,
                           
                           # Dataset parameters
-                          binary_tasks=True,
+                          binary_tasks=False,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -55,8 +55,15 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
 
     test_size = len(test_dataset)
     val_size = test_size // 2
-    val_dataset = test_dataset[:val_size]
-    test_dataset = test_dataset[val_size:]
+    val_indices = list(range(val_size))
+    test_indices = list(range(val_size, test_size))
+    val_dataset = Subset(test_dataset, val_indices)
+    test_dataset = Subset(test_dataset, test_indices)
+    # copy the electrode coordinates and labels from the test dataset to the val and test datasets
+    val_dataset.electrode_coordinates = test_dataset.dataset.electrode_coordinates
+    val_dataset.electrode_labels = test_dataset.dataset.electrode_labels
+    test_dataset.electrode_coordinates = test_dataset.dataset.electrode_coordinates
+    test_dataset.electrode_labels = test_dataset.dataset.electrode_labels
 
     return [
         {
@@ -71,7 +78,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
                           lite=True,
                           
                           # Dataset parameters
-                          binary_tasks=True,
+                          binary_tasks=False,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -130,11 +137,18 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
         train_dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, train_trial_id, dtype=dtype, eval_name=eval_name, 
                                                                     binary_tasks=binary_tasks, output_indices=output_indices, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
                                                                     lite=lite, max_samples=max_samples)
-        
+
     test_size = len(test_dataset)
     val_size = test_size // 2
-    val_dataset = test_dataset[:val_size]
-    test_dataset = test_dataset[val_size:]
+    val_indices = list(range(val_size))
+    test_indices = list(range(val_size, test_size))
+    val_dataset = Subset(test_dataset, val_indices)
+    test_dataset = Subset(test_dataset, test_indices)
+    # copy the electrode coordinates and labels from the test dataset to the val and test datasets
+    val_dataset.electrode_coordinates = test_dataset.dataset.electrode_coordinates
+    val_dataset.electrode_labels = test_dataset.dataset.electrode_labels
+    test_dataset.electrode_coordinates = test_dataset.dataset.electrode_coordinates
+    test_dataset.electrode_labels = test_dataset.dataset.electrode_labels
 
     return [
         {
@@ -149,7 +163,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
                           lite=True, nano=False,
                           
                           # Dataset parameters
-                          binary_tasks=True,
+                          binary_tasks=False,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -198,10 +212,19 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         train_dataset = Subset(dataset, train_idx)
         train_datasets.append(train_dataset)
         test_dataset = Subset(dataset, test_idx)
-
-        val_size = len(test_dataset) // 2
-        val_dataset = test_dataset[:val_size]
-        test_dataset = test_dataset[val_size:]
+        
+        # Further split the test dataset into val and test datasets
+        test_size = len(test_dataset)
+        val_size = test_size // 2
+        val_indices = list(range(val_size))
+        test_indices = list(range(val_size, test_size))
+        val_dataset = Subset(test_dataset, val_indices)
+        test_dataset = Subset(test_dataset, test_indices)
+        # copy the electrode coordinates and labels from the test dataset to the val and test datasets
+        val_dataset.electrode_coordinates = dataset.electrode_coordinates
+        val_dataset.electrode_labels = dataset.electrode_labels
+        test_dataset.electrode_coordinates = dataset.electrode_coordinates
+        test_dataset.electrode_labels = dataset.electrode_labels
         test_datasets.append(test_dataset)
         val_datasets.append(val_dataset)
 
