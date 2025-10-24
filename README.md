@@ -62,8 +62,11 @@ import os, torch
 os.environ['ROOT_DIR_BRAINTREEBANK'] = '/path/to/braintreebank/'  # NOTE: Change this to your own path, or define an environment variable elsewhere
 
 from neuroprobe import BrainTreebankSubject, BrainTreebankSubjectTrialBenchmarkDataset
-subject = BrainTreebankSubject(subject_id=1, cache=True, dtype=torch.float32, coordinates_type="cortical")
-dataset = BrainTreebankSubjectTrialBenchmarkDataset(subject, trial_id=2, dtype=torch.float32, eval_name="gpt2_surprisal") 
+subject = BrainTreebankSubject(subject_id=1, cache=True, 
+                               dtype=torch.float32, coordinates_type="cortical")
+dataset = BrainTreebankSubjectTrialBenchmarkDataset(subject, trial_id=2, 
+                                                    dtype=torch.float32, 
+                                                    eval_name="gpt2_surprisal") 
 
 data_electrode_labels = dataset.electrode_labels 
 data_electrode_coordinates = dataset.electrode_coordinates 
@@ -76,10 +79,35 @@ will give the following output:
 ```python
 {
 	'data': torch.tensor, # shape: (n_electrodes, 2048), where 2048 = 1 second at 2048 Hz
-	'label': int, # 0 ot 1 
+	'label': int, # index of the class to be predicted: 0, 1, etc.
 	'electrode_labels': list[str], # length: (n_electrodes, )
 	'electrode_coordinates': torch.tensor, # shape: (n_electrodes, 3)
 	'metadata': {'dataset_identifier': 'braintreebank', 'subject_id': 1, 'trial_id': 2, 'sampling_rate': 2048}
+}
+```
+In case you'd like to use your own pipeline for extracting and preprocessing data, feel free to set `dataset.output_indices = True`, in which case the output will look like:
+```python
+{
+    'data': (index_from, index_to), # tuple of indices: indices into the session's h5 file in the BrainTreebank
+    ... # the same as above
+}
+```
+
+### Leaderboard Requirements
+
+To submit to the Neuroprobe leaderboard, you MUST use the exact train/val/test splits that are provided by the Neuroprobe package:
+```python
+# options: generate_splits_within_session, generate_splits_cross_session, generate_splits_cross_subject
+splits = generate_splits_cross_session(subject, test_trial_id=2, 
+                                       eval_name="gpt2_surprisal", output_indices=False)
+print(splits[0])
+```
+will give the following output:
+```python
+{
+    "train_dataset": BrainTreebankSubjectTrialBenchmarkDataset,
+    "val_dataset": BrainTreebankSubjectTrialBenchmarkDataset,
+    "test_dataset": BrainTreebankSubjectTrialBenchmarkDataset
 }
 ```
 
