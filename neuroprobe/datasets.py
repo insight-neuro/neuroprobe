@@ -29,7 +29,7 @@ all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_ga
 
 
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
-    def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, binary_tasks=True,
+    def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, binary_tasks=False,
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
                  lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None, always_cache_full_subject=False):
         """
@@ -158,8 +158,9 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 }
             else:
                 self.label_indices = {
-                    2: np.where(label_percentiles > 0.75)[0],
-                    1: np.where((label_percentiles < 0.625) & (label_percentiles > 0.375))[0],
+                    3: np.where(label_percentiles >= 0.75)[0],
+                    2: np.where((label_percentiles < 0.75) & (label_percentiles >= 0.5))[0],
+                    1: np.where((label_percentiles < 0.5) & (label_percentiles >= 0.25))[0],
                     0: np.where(label_percentiles < 0.25)[0]
                 }
         elif eval_name in ["onset", "speech"]:
@@ -225,16 +226,19 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
             positive_indices = []
             negative_indices = []
-            middle_indices = []
+            middle1_indices = []
+            middle2_indices = []
             for i in range(1, len(self.all_words_df)):
                 if self.all_words_df.iloc[i]['sentence'] != self.all_words_df.iloc[i-1]['sentence']: continue
                 gap = self.all_words_df.iloc[i]['start'] - self.all_words_df.iloc[i-1]['end']
                 gap_percentile = np.mean(word_gap_distribution < gap)
-                if gap_percentile > 0.75:
+                if gap_percentile >= 0.75:
                     positive_indices.append(i)
-                elif (gap_percentile > 0.375) and (gap_percentile < 0.625):
-                    middle_indices.append(i)
-                elif gap_percentile < 0.25:
+                elif gap_percentile >= 0.5:
+                    middle2_indices.append(i)
+                elif gap_percentile >= 0.25:
+                    middle1_indices.append(i)
+                else:
                     negative_indices.append(i)
             if self.binary_tasks:
                 self.label_indices = {
@@ -244,7 +248,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             else:
                 self.label_indices = {
                     2: positive_indices,
-                    1: middle_indices,
+                    1: middle2_indices,
+                    2: middle1_indices,
                     0: negative_indices
                 }
         else:
