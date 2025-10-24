@@ -5,6 +5,29 @@ This document describes the steps which you must follow to submit your results t
 To get a sense of how to use Neuroprobe to evaluate your models, please check out the `quickstart.ipynb` notebook at [examples/quickstart.ipynb](https://github.com/azaho/neuroprobe/blob/main/examples/quickstart.ipynb).
 For more advanced examples, please see the rest of the [examples/](https://github.com/azaho/neuroprobe/blob/main/examples/) directory!
 
+## Train/Val/Test Splits
+
+To submit to the Neuroprobe leaderboard, you MUST use the exact train/val/test splits that are provided by the Neuroprobe package:
+```python
+from neuroprobe import BrainTreebankSubject
+subject = BrainTreebankSubject(subject_id=1, cache=True, 
+                               dtype=torch.float32, coordinates_type="cortical")
+
+# options: generate_splits_within_session, generate_splits_cross_session, generate_splits_cross_subject
+from neuroprobe import generate_splits_cross_session
+splits = generate_splits_cross_session(test_subject=subject, test_trial_id=2, 
+                                       eval_name="gpt2_surprisal", output_indices=False)
+print(splits[0])
+```
+will give the following output:
+```python
+{
+    "train_dataset": BrainTreebankSubjectTrialBenchmarkDataset,
+    "val_dataset": BrainTreebankSubjectTrialBenchmarkDataset,
+    "test_dataset": BrainTreebankSubjectTrialBenchmarkDataset
+}
+```
+
 ## Pretraining guidelines
 For the validity of the evaluation on Neuroprobe, **no models can be pretrained on the same data that underlies the Neuroprobe evaluation**. So, the following sessions are off-limits, with pretraining on them NOT allowed:
 - Subject 1: Trials 1, 2
