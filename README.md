@@ -97,8 +97,9 @@ In case you'd like to use your own pipeline for extracting and preprocessing dat
 
 To submit to the Neuroprobe leaderboard, you MUST use the exact train/val/test splits that are provided by the Neuroprobe package:
 ```python
+from neuroprobe import generate_splits_cross_session
 # options: generate_splits_within_session, generate_splits_cross_session, generate_splits_cross_subject
-splits = generate_splits_cross_session(subject, test_trial_id=2, 
+splits = generate_splits_cross_session(test_subject=subject, test_trial_id=2, 
                                        eval_name="gpt2_surprisal", output_indices=False)
 print(splits[0])
 ```
