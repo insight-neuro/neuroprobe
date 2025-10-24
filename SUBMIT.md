@@ -53,7 +53,7 @@ The files in the link above ideally should be fine to just drop into the braintr
 Note that for the Cross-Session split, Neuroprobe contains 12 recording sessions x 15 tasks = 180 different evaluations, which will be eventually combined together on the leaderboard. (For the Cross-Subject split, subject 2 is not evaluated on, which leaves 10 recording sessions x 15 tasks = 150 evaluations.)
 
 The evaluation results are aggregated per task, in files named `population_TASKNAME.json`. Those JSON files must be structured like below:
-```json
+```python
 {
     "model_name": "Linear Regression",           # Name of the model
     "description": "Linear Regression model",    # Brief description of the model
@@ -105,7 +105,7 @@ neuroprobe.config.NEUROPROBE_TASKS_MAPPING = {
 Results are submitted to the Neuroprobe leaderboard via a pull request to the Neuroprobe github repository. Fork the Neuroprobe repository, then, in the folder `leaderboard`, make a directory with the following name: `MODELNAME_AUTHORFIRSTNAME_AUTHORLASTNAME_DAY_MONTH_YEAR`. This directory must contain:
 - Either a folder `Within-Session`, or a folder `Cross-Session`, `Cross-Session`, or any combination (whichever exists will determine where the results will be uploaded on the Neuroprobe website). The contents of this folder must follow the structure from the section "Formatting results" above.
 - A file `metadata.json`, with the following structure:
-```json
+```python
 {
     "model_name": "Linear Regression",           # Name of the model
     "description": "Linear Regression model",    # Brief description of the model
