@@ -11,7 +11,7 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
                           lite=True, nano=False,
                           
                           # Dataset parameters
-                          binary_tasks=False,
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -78,7 +78,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
                           lite=True,
                           
                           # Dataset parameters
-                          binary_tasks=False,
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
@@ -163,7 +163,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
                           lite=True, nano=False,
                           
                           # Dataset parameters
-                          binary_tasks=False,
+                          binary_tasks=True,
                           output_indices=False, 
                           start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
