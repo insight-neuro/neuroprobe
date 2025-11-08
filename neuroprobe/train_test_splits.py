@@ -40,6 +40,7 @@ def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, 
     Returns:
         list: A list of dictionaries, each containing:
             - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - val_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Validation dataset
             - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
     assert test_subject_id != DS_DM_TRAIN_SUBJECT_ID, "Test subject cannot be the same as the training subject."
@@ -87,9 +88,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
     
     This function creates train/test splits by using one movie as the test set and all other
     movies from the same subject as the training set (trimmed at max_other_trials movies). 
-    Unlike Cross-Session, this does not perform k-fold cross validation since movies are already naturally separated.
-
-    NOTE: Neuroprobe-Nano does not support Cross-Session because it only contains one movie per subject.
+    Unlike Within-Session, this does not perform k-fold cross validation since movies are already naturally separated.
 
     Args:
         test_subject (Subject): Subject object containing brain recording data
@@ -107,6 +106,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
     Returns:
         list: A list of dictionaries, each containing:
             - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - val_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Validation dataset
             - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
     assert len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id]) > 1, f"Training subject must have at least two trials. But subject {test_subject.subject_id} has only {len(NEUROPROBE_LONGEST_TRIALS_FOR_SUBJECT[test_subject.subject_id])} trials."
@@ -190,6 +190,7 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
     Returns:
         list: A list of dictionaries, each containing:
             - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
+            - val_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Validation dataset
             - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
     """
 

@@ -31,7 +31,7 @@ all_tasks = single_float_variables + ["onset", "speech", "scene_onset"] + ["face
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
     def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, binary_tasks=True,
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
-                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=False, max_samples=None, always_cache_full_subject=False):
+                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=True, max_samples=None, always_cache_full_subject=False):
         """
         Args:
             subject (Subject): the subject to evaluate on
@@ -238,8 +238,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 }
             else:
                 self.label_indices = {
-                    4: np.where(pos == "ADV")[0],
-                    3: np.where(pos == "ADJ")[0],
+                    5: np.where(pos == "ADV")[0],
+                    4: np.where(pos == "ADJ")[0],
                     3: np.where(pos == "DET")[0],
                     2: np.where(pos == "PRON")[0],
                     1: np.where(pos == "VERB")[0],
