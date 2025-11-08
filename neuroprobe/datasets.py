@@ -208,8 +208,8 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                 }
             else:
                 self.label_indices = {
-                    4: np.where(pos == "ADV")[0],
-                    3: np.where(pos == "ADJ")[0],
+                    5: np.where(pos == "ADV")[0],
+                    4: np.where(pos == "ADJ")[0],
                     3: np.where(pos == "DET")[0],
                     2: np.where(pos == "PRON")[0],
                     1: np.where(pos == "VERB")[0],
@@ -225,7 +225,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
             positive_indices = []
             negative_indices = []
-            middle1_indices = []
+            middle_indices = []
             for i in range(1, len(self.all_words_df)):
                 if self.all_words_df.iloc[i]['sentence'] != self.all_words_df.iloc[i-1]['sentence']: continue
                 gap = self.all_words_df.iloc[i]['start'] - self.all_words_df.iloc[i-1]['end']
