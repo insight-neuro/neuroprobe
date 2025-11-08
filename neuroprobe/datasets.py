@@ -25,7 +25,7 @@ classification_variables_name_remapping = {
 new_pitch_variables = ['enhanced_pitch', 'enhanced_volume', 'delta_enhanced_pitch', 'delta_enhanced_volume', 'raw_pitch', 'raw_volume', 'delta_raw_pitch', 'delta_raw_volume']
 single_float_variables = list(single_float_variables_name_remapping.values()) + list(single_float_variables_name_remapping.keys()) + new_pitch_variables
 classification_variables = list(classification_variables_name_remapping.values()) + list(classification_variables_name_remapping.keys())
-all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_gap", "word_index"] + classification_variables
+all_tasks = single_float_variables + ["onset", "speech", "scene_onset"] + ["face_num", "word_gap", "word_index"] + classification_variables
 
 
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
@@ -40,7 +40,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             eval_name (str): the name of the variable to evaluate on
                 Options for eval_name (from the Neuroprobe paper):
                     frame_brightness, global_flow, local_flow, face_num, volume, pitch, delta_volume, 
-                    speech, onset, gpt2_surprisal, word_length, word_gap, word_index, word_head_pos, word_part_speech
+                    speech, onset, scene_onset, gpt2_surprisal, word_length, word_gap, word_index, word_head_pos, word_part_speech
             lite (bool, optional): if True, the eval is Neuroprobe (the default), otherwise it is Neuroprobe-Full
             nano (bool, optional): if True, the eval is Neuroprobe-Nano, otherwise it is Neuroprobe-Lite (if lite is True - this is the default)
 
@@ -162,11 +162,41 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                     1: np.where((label_percentiles < 0.625) & (label_percentiles >= 0.375))[0],
                     0: np.where(label_percentiles < 0.25)[0]
                 }
-        elif eval_name in ["onset", "speech"]:
-            self.label_indices = {
-                1: np.where(self.all_words_df["is_onset"].to_numpy() == 1)[0] if eval_name == "onset" else np.arange(len(self.all_words_df)), # positive indices
-                0: np.arange(len(self.nonverbal_df)) # negative indices
-            }
+        elif eval_name in ["onset", "speech", "scene_onset"]:
+            if eval_name == "onset":
+                self.label_indices = {
+                    1: np.where(self.all_words_df["is_onset"].to_numpy() == 1)[0], # positive indices
+                    0: np.arange(len(self.nonverbal_df)) # negative indices
+                }
+            elif eval_name == "speech":
+                self.label_indices = {
+                    1: np.arange(len(self.all_words_df)), # positive indices
+                    0: np.arange(len(self.nonverbal_df)) # negative indices
+                }
+            elif eval_name == "scene_onset":
+                # Detect scene changes: find words where the scene label changes from the previous word
+                # Try common column names for scene labels
+                scene_col = None
+                for col_name in ["scene", "scene_id", "scene_label", "scene_number"]:
+                    if col_name in self.all_words_df.columns:
+                        scene_col = col_name
+                        break
+                
+                if scene_col is None:
+                    raise ValueError(f"Scene column not found in features. Expected one of: scene, scene_id, scene_label, scene_number")
+                
+                scene_values = self.all_words_df[scene_col].to_numpy()
+                # Detect scene changes: scene is different from previous word (or first word is always a scene onset)
+                is_scene_onset = np.zeros(len(self.all_words_df), dtype=bool)
+                is_scene_onset[0] = True  # First word is always a scene onset
+                # Check for changes in scene between consecutive words
+                scene_changes = scene_values[1:] != scene_values[:-1]
+                is_scene_onset[1:] = scene_changes
+                
+                self.label_indices = {
+                    1: np.where(is_scene_onset)[0], # positive indices: words at scene onsets
+                    0: np.arange(len(self.nonverbal_df)) # negative indices: nonverbal data
+                }
         elif eval_name == "face_num":
             face_nums = self.all_words_df["face_num"].to_numpy().astype(int)
             if self.binary_tasks:
@@ -225,7 +255,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
 
             positive_indices = []
             negative_indices = []
-            middle1_indices = []
+            middle_indices = []
             for i in range(1, len(self.all_words_df)):
                 if self.all_words_df.iloc[i]['sentence'] != self.all_words_df.iloc[i-1]['sentence']: continue
                 gap = self.all_words_df.iloc[i]['start'] - self.all_words_df.iloc[i-1]['end']
@@ -290,7 +320,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         # even indices are positive samples, odd indices are negative samples
         current_label = (idx+1) % self.n_classes
         word_index = self.label_indices[current_label][idx//self.n_classes]
-        if self.eval_name in ["onset", "speech"] and (current_label == 0): # for onset and speech, we need to get the nonverbal data
+        if self.eval_name in ["onset", "speech", "scene_onset"] and (current_label == 0): # for onset, speech, and scene_onset, we need to get the nonverbal data
             row = self.nonverbal_df.iloc[word_index]
         else:
             row = self.all_words_df.iloc[word_index]

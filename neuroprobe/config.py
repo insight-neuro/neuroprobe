@@ -80,6 +80,7 @@ NEUROPROBE_TASKS_MAPPING = {
     'local_flow': 'Local Optical Flow',
     'frame_brightness': 'Frame Brightness',
     'face_num': 'Number of Faces',
+    'scene_onset': 'Scene Onset',
 }
 NEUROPROBE_TASKS = list(NEUROPROBE_TASKS_MAPPING.keys())
 
