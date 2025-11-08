@@ -87,9 +87,7 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
     
     This function creates train/test splits by using one movie as the test set and all other
     movies from the same subject as the training set (trimmed at max_other_trials movies). 
-    Unlike Cross-Session, this does not perform k-fold cross validation since movies are already naturally separated.
-
-    NOTE: Neuroprobe-Nano does not support Cross-Session because it only contains one movie per subject.
+    Unlike Within-Session, this does not perform k-fold cross validation since movies are already naturally separated.
 
     Args:
         test_subject (Subject): Subject object containing brain recording data
