@@ -268,7 +268,10 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             n_try_indices = self.n_classes # try some first and last samples to get a good estimate of the edges of the needed data in the dataset
             window_indices = []
             for i in list(range(n_try_indices))+list(range(self.n_samples-n_try_indices, self.n_samples)):
-                (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
+                if self.output_dict:
+                    window_from, window_to = self.__getitem__(i, force_output_indices=True)['data']
+                else:
+                    (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
                 window_indices.append(window_from)
                 window_indices.append(window_to)
             self.cache_window_from = np.min(window_indices)
