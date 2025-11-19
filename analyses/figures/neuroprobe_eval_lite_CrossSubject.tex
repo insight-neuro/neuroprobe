@@ -1,0 +1,40 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\hline
+Model & Overall & Sentence Onset & Speech & Volume \\
+\hline
+Linear (Laplacian+spectrogram OLD) & 0.539 $\pm$ 0.004 & 0.673 $\pm$ 0.037 & 0.642 $\pm$ 0.038 & 0.527 $\pm$ 0.010 \\
+Linear (Laplacian+spectrogram NEW) & \textbf{0.539 $\pm$ 0.004} & \textbf{0.676 $\pm$ 0.038} & \textbf{0.643 $\pm$ 0.038} & \textbf{0.534 $\pm$ 0.012} \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
+\hline
+Linear (Laplacian+spectrogram OLD) & 0.568 $\pm$ 0.013 & 0.505 $\pm$ 0.002 & \textbf{0.571 $\pm$ 0.022} & \textbf{0.515 $\pm$ 0.008} \\
+Linear (Laplacian+spectrogram NEW) & \textbf{0.569 $\pm$ 0.014} & \textbf{0.505 $\pm$ 0.003} & 0.566 $\pm$ 0.024 & 0.515 $\pm$ 0.007 \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
+\hline
+Linear (Laplacian+spectrogram OLD) & 0.508 $\pm$ 0.003 & 0.521 $\pm$ 0.008 & \textbf{0.508 $\pm$ 0.006} & 0.508 $\pm$ 0.005 \\
+Linear (Laplacian+spectrogram NEW) & \textbf{0.508 $\pm$ 0.003} & \textbf{0.525 $\pm$ 0.009} & 0.506 $\pm$ 0.008 & \textbf{0.511 $\pm$ 0.006} \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
+\hline
+Linear (Laplacian+spectrogram OLD) & \textbf{0.515 $\pm$ 0.005} & \textbf{0.513 $\pm$ 0.005} & \textbf{0.499 $\pm$ 0.004} & 0.508 $\pm$ 0.004 \\
+Linear (Laplacian+spectrogram NEW) & 0.515 $\pm$ 0.007 & 0.510 $\pm$ 0.005 & 0.495 $\pm$ 0.004 & \textbf{0.511 $\pm$ 0.004} \\
+\hline
+\end{tabular}
+\caption{Performance comparison across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
+\label{tab:performance_comparison}
+\end{table}

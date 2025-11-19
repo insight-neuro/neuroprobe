@@ -10,8 +10,8 @@ import neuroprobe.config as neuroprobe_config
 
 import argparse
 parser = argparse.ArgumentParser(description='Create performance figure for BTBench evaluation')
-parser.add_argument('--split_type', type=str, default='SS_DM', 
-                    help='Split type to use (SS_SM or SS_DM or DS_DM)')
+parser.add_argument('--split_type', type=str, default='CrossSession', 
+                    help='Split type to use (WithinSession or CrossSession or CrossSubject)')
 args = parser.parse_args()
 split_type = args.split_type
 
@@ -32,43 +32,49 @@ n_fig_legend_cols = 1
 # assert split_type == 'SS_DM', 'Split type must be SS_DM'
 
 models = [
+    # {
+    #     'name': 'Linear (raw voltage)',
+    #     'short_name': 'Linear (voltage)',
+    #     'color_palette': 'viridis',
+    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_voltage/'
+    # },
+    # {
+    #     'name': 'Linear (spectrogram)',
+    #     'short_name': 'Linear (spectrogram)',
+    #     'color_palette': 'viridis', 
+    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+    # },
     {
-        'name': 'Linear (raw voltage)',
-        'short_name': 'Linear (voltage)',
-        'color_palette': 'viridis',
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_voltage/'
-    },
-    {
-        'name': 'Linear (spectrogram)',
-        'short_name': 'Linear (spectrogram)',
+        'name': 'Linear (Laplacian re-referencing + spectrogram OLD)',
+        'short_name': 'Linear (Laplacian+spectrogram OLD)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
     },
     {
-        'name': 'Linear (Laplacian re-referencing + spectrogram)',
-        'short_name': 'Linear (Laplacian+spectrogram)',
+        'name': 'Linear (Laplacian re-referencing + spectrogram NEW)',
+        'short_name': 'Linear (Laplacian+spectrogram NEW)',
         'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/neuroprobe/data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
     },
-    {
-        'name': 'BrainBERT (untrained, frozen)',
-        'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/BrainBERT/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
-        'pad_x': 1,
-    },
-    {
-        'name': 'BrainBERT (frozen; Wang et al. 2023)',
-        'short_name': 'BrainBERT (frozen)',
-        'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/BrainBERT/eval_results_{split_type}/brainbert_keepall/',
-    },
-    {
-        'name': 'PopulationTransformer (Chau et al. 2024)',
-        'short_name': 'PopulationTransformer',
-        'color_palette': 'viridis', 
-        'eval_results_path': f'/om2/user/zaho/PopTCameraReadyPrep/outputs/neuroprobe_popt_lite/eval_results_{split_type}/',
-        'pad_x': 1,
-    },
+    # {
+    #     'name': 'BrainBERT (untrained, frozen)',
+    #     'color_palette': 'viridis', 
+    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/BrainBERT/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
+    #     'pad_x': 1,
+    # },
+    # {
+    #     'name': 'BrainBERT (frozen; Wang et al. 2023)',
+    #     'short_name': 'BrainBERT (frozen)',
+    #     'color_palette': 'viridis', 
+    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/BrainBERT/eval_results_{split_type}/brainbert_keepall/',
+    # },
+    # {
+    #     'name': 'PopulationTransformer (Chau et al. 2024)',
+    #     'short_name': 'PopulationTransformer',
+    #     'color_palette': 'viridis', 
+    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/PopT/eval_results_{split_type}/',
+    #     'pad_x': 1,
+    # },
 ]
 
 ### DEFINE TASK NAME MAPPING ###
@@ -108,8 +114,11 @@ for model in models:
 
 ### DEFINE RESULT PARSING FUNCTIONS ###
 
+# Define all tasks including Overall
+all_tasks = ['Overall'] + list(task_name_mapping.keys())
+
 performance_data = {}
-for task in task_name_mapping.keys():
+for task in all_tasks:
     performance_data[task] = {}
     for model in models:
         performance_data[task][model['name']] = {}
@@ -165,11 +174,10 @@ for model in models:
     
 ### CALCULATE OVERALL PERFORMANCE ###
 
-overall_performance = {}
 for model in models:
     means = [performance_data[task][model['name']]['mean'] for task in task_name_mapping.keys()]
     sems = [performance_data[task][model['name']]['sem'] for task in task_name_mapping.keys()]
-    overall_performance[model['name']] = {
+    performance_data['Overall'][model['name']] = {
         'mean': np.nanmean(means),
         'sem': np.sqrt(np.sum(np.array(sems)**2)) / len(sems)  # Combined SEM
     }
@@ -226,7 +234,7 @@ bar_width = 0.2
 # Plot overall performance in first column only
 first_ax = fig.add_subplot(gs[0, 0:first_ax_n_cols])
 for i, model in enumerate(models):
-    perf = overall_performance[model['name']]
+    perf = performance_data['Overall'][model['name']]
     first_ax.bar(model['x_pos']*bar_width, perf['mean'], bar_width,
                 yerr=perf['sem'],
                 color=model['color'],
@@ -307,7 +315,6 @@ plt.close()
 
 ### SAVE PERFORMANCE DATA ###
 
-performance_data['overall'] = overall_performance
 # print(performance_data)
 filename = f'analyses/figures/neuroprobe_eval_lite_{split_type}.json' 
 with open(filename, 'w') as f:
@@ -320,28 +327,27 @@ latex_lines = []
 latex_lines.append("\\begin{table}[h]")
 latex_lines.append("\\centering")
 
-# Calculate number of chunks needed - changed from 5 to 4 columns per chunk
-n_columns = len(task_name_mapping) + 1  # +1 for Overall column
-n_chunks = math.ceil(n_columns / 4)  # Changed from 5 to 4
+# Create task display mapping including Overall
+task_display_mapping = {'Overall': 'Overall'}
+task_display_mapping.update(task_name_mapping)
+
+# Calculate number of chunks needed - 4 columns per chunk
+n_chunks = math.ceil(len(all_tasks) / 4)
 
 for chunk in range(n_chunks):
     # Calculate start and end indices for this chunk
-    start_idx = chunk * 4  # Changed from 5 to 4
-    end_idx = min((chunk + 1) * 4, n_columns)  # Changed from 5 to 4
+    start_idx = chunk * 4
+    end_idx = min((chunk + 1) * 4, len(all_tasks))
+    chunk_tasks = all_tasks[start_idx:end_idx]
     
     # Create tabular environment for this chunk
-    latex_lines.append("\\begin{tabular}{l" + "c" * (end_idx - start_idx) + "}")
+    latex_lines.append("\\begin{tabular}{l" + "c" * len(chunk_tasks) + "}")
     latex_lines.append("\\hline")
     
     # Header row
     header = "Model"
-    if chunk == 0:
-        header += " & Overall"
-    for i in range(start_idx, end_idx):
-        if i == 0:  # Skip Overall as it's already added
-            continue
-        task = list(task_name_mapping.keys())[i-1]
-        header += f" & {task_name_mapping[task]}"
+    for task in chunk_tasks:
+        header += f" & {task_display_mapping[task]}"
     latex_lines.append(header + " \\\\")
     latex_lines.append("\\hline")
 
@@ -349,37 +355,20 @@ for chunk in range(n_chunks):
     for model in models:
         row = [model['short_name']]
         
-        # Overall performance (only in first chunk)
-        if chunk == 0:
-            perf = overall_performance[model['name']]
-            row.append(f"{perf['mean']:.3f} $\\pm$ {perf['sem']:.3f}")
-        
-        # Task performances for this chunk
-        for i in range(start_idx, end_idx):
-            if i == 0:  # Skip Overall as it's already added
-                continue
-            task = list(task_name_mapping.keys())[i-1]
+        # Add performance for each task in this chunk
+        for task in chunk_tasks:
             perf = performance_data[task][model['name']]
             row.append(f"{perf['mean']:.3f} $\\pm$ {perf['sem']:.3f}")
         
-        # Find best performing model for each column
-        formatted_row = []
-        for i, value in enumerate(row):
-            if i == 0:  # Model name
-                formatted_row.append(value)
+        # Find best performing model for each column and format
+        formatted_row = [row[0]]  # Model name
+        for i, task in enumerate(chunk_tasks):
+            best_model = max([m['name'] for m in models], 
+                           key=lambda m: performance_data[task][m]['mean'])
+            if model['name'] == best_model:
+                formatted_row.append(f"\\textbf{{{row[i+1]}}}")
             else:
-                # Determine if this is the best model for this column
-                if chunk == 0 and i == 1:  # Overall column
-                    best_model = max([m['name'] for m in models], key=lambda m: overall_performance[m]['mean'])
-                else:
-                    task_idx = start_idx + i - (2 if chunk == 0 else 1)
-                    task = list(task_name_mapping.keys())[task_idx-1]
-                    best_model = max([m['name'] for m in models], key=lambda m: performance_data[task][m]['mean'])
-                
-                if model['name'] == best_model:
-                    formatted_row.append(f"\\textbf{{{value}}}")
-                else:
-                    formatted_row.append(value)
+                formatted_row.append(row[i+1])
         
         latex_lines.append(" & ".join(formatted_row) + " \\\\")
     
