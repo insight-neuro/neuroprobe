@@ -151,6 +151,7 @@ for eval_name in eval_names:
     if splits_type == "WithinSession":
         folds = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
+                                                                                        output_dict=False,
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                         lite=lite, nano=nano, binary_tasks=binary_tasks)
@@ -158,6 +159,7 @@ for eval_name in eval_names:
     elif splits_type == "CrossSession":
         folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
+                                                                                        output_dict=False,
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                         lite=lite, binary_tasks=binary_tasks)
@@ -175,6 +177,7 @@ for eval_name in eval_names:
         if verbose: log("Subject loaded.", priority=0)
         folds = neuroprobe_train_test_splits.generate_splits_cross_subject(all_subjects, subject_id, trial_id, eval_name, dtype=torch.float32, 
                                                                                         output_indices=False, 
+                                                                                        output_dict=False,
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
                                                                                         lite=lite, nano=nano, binary_tasks=binary_tasks)
