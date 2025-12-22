@@ -44,7 +44,7 @@ parser.add_argument('--seed', type=int, default=42, help='Random seed')
 parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--lite', action='store_true', help='Whether to use the lite eval for Neuroprobe (which is the default)')
 parser.add_argument('--electrodes', type=str, default='all', help='Electrode labels to evaluate on. If multiple, separate with commas.')
-parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp', 'hybrid', 'dae', 'vae'], default='linear', help='Type of classifier to use for evaluation')
 parser.add_argument('--binary_tasks', type=lambda x: x.lower() == 'true', default=True, help='Whether to use binary classification for tasks that support it')
 args = parser.parse_args()
 
@@ -219,6 +219,18 @@ for eval_name in eval_names:
                     X_train = X_train.reshape(original_X_train_shape)
                     X_test = X_test.reshape(original_X_test_shape)
                     clf = MLPClassifier(random_state=seed)
+                elif classifier_type == 'hybrid':
+                    X_train = X_train.reshape(original_X_train_shape)
+                    X_test = X_test.reshape(original_X_test_shape)
+                    clf = HybridCNNRNNClassifier(random_state=seed)
+                elif classifier_type == 'dae':
+                    X_train = X_train.reshape(original_X_train_shape)
+                    X_test = X_test.reshape(original_X_test_shape)
+                    clf = DenoisingAutoencoderClassifier(random_state=seed)
+                elif classifier_type == 'vae':
+                    X_train = X_train.reshape(original_X_train_shape)
+                    X_test = X_test.reshape(original_X_test_shape)
+                    clf = VariationalAutoencoderClassifier(random_state=seed)
                 else:
                     raise ValueError(f"Invalid classifier type: {classifier_type}")
                 clf.fit(X_train, y_train)

@@ -11,6 +11,21 @@ import gc  # Add at top with other imports
 
 from eval_utils import *
 
+def _make_unique_path(path: str) -> str:
+    """
+    If `path` already exists, return a new path by appending `_run{n}` before the extension.
+    Example: `foo.json` -> `foo_run1.json`, `foo_run2.json`, ...
+    """
+    if not os.path.exists(path):
+        return path
+    root, ext = os.path.splitext(path)
+    i = 1
+    while True:
+        candidate = f"{root}_run{i}{ext}"
+        if not os.path.exists(candidate):
+            return candidate
+        i += 1
+
 
 preprocess_options = [
     'none', # no preprocessing, just raw voltage
@@ -38,6 +53,11 @@ parser.add_argument('--verbose', action='store_true', help='Whether to print pro
 parser.add_argument('--overwrite', action='store_true', help='Whether to overwrite existing results')
 parser.add_argument('--save_dir', type=str, default='eval_results', help='Directory to save results')
 parser.add_argument('--seed', type=int, default=42, help='Random seed')
+parser.add_argument('--if_exists', type=str, choices=['new', 'resume', 'skip'], default='new',
+                    help="If the output JSON already exists and --overwrite is not set: "
+                         "'new' creates a new file with a different name, "
+                         "'resume' loads and continues, "
+                         "'skip' skips entirely.")
 
 parser.add_argument('--only_1second', action='store_true', help='Whether to only evaluate on 1 second after word onset') # NOTE: set this to true for the Neuroprobe benchmark
 parser.add_argument('--full', action='store_true', help='Whether to use the full eval for Neuroprobe (NOTE: Lite is the default!)')
@@ -51,7 +71,17 @@ parser.add_argument('--preprocess.stft.window', type=str, choices=['hann', 'boxc
 parser.add_argument('--preprocess.stft.max_frequency', type=int, default=150, help='Maximum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 parser.add_argument('--preprocess.stft.min_frequency', type=int, default=0, help='Minimum frequency (Hz) to keep after FFT calculation (only used if preprocess is stft_absangle, stft_realimag, or stft_abs)')
 
-parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
+# Optional: run only a single time bin (relative to word onset, in seconds).
+# Example: --only_bin_start 0.125 --only_bin_end 0.375
+parser.add_argument('--only_bin_start', type=float, default=None,
+                    help='If set with --only_bin_end, run evaluation only for this time bin start (seconds, relative to word onset).')
+parser.add_argument('--only_bin_end', type=float, default=None,
+                    help='If set with --only_bin_start, run evaluation only for this time bin end (seconds, relative to word onset).')
+
+parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp', 'hybrid', 'gnn', 'dae', 'vae', 'brainbert'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--brainbert.path', type=str, default=None, help='Path to BrainBERT directory (if not provided, will try to auto-detect)')
+parser.add_argument('--brainbert.pretrained', type=lambda x: x.lower() == 'true', default=True, help='Whether to use pretrained BrainBERT weights (default: True)')
+parser.add_argument('--brainbert.frozen', type=lambda x: x.lower() == 'true', default=True, help='Whether to freeze BrainBERT weights (default: True)')
 args = parser.parse_args()
 
 eval_names = args.eval_name.split(',')
@@ -63,6 +93,7 @@ verbose = bool(args.verbose)
 overwrite = bool(args.overwrite)
 save_dir = args.save_dir
 seed = args.seed
+if_exists = getattr(args, 'if_exists', 'new')
 
 only_1second = bool(args.only_1second)
 lite = not bool(args.full)
@@ -84,6 +115,11 @@ preprocess_parameters = {
 }
 
 classifier_type = args.classifier_type
+
+# BrainBERT-specific arguments
+brainbert_path = getattr(args, 'brainbert.path', None)
+brainbert_pretrained = getattr(args, 'brainbert.pretrained', True)
+brainbert_frozen = getattr(args, 'brainbert.frozen', True)
 
 model_name = model_name_from_classifier_type(classifier_type)
 
@@ -110,6 +146,15 @@ if not only_1second:
 bin_starts += [0]
 bin_ends += [1]
 
+# SINGLE_BIN_OVERRIDE (easy to comment out to restore old behavior)
+if args.only_bin_start is not None or args.only_bin_end is not None:
+    if args.only_bin_start is None or args.only_bin_end is None:
+        raise ValueError("Provide both --only_bin_start and --only_bin_end")
+    if not (args.only_bin_end > args.only_bin_start):
+        raise ValueError("--only_bin_end must be > --only_bin_start")
+    bin_starts = [float(args.only_bin_start)]
+    bin_ends = [float(args.only_bin_end)]
+
 
 # use cache=True to load this trial's neural data into RAM, if you have enough memory!
 # It will make the loading process faster.
@@ -126,14 +171,30 @@ for eval_name in eval_names:
     preprocess_suffix += f"_{preprocess_parameters['stft']['window']}" if 'stft' in preprocess_type and preprocess_parameters['stft']['window'] != 'hann' else ''
     preprocess_suffix += f"_maxfreq{preprocess_parameters['stft']['max_frequency']}" if 'stft' in preprocess_type else ''
     preprocess_suffix += f"_minfreq{preprocess_parameters['stft']['min_frequency']}" if 'stft' in preprocess_type and preprocess_parameters['stft']['min_frequency'] != 0 else ''
-
+    
     file_save_dir = f"{save_dir}/{classifier_type}_{preprocess_suffix}"
     os.makedirs(file_save_dir, exist_ok=True) # Create save directory if it doesn't exist
 
     file_save_path = f"{file_save_dir}/population_{subject.subject_identifier}_{trial_id}_{eval_name}.json"
+    # If a file already exists and we're not overwriting, decide whether to resume, skip, or create a new file.
     if os.path.exists(file_save_path) and not overwrite:
-        log(f"Skipping {file_save_path} because it already exists", priority=0)
-        continue
+        if if_exists == 'skip':
+            log(f"Skipping {file_save_path} because it already exists (--if_exists skip)", priority=0)
+            continue
+        elif if_exists == 'new':
+            new_path = _make_unique_path(file_save_path)
+            if verbose:
+                log(f"Output exists; writing to new file: {new_path}", priority=0)
+            file_save_path = new_path
+        elif if_exists == 'resume':
+            # Existing resume logic below will load/merge results.
+            pass
+        else:
+            raise ValueError(f"Invalid --if_exists value: {if_exists}")
+    # REMOVE THIS EARLY SKIP - let the resume logic handle it instead
+    # if os.path.exists(file_save_path) and not overwrite:
+    #     log(f"Skipping {file_save_path} because it already exists", priority=0)
+    #     continue
 
     # Load neural data if it hasn't been loaded yet; NOTE: this is done here to avoid unnecessary loading of neural data if the file is going to be skipped.
     if not neural_data_loaded:
@@ -147,6 +208,106 @@ for eval_name in eval_names:
     results_population = {
         "time_bins": [],
     }
+    
+    # Initialize results structure early so we can save incrementally
+    # Build description
+    if classifier_type == 'brainbert':
+        description = f"BrainBERT ({'pretrained' if brainbert_pretrained else 'untrained'}, {'frozen' if brainbert_frozen else 'trainable'}) using all electrodes ({preprocess_type if preprocess_type != 'none' else 'voltage'})."
+    else:
+        description = f"Simple {model_name} using all electrodes ({preprocess_type if preprocess_type != 'none' else 'voltage'})."
+    
+    results = {
+        "model_name": model_name,
+        "author": "Andrii Zahorodnii",
+        "description": description,
+        "organization": "MIT",
+        "organization_url": "https://azaho.org/",
+        "timestamp": time.time(),
+        "evaluation_results": {
+            f"{subject.subject_identifier}_{trial_id}": {
+                "population": results_population
+            }
+        },
+        "config": {
+            "preprocess": preprocess_parameters,
+            "only_1second": only_1second,
+            "seed": seed,
+            "subject_id": subject_id,
+            "trial_id": trial_id,
+            "splits_type": splits_type,
+            "classifier_type": classifier_type,
+        },
+        "timing": {
+            "subject_load_time": subject_load_time,
+            "regression_run_time": None,  # Will be updated at the end
+        }
+    }
+    
+    # Add BrainBERT-specific config if applicable
+    if classifier_type == 'brainbert':
+        results["config"]["brainbert"] = {
+            "path": brainbert_path,
+            "pretrained": brainbert_pretrained,
+            "frozen": brainbert_frozen
+        }
+    
+    # Load existing results if file exists (for resuming)
+    if os.path.exists(file_save_path) and not overwrite and if_exists == 'resume':
+        try:
+            with open(file_save_path, "r") as f:
+                existing_results = json.load(f)
+                # Merge existing results
+                if "evaluation_results" in existing_results:
+                    existing_population = existing_results["evaluation_results"].get(
+                        f"{subject.subject_identifier}_{trial_id}", {}
+                    ).get("population", {})
+                    # Restore completed bins
+                    if "time_bins" in existing_population:
+                        results_population["time_bins"] = existing_population["time_bins"]
+                    if "whole_window" in existing_population:
+                        results_population["whole_window"] = existing_population["whole_window"]
+                    if "one_second_after_onset" in existing_population:
+                        results_population["one_second_after_onset"] = existing_population["one_second_after_onset"]
+                    if verbose:
+                        log(f"Loaded existing results: {len(results_population.get('time_bins', []))} time bins, whole_window: {'yes' if 'whole_window' in results_population else 'no'}, one_second: {'yes' if 'one_second_after_onset' in results_population else 'no'}", priority=0)
+        except Exception as e:
+            if verbose:
+                log(f"Could not load existing results (starting fresh): {e}", priority=1)
+
+    # Check if all bins are already complete (only skip if everything is done)
+    # First, determine what bins we expect
+    needs_whole_window = False
+    needs_one_second = False
+    expected_time_bins = set()
+    for bin_start, bin_end in zip(bin_starts, bin_ends):
+        if bin_start == -bins_start_before_word_onset_seconds and bin_end == bins_end_after_word_onset_seconds and not only_1second:
+            needs_whole_window = True
+        elif bin_start == 0 and bin_end == 1:
+            needs_one_second = True
+        else:
+            expected_time_bins.add((float(bin_start), float(bin_end)))
+    
+    # Check if all expected bins are present
+    all_bins_complete = True
+    if needs_whole_window and "whole_window" not in results_population:
+        all_bins_complete = False
+    if needs_one_second and "one_second_after_onset" not in results_population:
+        all_bins_complete = False
+    
+    # Check time bins
+    existing_time_bins = set()
+    for existing_bin in results_population.get("time_bins", []):
+        existing_time_bins.add((existing_bin.get("time_bin_start"), existing_bin.get("time_bin_end")))
+    
+    missing_time_bins = expected_time_bins - existing_time_bins
+    if missing_time_bins:
+        all_bins_complete = False
+        if verbose:
+            log(f"Missing {len(missing_time_bins)} time bins, will resume from last completed bin", priority=0)
+    
+    if all_bins_complete and not overwrite and if_exists == 'resume':
+        log(f"Skipping {file_save_path} because all bins are already complete", priority=0)
+        continue
 
     if splits_type == "WithinSession":
         folds = neuroprobe_train_test_splits.generate_splits_within_session(subject, trial_id, eval_name, dtype=torch.float32, 
@@ -181,6 +342,24 @@ for eval_name in eval_names:
 
 
     for bin_start, bin_end in zip(bin_starts, bin_ends):
+        # Check if this bin has already been processed
+        bin_already_processed = False
+        if bin_start == -bins_start_before_word_onset_seconds and bin_end == bins_end_after_word_onset_seconds and not only_1second:
+            bin_already_processed = "whole_window" in results_population
+        elif bin_start == 0 and bin_end == 1:
+            bin_already_processed = "one_second_after_onset" in results_population
+        else:
+            # Check if this time bin is already in the results
+            for existing_bin in results_population.get("time_bins", []):
+                if existing_bin.get("time_bin_start") == float(bin_start) and existing_bin.get("time_bin_end") == float(bin_end):
+                    bin_already_processed = True
+                    break
+        
+        if bin_already_processed and not overwrite:
+            if verbose:
+                log(f"Skipping bin {bin_start}-{bin_end} (already processed)", priority=1)
+            continue
+        
         data_idx_from = int((bin_start+bins_start_before_word_onset_seconds)*neuroprobe_config.SAMPLING_RATE)
         data_idx_to = int((bin_end+bins_start_before_word_onset_seconds)*neuroprobe_config.SAMPLING_RATE)
 
@@ -199,10 +378,21 @@ for eval_name in eval_names:
             log("Preparing and preprocessing data...", priority=2, indent=1)
 
             # Convert PyTorch dataset to numpy arrays for scikit-learn
-            X_train = np.concatenate([preprocess_data(item[0][:, data_idx_from:data_idx_to].unsqueeze(0), train_subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in train_dataset], axis=0)
-            y_train = np.array([item[1] for item in train_dataset])
-            X_test = np.concatenate([preprocess_data(item[0][:, data_idx_from:data_idx_to].unsqueeze(0), subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in test_dataset], axis=0)
-            y_test = np.array([item[1] for item in test_dataset])
+            # X_train = np.concatenate([preprocess_data(item[0][:, data_idx_from:data_idx_to].unsqueeze(0), train_subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in train_dataset], axis=0)
+            # y_train = np.array([item[1] for item in train_dataset])
+            # X_test = np.concatenate([preprocess_data(item[0][:, data_idx_from:data_idx_to].unsqueeze(0), subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in test_dataset], axis=0)
+            # y_test = np.array([item[1] for item in test_dataset])
+            def get_data_and_label(item):
+                if isinstance(item, dict):
+                    return item["data"], item["label"]
+                else:
+                    return item[0], item[1]
+            
+            X_train = np.concatenate([preprocess_data(get_data_and_label(item)[0][:, data_idx_from:data_idx_to].unsqueeze(0), train_subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in train_dataset], axis=0)
+            y_train = np.array([get_data_and_label(item)[1] for item in train_dataset])
+            X_test = np.concatenate([preprocess_data(get_data_and_label(item)[0][:, data_idx_from:data_idx_to].unsqueeze(0), subject.electrode_labels, preprocess_type, preprocess_parameters).float().numpy() for item in test_dataset], axis=0)
+            y_test = np.array([get_data_and_label(item)[1] for item in test_dataset])
+
             gc.collect()  # Collect after creating large arrays
 
             if splits_type == "CrossSubject":
@@ -211,18 +401,49 @@ for eval_name in eval_names:
                 regions_test = get_region_labels(subject)
                 X_train, X_test, common_regions = combine_regions(X_train, X_test, regions_train, regions_test)
 
-            # Flatten the data after preprocessing in-place
+            # Flatten the data after preprocessing in-place (only for linear and mlp)
             original_X_train_shape = X_train.shape
             original_X_test_shape = X_test.shape
-            X_train = X_train.reshape(X_train.shape[0], -1)
-            X_test = X_test.reshape(X_test.shape[0], -1)
+            
+            # Get electrode coordinates for GNN (before any reshaping)
+            electrode_coordinates = None
+            if classifier_type == 'gnn':
+                # Get electrode coordinates from the dataset
+                if hasattr(train_dataset, 'electrode_coordinates'):
+                    electrode_coordinates = train_dataset.electrode_coordinates
+                elif hasattr(test_dataset, 'electrode_coordinates'):
+                    electrode_coordinates = test_dataset.electrode_coordinates
+                else:
+                    # Fallback: get from subject
+                    electrode_coordinates = train_subject.get_electrode_coordinates().numpy()
+            
+            if classifier_type in ['linear', 'mlp']:
+                X_train = X_train.reshape(X_train.shape[0], -1)
+                X_test = X_test.reshape(X_test.shape[0], -1)
+            # For cnn, transformer, hybrid, gnn, brainbert: keep original shape
 
             log(f"Standardizing data...", priority=2, indent=1)
 
-            # Standardize the data in-place
-            scaler = StandardScaler(copy=False)
-            X_train = scaler.fit_transform(X_train)
-            X_test = scaler.transform(X_test)
+            # Standardize the data
+            if classifier_type in ['linear', 'mlp']:
+                # Standardize flattened data
+                scaler = StandardScaler(copy=False)
+                X_train = scaler.fit_transform(X_train)
+                X_test = scaler.transform(X_test)
+            elif classifier_type == 'brainbert':
+                # BrainBERT handles its own standardization internally
+                # Just pass through the data as-is (should be STFT format)
+                pass
+            else:
+                # Standardize multi-dimensional data (cnn, transformer, hybrid, gnn)
+                # Standardize across samples but preserve spatial/temporal structure
+                X_train_flat = X_train.reshape(X_train.shape[0], -1)
+                X_test_flat = X_test.reshape(X_test.shape[0], -1)
+                scaler = StandardScaler(copy=False)
+                X_train_flat = scaler.fit_transform(X_train_flat)
+                X_test_flat = scaler.transform(X_test_flat)
+                X_train = X_train_flat.reshape(original_X_train_shape)
+                X_test = X_test_flat.reshape(original_X_test_shape)
             gc.collect()  # Collect after standardization
 
             log(f"Training model...", priority=2, indent=1)
@@ -232,20 +453,37 @@ for eval_name in eval_names:
                 clf = LogisticRegression(random_state=seed, max_iter=10000, tol=1e-3)
                 clf.fit(X_train, y_train)
             elif classifier_type == 'cnn':
-                X_train = X_train.reshape(original_X_train_shape)
-                X_test = X_test.reshape(original_X_test_shape)
                 clf = CNNClassifier(random_state=seed)
                 clf.fit(X_train, y_train)
             elif classifier_type == 'transformer':
-                X_train = X_train.reshape(original_X_train_shape)
-                X_test = X_test.reshape(original_X_test_shape)
                 clf = TransformerClassifier(random_state=seed)
                 clf.fit(X_train, y_train)
             elif classifier_type == 'mlp':
-                X_train = X_train.reshape(original_X_train_shape)
-                X_test = X_test.reshape(original_X_test_shape)
                 clf = MLPClassifier(random_state=seed)
                 clf.fit(X_train, y_train, X_val=X_test, y_val=y_test)
+            elif classifier_type == 'hybrid':
+                clf = HybridCNNRNNClassifier(random_state=seed)
+                clf.fit(X_train, y_train)
+            elif classifier_type == 'gnn':
+                clf = GNNClassifier(random_state=seed)
+                clf.fit(X_train, y_train, electrode_coordinates=electrode_coordinates)
+            elif classifier_type == 'dae':
+                clf = DenoisingAutoencoderClassifier(random_state=seed)
+                clf.fit(X_train, y_train)
+            elif classifier_type == 'vae':
+                clf = VariationalAutoencoderClassifier(random_state=seed)
+                clf.fit(X_train, y_train)
+            elif classifier_type == 'brainbert':
+                # BrainBERT expects STFT input, so ensure preprocessing is done
+                if 'stft' not in preprocess_type:
+                    raise ValueError("BrainBERT requires STFT preprocessing. Please use a preprocess type that includes 'stft' (e.g., 'stft_abs', 'laplacian-stft_abs')")
+                clf = BrainBERTClassifier(
+                    random_state=seed,
+                    brainbert_path=brainbert_path,
+                    pretrained=brainbert_pretrained,
+                    frozen=brainbert_frozen
+                )
+                clf.fit(X_train, y_train)
 
             torch.cuda.empty_cache()
             gc.collect()
@@ -295,7 +533,9 @@ for eval_name in eval_names:
             # Clean up variables no longer needed
             del X_train, y_train, X_test, y_test, train_probs, test_probs
             del y_test_filtered, test_probs_filtered, y_test_onehot, y_train_onehot
-            del clf, scaler
+            del clf
+            if 'scaler' in locals():
+                del scaler
             gc.collect()  # Collect after cleanup
 
             if verbose: 
@@ -307,46 +547,25 @@ for eval_name in eval_names:
             results_population["one_second_after_onset"] = bin_results # one second after onset results
         else:
             results_population["time_bins"].append(bin_results) # time bin results
+        
+        # Save incrementally after each bin
+        results["evaluation_results"][f"{subject.subject_identifier}_{trial_id}"]["population"] = results_population
+        results["timing"]["regression_run_time"] = time.time() - start_time
+        with open(file_save_path, "w") as f:
+            json.dump(results, f, indent=4)
+        if verbose:
+            log(f"Results saved incrementally after bin {bin_start}-{bin_end}", priority=1)
     
     regression_run_time = time.time() - start_time
     if verbose:
         log(f"Regression run in {regression_run_time:.2f} seconds", priority=0)
 
-    results = {
-        "model_name": model_name,
-        "author": "Andrii Zahorodnii",
-        "description": f"Simple {model_name} using all electrodes ({preprocess_type if preprocess_type != 'none' else 'voltage'}).",
-        "organization": "MIT",
-        "organization_url": "https://azaho.org/",
-        "timestamp": time.time(),
-
-        "evaluation_results": {
-            f"{subject.subject_identifier}_{trial_id}": {
-                "population": results_population
-            }
-        },
-
-        "config": {
-            "preprocess": preprocess_parameters,
-
-            "only_1second": only_1second,
-            "seed": seed,
-            "subject_id": subject_id,
-            "trial_id": trial_id,
-            "splits_type": splits_type,
-            "classifier_type": classifier_type,
-        },
-
-        "timing": {
-            "subject_load_time": subject_load_time,
-            "regression_run_time": regression_run_time,
-        }
-    }
-
+    # Update final timing (results already saved incrementally)
+    results["timing"]["regression_run_time"] = regression_run_time
     with open(file_save_path, "w") as f:
         json.dump(results, f, indent=4)
     if verbose:
-        log(f"Results saved to {file_save_path}", priority=0)
+        log(f"Final results saved to {file_save_path}", priority=0)
 
     # Clean up at end of each eval_name loop
     del folds

@@ -3,15 +3,21 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import pandas as pd
 import os, json
-
+from sklearn import preprocessing
 from .config import *
 from .braintreebank_subject import BrainTreebankSubject
+
+NEW_FEATURES_FILE_NAME = "test_new_features.csv"
 
 # Defining the names of evaluations and preparing them for downstream processing
 single_float_variables_name_remapping = {
     "pitch": "enhanced_pitch", #"pitch",
     "volume": "rms", #"rms",
     "frame_brightness": "mean_pixel_brightness",
+    "delta_frame_brightness": "delta_mean_pixel_brightness",
+    "delta_frame_brightness_abs": "delta_mean_pixel_brightness_abs",
+    "delta_delta_frame_brightness": "delta_delta_mean_pixel_brightness",
+    "delta_delta_frame_brightness_abs": "delta_delta_mean_pixel_brightness_abs",
     "global_flow": "max_global_magnitude",
     "local_flow": "max_vector_magnitude",
     "delta_volume": "delta_rms",
@@ -25,7 +31,100 @@ classification_variables_name_remapping = {
 new_pitch_variables = ['enhanced_pitch', 'enhanced_volume', 'delta_enhanced_pitch', 'delta_enhanced_volume', 'raw_pitch', 'raw_volume', 'delta_raw_pitch', 'delta_raw_volume']
 single_float_variables = list(single_float_variables_name_remapping.values()) + list(single_float_variables_name_remapping.keys()) + new_pitch_variables
 classification_variables = list(classification_variables_name_remapping.values()) + list(classification_variables_name_remapping.keys())
-all_tasks = single_float_variables + ["onset", "speech", "scene_onset"] + ["face_num", "word_gap", "word_index"] + classification_variables
+all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_gap", "word_index"] + classification_variables + ["scene", "scene_onset", "speaker", "speaker_gender"] + ["delta_face_num", "delta_face_num_abs", "delta_delta_face_num", "delta_delta_face_num_abs"]
+
+
+speaker_gender = {
+    'Leland Turbo': 'male',
+    'Acer': 'male',
+    'Crabby': 'male',
+    'Finn McMissile': 'male',
+    'combat ship': 'unknown',
+    'Tannoy': 'unknown',
+    'Professor Zündapp': 'male',
+    'Grem': 'male',
+    'Tony': 'male',
+    'Mater': 'male',
+    'Otis': 'male',
+    'Fio': 'female',
+    'Filmore': 'male',
+    'Sarge': 'male',
+    'Lightning McQueen': 'male',
+    'Ramone': 'male',
+    'Sally': 'female',
+    '* not in audio': 'unknown',
+    'Mel Dorado': 'male',
+    'Miles Axlerod': 'male',
+    'Francesco Bernoulli': 'male',
+    'caller': 'unknown',
+    'Guido': 'male',
+    'Luigi': 'male',
+    'Lewis Hamilton': 'male',
+    'Jeff Gorvette': 'male',
+    'announcer': 'unknown',
+    'Holly Shiftwell': 'female',
+    'sushi chef': 'unknown',
+    'Rod Redline': 'male',
+    '* multiple speakers': 'unknown',
+    'Brent Mustangburger': 'male',
+    'David Hobbscap': 'male',
+    'Darrell Cartrip': 'male',
+    '(various cars in the pit)': 'unknown',
+    'Acer * Grem': 'male',
+    '*not in audio': 'unknown',
+    'reporter #1': 'unknown',
+    'reporter #2': 'unknown',
+    'Siddeley': 'male',
+    'Mater (letter)': 'male',
+    'Lightning McQueen (reading letter)': 'male',
+    'Luigi (reading)': 'male',
+    'Mat': 'unknown',
+    'Ma': 'female',
+    'french car': 'unknown',
+    'Tomber': 'male',
+    'Holly Shiftwell * Finn MicMissile': 'mixed',
+    'Uncle Topolino': 'male',
+    'Aunt Topolino': 'female',
+    'Stephenson': 'male',
+    'computer': 'unknown',
+    'italian track announcer': 'male',
+    'Alexander Hugo': 'male',
+    'Ivan the towtruck': 'male',
+    'Victor Hugo': 'male',
+    'casino employee': 'unknown',
+    'gambler': 'unknown',
+    'serving car': 'unknown',
+    'J. Curby Gremlin': 'male',
+    'Vladimir Trunkov': 'male',
+    'Tubbs Pacer': 'male',
+    'disguised voice': 'unknown',
+    'lemon': 'male',
+    'lemon ': 'male',
+    'police car #1': 'unknown',
+    'entourage #1': 'unknown',
+    'entourage #2': 'unknown',
+    'reporter car * Mater': 'mixed',
+    'police car #2': 'unknown',
+    'reporter car': 'unknown',
+    'encourage #2': 'unknown',
+    'encourage #1': 'unknown',
+    'Grem * Acer': 'male',
+    'Flo': 'female',
+    'british police car': 'unknown',
+    'goon car': 'unknown',
+    'Sheriff': 'male',
+    'british corporal': 'male',
+    'queen car': 'female',
+    'secret service car': 'unknown',
+    'royal grandson car': 'male',
+    'royal presenter': 'unknown',
+    'Minny': 'female',
+    'Van': 'male',
+    'Lizzie': 'female',
+    'Mack': 'male',
+    'Lightning McQueen * Francesco Bernoulli': 'male',
+}
+
 
 
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
@@ -117,7 +216,10 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         self.movie_name = BRAINTREEBANK_SUBJECT_TRIAL_MOVIE_NAME_MAPPING[f"{self.subject.subject_identifier}_{self.trial_id}"]
         
         # Add the original features from braintreebank to the all_words_df
-        transcript_file_format = os.path.join(ROOT_DIR, f'transcripts/{self.movie_name}/features.csv')
+        # transcript_file_format = os.path.join(ROOT_DIR, f'transcripts/{self.movie_name}/features.csv')
+        # transcript_file_format = os.path.join(ROOT_DIR, f'transcripts/{self.movie_name}/test_new_delta_pixel.csv')
+        # transcript_file_format = os.path.join(ROOT_DIR, f'transcripts/{self.movie_name}/test_new_delta_pixel_and_face.csv')
+        transcript_file_format = os.path.join(ROOT_DIR, f'transcripts/{self.movie_name}/{NEW_FEATURES_FILE_NAME}')
         original_features_df = pd.read_csv(transcript_file_format.format(self.movie_name)).set_index('Unnamed: 0')
         # Add new columns from words_df using original_index mapping
         new_columns = [col for col in original_features_df.columns if col not in self.all_words_df.columns]
@@ -162,7 +264,7 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                     1: np.where((label_percentiles < 0.625) & (label_percentiles >= 0.375))[0],
                     0: np.where(label_percentiles < 0.25)[0]
                 }
-        elif eval_name in ["onset", "speech", "scene_onset"]:
+        elif eval_name in ["onset", "speech"]:
             if eval_name == "onset":
                 self.label_indices = {
                     1: np.where(self.all_words_df["is_onset"].to_numpy() == 1)[0], # positive indices
@@ -173,32 +275,178 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                     1: np.arange(len(self.all_words_df)), # positive indices
                     0: np.arange(len(self.nonverbal_df)) # negative indices
                 }
+            # elif eval_name == "scene_onset":
+            #     # Detect scene changes: find words where the scene label changes from the previous word
+            #     # Try common column names for scene labels
+            #     scene_col = None
+            #     for col_name in ["scene", "scene_id", "scene_label", "scene_number"]:
+            #         if col_name in self.all_words_df.columns:
+            #             scene_col = col_name
+            #             break
+                
+            #     if scene_col is None:
+            #         raise ValueError(f"Scene column not found in features. Expected one of: scene, scene_id, scene_label, scene_number")
+                
+            #     scene_values = self.all_words_df[scene_col].to_numpy()
+            #     # Detect scene changes: scene is different from previous word (or first word is always a scene onset)
+            #     is_scene_onset = np.zeros(len(self.all_words_df), dtype=bool)
+            #     is_scene_onset[0] = True  # First word is always a scene onset
+            #     # Check for changes in scene between consecutive words
+            #     scene_changes = scene_values[1:] != scene_values[:-1]
+            #     is_scene_onset[1:] = scene_changes
+                
+            #     self.label_indices = {
+            #         1: np.where(is_scene_onset)[0], # positive indices: words at scene onsets
+            #         0: np.arange(len(self.nonverbal_df)) # negative indices: nonverbal data
+            #     }
+        elif eval_name in ["scene_onset", "scene"]:
+            # Detect scene changes: check if a scene switch occurs within each window
+            # Scene labels are stored in scene_annotations.json in ROOT_DIR
+            
+            # Load scene_annotations.json file
+            scene_annotations_path = os.path.join(ROOT_DIR, 'scene_annotations', 'scene_annotations.json')
+            
+            if not os.path.exists(scene_annotations_path):
+                raise ValueError(f"Scene annotations file not found at: {scene_annotations_path}")
+            
+            with open(scene_annotations_path, 'r') as f:
+                scene_annotations_data = json.load(f)
+            
+            # The file is a list with 1 item (a dict)
+            if not isinstance(scene_annotations_data, list) or len(scene_annotations_data) == 0:
+                raise ValueError(f"Scene annotations file has unexpected format: expected a list with 1 dict")
+            
+            annotations_dict = scene_annotations_data[0]
+            
+            # Find the key that matches this movie
+            # Keys are like 'movie:annotations:v3:cars-2:jkdewit' or 'movie:annotations:v3:thor-ragnarok:stanford'
+            # There may be multiple annotators, so prioritize 'all-annotations' if it exists
+            movie_key = None
+            all_annotations_key = None
+            individual_keys = []
+
+            for key in annotations_dict.keys():
+                if f':{self.movie_name}:' in key or key.endswith(f':{self.movie_name}'):
+                    if 'all-annotations' in key:
+                        all_annotations_key = key
+                    else:
+                        individual_keys.append(key)
+
+            # Prefer all-annotations version if it exists, otherwise use first individual annotator
+            if all_annotations_key:
+                movie_key = all_annotations_key
+            elif len(individual_keys) > 0:
+                movie_key = individual_keys[0]
+                # Optionally warn if multiple annotators exist
+                if len(individual_keys) > 1:
+                    import warnings
+                    warnings.warn(f"Multiple annotators found for '{self.movie_name}': {individual_keys}. Using: {movie_key}")
+
+            if movie_key is None:
+                raise ValueError(f"Could not find scene annotations for movie '{self.movie_name}' in scene_annotations.json")
+            # Get the annotations for this movie
+            movie_annotations = annotations_dict[movie_key]
+            
+            # Parse the annotations: keys are JSON strings like '{"startTime":2433,"endTime":2433,"label":"#"}'
+            # Values are the startTime as strings
+            # Create a mapping from time (seconds, rounded to int) to label
+            scene_labels_dict = {}
+            for json_key_str, start_time_str in movie_annotations.items():
+                try:
+                    # Parse the JSON key to get startTime and label
+                    annotation = json.loads(json_key_str)
+                    start_time = int(round(float(annotation.get('startTime', start_time_str))))
+                    label = annotation.get('label', '')
+                    
+                    # Store the label for this time (use the most recent label if multiple entries for same second)
+                    scene_labels_dict[start_time] = label
+                except (json.JSONDecodeError, ValueError, KeyError) as e:
+                    # Skip malformed entries
+                    continue
+            
+            if len(scene_labels_dict) == 0:
+                raise ValueError(f"No valid scene annotations found for movie '{self.movie_name}'")
+
+
+            if eval_name == "scene":
+                self.all_words_df["scene"] = self.all_words_df["start"].astype(int).map(scene_labels_dict)
+                scene_labels = self.all_words_df["scene"].to_numpy()
+                valid_mask = pd.notna(scene_labels) & (scene_labels != "") & (scene_labels != "#")
+                valid_scene_labels = scene_labels[valid_mask]
+                valid_indices = np.where(valid_mask)[0]
+                
+                unique_scenes, counts = np.unique(valid_scene_labels, return_counts=True)
+                
+                # Select top K scenes
+                if self.binary_tasks:
+                    top_k = 2
+                else:
+                    top_k = 5  # or 10, 20, etc.
+                
+                top_k_indices = np.argsort(counts)[-top_k:][::-1]
+                top_scenes = unique_scenes[top_k_indices]
+                
+                # Create label_indices
+                top_scene_mask = np.isin(valid_scene_labels, top_scenes)
+                filtered_indices = valid_indices[top_scene_mask]
+                filtered_scenes = valid_scene_labels[top_scene_mask]
+                
+                self.label_indices = {}
+                for label_id, scene in enumerate(top_scenes):
+                    self.label_indices[label_id] = filtered_indices[np.where(filtered_scenes == scene)[0]]
+
+
             elif eval_name == "scene_onset":
-                # Detect scene changes: find words where the scene label changes from the previous word
-                # Try common column names for scene labels
-                scene_col = None
-                for col_name in ["scene", "scene_id", "scene_label", "scene_number"]:
-                    if col_name in self.all_words_df.columns:
-                        scene_col = col_name
-                        break
                 
-                if scene_col is None:
-                    raise ValueError(f"Scene column not found in features. Expected one of: scene, scene_id, scene_label, scene_number")
+                # Find scene boundaries (where scene changes between consecutive seconds)
+                # Also consider "#" labels as explicit scene markers
+                scene_times = sorted(scene_labels_dict.keys())
+                scene_boundaries = []
+                for i in range(1, len(scene_times)):
+                    prev_time = scene_times[i-1]
+                    curr_time = scene_times[i]
+                    prev_label = scene_labels_dict[prev_time]
+                    curr_label = scene_labels_dict[curr_time]
+                    if prev_label != curr_label:
+                        scene_boundaries.append(curr_time)
+                scene_boundaries = sorted(list(set(scene_boundaries)))
                 
-                scene_values = self.all_words_df[scene_col].to_numpy()
-                # Detect scene changes: scene is different from previous word (or first word is always a scene onset)
-                is_scene_onset = np.zeros(len(self.all_words_df), dtype=bool)
-                is_scene_onset[0] = True  # First word is always a scene onset
-                # Check for changes in scene between consecutive words
-                scene_changes = scene_values[1:] != scene_values[:-1]
-                is_scene_onset[1:] = scene_changes
+                # Convert window parameters from samples to seconds
+                window_start_seconds = self.start_neural_data_before_word_onset / SAMPLING_RATE
+                window_end_seconds = self.end_neural_data_after_word_onset / SAMPLING_RATE
                 
+                # For each word, check if a scene boundary falls within its window
+                has_scene_switch = []
+                for idx, row in self.all_words_df.iterrows():
+                    word_start_time = row['start']  # in seconds
+                    window_start = word_start_time - window_start_seconds
+                    window_end = word_start_time + window_end_seconds
+                    
+                    # Check if any scene boundary falls within this window
+                    scene_switch_in_window = any(
+                        window_start <= boundary <= window_end 
+                        for boundary in scene_boundaries
+                    )
+                    has_scene_switch.append(scene_switch_in_window)
+                
+                has_scene_switch = np.array(has_scene_switch)
+                
+                # Positive samples: words whose windows contain scene switches
+                # Negative samples: nonverbal windows (consistent with onset/speech)
                 self.label_indices = {
-                    1: np.where(is_scene_onset)[0], # positive indices: words at scene onsets
-                    0: np.arange(len(self.nonverbal_df)) # negative indices: nonverbal data
+                    1: np.where(has_scene_switch)[0],  # positive indices: words with scene switches in their windows
+                    0: np.where(~has_scene_switch)[0]  # negative indices: nonverbal data
                 }
-        elif eval_name == "face_num":
+        elif eval_name in ["face_num", "delta_face_num", "delta_face_num_abs", "delta_delta_face_num", "delta_delta_face_num_abs"]:
             face_nums = self.all_words_df["face_num"].to_numpy().astype(int)
+            if eval_name == "delta_face_num":
+                face_nums = self.all_words_df["delta_face_num"].to_numpy().astype(int)
+            elif eval_name == "delta_face_num_abs":
+                face_nums = self.all_words_df["delta_face_num_abs"].to_numpy().astype(int)
+            elif eval_name == "delta_delta_face_num":
+                face_nums = self.all_words_df["delta_delta_face_num"].to_numpy().astype(int)
+            elif eval_name == "delta_delta_face_num_abs":
+                face_nums = self.all_words_df["delta_delta_face_num_abs"].to_numpy().astype(int)
             if self.binary_tasks:
                 self.label_indices = {
                     1: np.where(face_nums > 0)[0],
@@ -277,6 +525,45 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
                     1: middle_indices,
                     0: negative_indices
                 }
+        elif eval_name == "speaker":
+            # Get speaker values and filter out invalid ones
+            speakers = self.all_words_df["speaker"].to_numpy()
+            
+            # Filter out NaN, empty strings, and special values
+            valid_mask = pd.notna(speakers) & (speakers != "") & (speakers != "* multiple speakers")
+            valid_speakers = speakers[valid_mask]
+            valid_indices = np.where(valid_mask)[0]
+            
+            # Count speaker frequencies
+            unique_speakers, counts = np.unique(valid_speakers, return_counts=True)
+            
+            # Select top K speakers based on binary_tasks flag
+            if self.binary_tasks:
+                top_k = 2
+            else:
+                top_k = 5  # or whatever K you want
+            
+            # Get top K most frequent speakers
+            top_k_indices = np.argsort(counts)[-top_k:][::-1]  # Sort descending
+            top_speakers = unique_speakers[top_k_indices]
+            
+            # Filter to only include words from top K speakers
+            top_speaker_mask = np.isin(valid_speakers, top_speakers)
+            filtered_indices = valid_indices[top_speaker_mask]
+            filtered_speakers = valid_speakers[top_speaker_mask]
+            
+            # Create label_indices dictionary: map label_id -> array of word indices
+            self.label_indices = {}
+            for label_id, speaker in enumerate(top_speakers):
+                self.label_indices[label_id] = filtered_indices[np.where(filtered_speakers == speaker)[0]]
+
+        elif eval_name == "speaker_gender":
+            self.all_words_df["speaker_gender"] = self.all_words_df["speaker"].map(speaker_gender).fillna("unknown")
+            speaker_genders = self.all_words_df["speaker_gender"].to_numpy()
+            self.label_indices = {
+                1: np.where(speaker_genders == "male")[0],
+                0: np.where(speaker_genders == "female")[0]
+            }
         else:
             raise ValueError(f"Invalid eval_name: {eval_name}")
 
@@ -298,7 +585,11 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             n_try_indices = self.n_classes # try some first and last samples to get a good estimate of the edges of the needed data in the dataset
             window_indices = []
             for i in list(range(n_try_indices))+list(range(self.n_samples-n_try_indices, self.n_samples)):
-                (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
+                # (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
+                if self.output_dict:
+                    window_from, window_to = self.__getitem__(i, force_output_indices=True)['data']
+                else:
+                    (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
                 window_indices.append(window_from)
                 window_indices.append(window_to)
             self.cache_window_from = np.min(window_indices)
@@ -320,7 +611,9 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
         # even indices are positive samples, odd indices are negative samples
         current_label = (idx+1) % self.n_classes
         word_index = self.label_indices[current_label][idx//self.n_classes]
-        if self.eval_name in ["onset", "speech", "scene_onset"] and (current_label == 0): # for onset, speech, and scene_onset, we need to get the nonverbal data
+        # if self.eval_name == "scene_onset":
+        #     row = self.scene_onset_windows_df.iloc[word_index]
+        if self.eval_name in ["onset", "speech"] and (current_label == 0): # for onset and speech, we need to get the nonverbal data
             row = self.nonverbal_df.iloc[word_index]
         else:
             row = self.all_words_df.iloc[word_index]
