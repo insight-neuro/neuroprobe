@@ -16,3 +16,8 @@ data/
 dist/
 
 .env
+
+*.h5
+
+# local experiments
+*copy*
