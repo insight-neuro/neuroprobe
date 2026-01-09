@@ -1,9 +1,9 @@
 {
-  "model_name": "DIVER-1_0.1s_tiny_frozen",
-  "description": "linear probing on frozen DIVER-1(0.1spatch,tiny,pretrained on iEEG) model",
+  "model_name": "DIVER-1_0.1s_tiny",
+  "description": "full finetuing on DIVER-1(0.1spatch,tiny) pretrained model",
   "author": "Yonghyeon Gwon",
   "organization": "Seoul National University",
   "organization_url": "https://snu.ac.kr/",
-  "timestamp": 1767923285,
+  "timestamp": 1767924369,
   "footnotes": "The result is slightly different in arXiv preprint (arXiv:2512.19097), because it compared the models in the previous neuroprobe splits (25 SEP ver of neruoprobe; no validation set, just 1:1 train test splits; we used 10% of train set as validation set in that version). The current results are based on the official neuroprobe splits with validation sets.(25 OCT ver)"
 }
