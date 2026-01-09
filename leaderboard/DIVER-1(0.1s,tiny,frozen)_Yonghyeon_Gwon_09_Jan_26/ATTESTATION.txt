@@ -1,0 +1,6 @@
+I attest that the training and test splits of Neuroprobe were respected and taken from the `neuroprobe/train_test_splits.py` function.
+(copied verbatim and used as-is in our training-loop code; for the DEC,25 version of neuroprobe).
+SIGN **Yonghyeon Gwon**
+
+I attest that the submitted model was not pretrained on any data that intersects with any data of Neuroprobe.
+SIGN **Yonghyeon Gwon**

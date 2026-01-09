@@ -1,0 +1,8 @@
+{
+  "model_name": "DIVER-1_0.1s_tiny_frozen",
+  "description": "linear probing on frozen DIVER-1(0.1spatch,tiny,pretrained on iEEG) model",
+  "author": "Yonghyeon Gwon",
+  "organization": "Seoul National University",
+  "organization_url": "https://snu.ac.kr/",
+  "timestamp": 1767923285
+}

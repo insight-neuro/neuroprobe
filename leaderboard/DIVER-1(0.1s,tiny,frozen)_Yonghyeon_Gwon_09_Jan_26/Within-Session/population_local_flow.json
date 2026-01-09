@@ -1,0 +1,226 @@
+{
+  "model_name": "DIVER-1_0.1s_tiny_frozen",
+  "description": "linear probing on frozen DIVER1(0.1spatch,tiny) pretraining model",
+  "author": "Yonghyeon Gwon",
+  "organization": "Seoul National University",
+  "organization_url": "https://snu.ac.kr/",
+  "timestamp": 1764642417,
+  "evaluation_results": {
+    "btbank1_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.55806,
+              "test_roc_auc": 0.59674
+            },
+            {
+              "test_accuracy": 0.58865,
+              "test_roc_auc": 0.63868
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_2": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.56812,
+              "test_roc_auc": 0.62006
+            },
+            {
+              "test_accuracy": 0.54766,
+              "test_roc_auc": 0.5919
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.54284,
+              "test_roc_auc": 0.57527
+            },
+            {
+              "test_accuracy": 0.56113,
+              "test_roc_auc": 0.58615
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_4": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.56811,
+              "test_roc_auc": 0.59553
+            },
+            {
+              "test_accuracy": 0.64815,
+              "test_roc_auc": 0.70973
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.59566,
+              "test_roc_auc": 0.65778
+            },
+            {
+              "test_accuracy": 0.56822,
+              "test_roc_auc": 0.6293
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.70617,
+              "test_roc_auc": 0.75403
+            },
+            {
+              "test_accuracy": 0.6398,
+              "test_roc_auc": 0.71384
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.58571,
+              "test_roc_auc": 0.6884
+            },
+            {
+              "test_accuracy": 0.51429,
+              "test_roc_auc": 0.59869
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.63185,
+              "test_roc_auc": 0.66127
+            },
+            {
+              "test_accuracy": 0.56663,
+              "test_roc_auc": 0.59672
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.51239,
+              "test_roc_auc": 0.51556
+            },
+            {
+              "test_accuracy": 0.55071,
+              "test_roc_auc": 0.56101
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.51711,
+              "test_roc_auc": 0.61354
+            },
+            {
+              "test_accuracy": 0.54364,
+              "test_roc_auc": 0.605
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.53856,
+              "test_roc_auc": 0.56867
+            },
+            {
+              "test_accuracy": 0.49837,
+              "test_roc_auc": 0.4992
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_accuracy": 0.56309,
+              "test_roc_auc": 0.62011
+            },
+            {
+              "test_accuracy": 0.55449,
+              "test_roc_auc": 0.59065
+            }
+          ]
+        }
+      }
+    }
+  }
+}
