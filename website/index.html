@@ -65,7 +65,10 @@
 
         <section id="leaderboard" class="leaderboard">
             <div class="leaderboard-tabs">
-                <button class="tab-button active" style="text-decoration: none;" data-tab="population_cross_session">
+                <button class="tab-button active" style="text-decoration: none;" data-tab="population_within_session">
+                    <i class="fas fa-brain"></i> Within-Session
+                </button>
+                <button class="tab-button" style="text-decoration: none;" data-tab="population_cross_session">
                     <i class="fas fa-clock"></i> Cross-Session
                 </button>
                 <button class="tab-button" style="text-decoration: none;" data-tab="population_cross_subject">
@@ -75,7 +78,229 @@
             </div>
             
             <div class="leaderboard-content">
-                <div class="tab-content active" id="population_cross_session">
+                <div class="tab-content active" id="population_within_session">
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Model</th>
+                                    <th>Author</th>
+                                    <th>Organization</th>
+                                    <th>Date</th>
+                                    <th><b>Overall AUROC</b></th>
+                                    <th>Sentence Onset</th>
+                                    <th>Speech</th>
+                                    <th>Volume</th>
+                                    <th>Delta Volume</th>
+                                    <th>Voice Pitch</th>
+                                    <th>Word Position</th>
+                                    <th>Inter-word Gap</th>
+                                    <th>GPT-2 Surprisal</th>
+                                    <th>Head Word Position</th>
+                                    <th>Part of Speech</th>
+                                    <th>Word Length</th>
+                                    <th>Global Optical Flow</th>
+                                    <th>Local Optical Flow</th>
+                                    <th>Frame Brightness</th>
+                                    <th>Number of Faces</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="rank-badge gold">1</span></td>
+                                    <td>DIVER-1_0.1s_tiny_frozen</td>
+                                    <td>Yonghyeon Gwon</td>
+                                    <td>Seoul National University</td>
+                                    <td>2026-01-08</td>
+                                    <td>0.678</td>
+                                    <td>0.930</td>
+                                    <td>0.897</td>
+                                    <td>0.719</td>
+                                    <td>0.803</td>
+                                    <td>0.592</td>
+                                    <td>0.798</td>
+                                    <td>0.636</td>
+                                    <td>0.629</td>
+                                    <td>0.623</td>
+                                    <td>0.627</td>
+                                    <td>0.646</td>
+                                    <td>0.628</td>
+                                    <td>0.616</td>
+                                    <td>0.495</td>
+                                    <td>0.525</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="rank-badge silver">2</span></td>
+                                    <td>DIVER-1_0.1s_tiny</td>
+                                    <td>Yonghyeon Gwon</td>
+                                    <td>Seoul National University</td>
+                                    <td>2026-01-08</td>
+                                    <td>0.665</td>
+                                    <td>0.924</td>
+                                    <td>0.897</td>
+                                    <td>0.688</td>
+                                    <td>0.814</td>
+                                    <td>0.561</td>
+                                    <td>0.799</td>
+                                    <td>0.634</td>
+                                    <td>0.618</td>
+                                    <td>0.617</td>
+                                    <td>0.607</td>
+                                    <td>0.638</td>
+                                    <td>0.594</td>
+                                    <td>0.584</td>
+                                    <td>0.486</td>
+                                    <td>0.518</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="rank-badge bronze">3</span></td>
+                                    <td>Linear (Laplacian re-referencing + spectrogram)</td>
+                                    <td>Andrii Zahorodnii</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.660</td>
+                                    <td>0.891</td>
+                                    <td>0.883</td>
+                                    <td>0.717</td>
+                                    <td>0.762</td>
+                                    <td>0.578</td>
+                                    <td>0.740</td>
+                                    <td>0.612</td>
+                                    <td>0.613</td>
+                                    <td>0.602</td>
+                                    <td>0.605</td>
+                                    <td>0.618</td>
+                                    <td>0.625</td>
+                                    <td>0.607</td>
+                                    <td>0.521</td>
+                                    <td>0.530</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Linear (spectrogram)</td>
+                                    <td>Andrii Zahorodnii</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.630</td>
+                                    <td>0.851</td>
+                                    <td>0.825</td>
+                                    <td>0.726</td>
+                                    <td>0.718</td>
+                                    <td>0.570</td>
+                                    <td>0.657</td>
+                                    <td>0.579</td>
+                                    <td>0.570</td>
+                                    <td>0.565</td>
+                                    <td>0.559</td>
+                                    <td>0.569</td>
+                                    <td>0.604</td>
+                                    <td>0.593</td>
+                                    <td>0.533</td>
+                                    <td>0.525</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Linear (raw voltage)</td>
+                                    <td>Andrii Zahorodnii</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.606</td>
+                                    <td>0.795</td>
+                                    <td>0.656</td>
+                                    <td>0.595</td>
+                                    <td>0.753</td>
+                                    <td>0.536</td>
+                                    <td>0.742</td>
+                                    <td>0.595</td>
+                                    <td>0.584</td>
+                                    <td>0.570</td>
+                                    <td>0.576</td>
+                                    <td>0.599</td>
+                                    <td>0.535</td>
+                                    <td>0.544</td>
+                                    <td>0.507</td>
+                                    <td>0.499</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>BrainBERT (frozen; Wang et al. 2023)</td>
+                                    <td>-</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.586</td>
+                                    <td>0.757</td>
+                                    <td>0.611</td>
+                                    <td>0.583</td>
+                                    <td>0.706</td>
+                                    <td>0.524</td>
+                                    <td>0.685</td>
+                                    <td>0.584</td>
+                                    <td>0.580</td>
+                                    <td>0.585</td>
+                                    <td>0.556</td>
+                                    <td>0.571</td>
+                                    <td>0.521</td>
+                                    <td>0.525</td>
+                                    <td>0.508</td>
+                                    <td>0.503</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>BrainBERT (untrained, frozen)</td>
+                                    <td>-</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.585</td>
+                                    <td>0.750</td>
+                                    <td>0.603</td>
+                                    <td>0.570</td>
+                                    <td>0.697</td>
+                                    <td>0.524</td>
+                                    <td>0.684</td>
+                                    <td>0.583</td>
+                                    <td>0.581</td>
+                                    <td>0.587</td>
+                                    <td>0.553</td>
+                                    <td>0.571</td>
+                                    <td>0.528</td>
+                                    <td>0.528</td>
+                                    <td>0.504</td>
+                                    <td>0.505</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>PopulationTransformer (Chau et al. 2024)</td>
+                                    <td>-</td>
+                                    <td>MIT</td>
+                                    <td>2025-09-25</td>
+                                    <td>0.545</td>
+                                    <td>0.689</td>
+                                    <td>0.677</td>
+                                    <td>0.576</td>
+                                    <td>0.628</td>
+                                    <td>0.509</td>
+                                    <td>0.519</td>
+                                    <td>0.509</td>
+                                    <td>0.523</td>
+                                    <td>0.519</td>
+                                    <td>0.513</td>
+                                    <td>0.505</td>
+                                    <td>0.509</td>
+                                    <td>0.508</td>
+                                    <td>0.499</td>
+                                    <td>0.492</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="tab-content" id="population_cross_session">
 
                     <div class="table-container">
                         <table>
@@ -110,7 +335,7 @@
                                     <td>Linear (Laplacian re-referencing + spectrogram)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.648</td>
                                     <td>0.904</td>
                                     <td>0.889</td>
@@ -133,7 +358,7 @@
                                     <td>Linear (spectrogram)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.626</td>
                                     <td>0.861</td>
                                     <td>0.849</td>
@@ -156,7 +381,7 @@
                                     <td>BrainBERT (frozen; Wang et al. 2023)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.581</td>
                                     <td>0.743</td>
                                     <td>0.631</td>
@@ -179,7 +404,7 @@
                                     <td>Linear (raw voltage)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.576</td>
                                     <td>0.728</td>
                                     <td>0.611</td>
@@ -202,7 +427,7 @@
                                     <td>BrainBERT (untrained, frozen)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.574</td>
                                     <td>0.724</td>
                                     <td>0.603</td>
@@ -225,7 +450,7 @@
                                     <td>PopulationTransformer (Chau et al. 2024)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.566</td>
                                     <td>0.774</td>
                                     <td>0.716</td>
@@ -246,6 +471,7 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
                 </div>
                 </div>
                 </div>
@@ -285,7 +511,7 @@
                                     <td>Linear (Laplacian re-referencing + spectrogram)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.539</td>
                                     <td>0.673</td>
                                     <td>0.642</td>
@@ -308,7 +534,7 @@
                                     <td>Linear (spectrogram)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.528</td>
                                     <td>0.621</td>
                                     <td>0.585</td>
@@ -331,7 +557,7 @@
                                     <td>BrainBERT (untrained, frozen)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.527</td>
                                     <td>0.585</td>
                                     <td>0.537</td>
@@ -354,7 +580,7 @@
                                     <td>PopulationTransformer (Chau et al. 2024)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.526</td>
                                     <td>0.638</td>
                                     <td>0.594</td>
@@ -377,7 +603,7 @@
                                     <td>BrainBERT (frozen; Wang et al. 2023)</td>
                                     <td>-</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.522</td>
                                     <td>0.582</td>
                                     <td>0.537</td>
@@ -400,7 +626,7 @@
                                     <td>Linear (raw voltage)</td>
                                     <td>Andrii Zahorodnii</td>
                                     <td>MIT</td>
-                                    <td>2025-09-26</td>
+                                    <td>2025-09-25</td>
                                     <td>0.510</td>
                                     <td>0.539</td>
                                     <td>0.508</td>
@@ -421,6 +647,7 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
                 </div>
                 </div>
                 </div>

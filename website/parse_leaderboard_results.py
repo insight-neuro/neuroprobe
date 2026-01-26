@@ -261,7 +261,7 @@ class LeaderboardParser:
         
         return header_html + rows_html + footer_html
     
-    def update_index_html(self, cross_session_table: str, cross_subject_table: str):
+    def update_index_html(self, within_session_table: str, cross_session_table: str, cross_subject_table: str):
         """Update the index.html file with the generated tables."""
         
         index_file = self.website_dir / "index.html"
@@ -269,13 +269,26 @@ class LeaderboardParser:
         with open(index_file, 'r') as f:
             html_content = f.read()
         
+        # Find and replace Within-Session table (active by default)
+        within_session_start = html_content.find('<div class="tab-content active" id="population_within_session">')
+        within_session_end = html_content.find('</div>', within_session_start)
+        within_session_end = html_content.find('</div>', within_session_end) # find second </div>
+        
+        if within_session_start != -1 and within_session_end != -1:
+            within_session_content = f"""<div class="tab-content active" id="population_within_session">
+{within_session_table}
+                </div>"""
+            html_content = (html_content[:within_session_start] + 
+                          within_session_content + 
+                          html_content[within_session_end + 6:])
+        
         # Find and replace Cross-Session table
-        cross_session_start = html_content.find('<div class="tab-content active" id="population_cross_session">')
+        cross_session_start = html_content.find('<div class="tab-content" id="population_cross_session">')
         cross_session_end = html_content.find('</div>', cross_session_start)
         cross_session_end = html_content.find('</div>', cross_session_end) # find second </div>
         
         if cross_session_start != -1 and cross_session_end != -1:
-            cross_session_content = f"""<div class="tab-content active" id="population_cross_session">
+            cross_session_content = f"""<div class="tab-content" id="population_cross_session">
 {cross_session_table}
                 </div>"""
             html_content = (html_content[:cross_session_start] + 
@@ -308,25 +321,33 @@ class LeaderboardParser:
         
         # Rank submissions for each split type
         print("\nRanking submissions...")
+        within_session_ranked = self.rank_submissions(submissions, 'Within-Session')
         cross_session_ranked = self.rank_submissions(submissions, 'Cross-Session')
         cross_subject_ranked = self.rank_submissions(submissions, 'Cross-Subject')
         
+        print(f"Within-Session: {len(within_session_ranked)} submissions")
         print(f"Cross-Session: {len(cross_session_ranked)} submissions")
         print(f"Cross-Subject: {len(cross_subject_ranked)} submissions")
         
         # Generate HTML tables
         print("\nGenerating HTML tables...")
+        within_session_table = self.generate_html_table(within_session_ranked, 'Within-Session')
         cross_session_table = self.generate_html_table(cross_session_ranked, 'Cross-Session')
         cross_subject_table = self.generate_html_table(cross_subject_ranked, 'Cross-Subject')
         
         # Update index.html
         print("Updating index.html...")
-        self.update_index_html(cross_session_table, cross_subject_table)
+        self.update_index_html(within_session_table, cross_session_table, cross_subject_table)
         
         print("Done! Leaderboard updated successfully.")
         
         # Print summary
         print("\n=== LEADERBOARD SUMMARY ===")
+        print("\nWithin-Session Rankings:")
+        for i, submission in enumerate(within_session_ranked[:5], 1):
+            metadata = submission['metadata']
+            print(f"{i}. {metadata['model_name']} ({metadata['author']}) - {submission['overall_auroc']:.3f}")
+        
         print("\nCross-Session Rankings:")
         for i, submission in enumerate(cross_session_ranked[:5], 1):
             metadata = submission['metadata']
