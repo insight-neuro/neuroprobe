@@ -9,6 +9,11 @@ on:
       - 'leaderboard/**'
   workflow_dispatch:  # Allow manual triggering
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   validate-submissions:
     runs-on: ubuntu-latest
