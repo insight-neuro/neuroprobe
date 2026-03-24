@@ -25,7 +25,7 @@ DAE_FIX_STFT_AXIS_ORDER = False
 #
 # Set this to False (or comment out the blocks marked "GNN_STFT_AXIS_FIX")
 # to revert to the historical behavior.
-GNN_FIX_STFT_AXIS_ORDER = False
+GNN_FIX_STFT_AXIS_ORDER = True
 
 ############## LOGGING ###############
 
@@ -41,7 +41,11 @@ def model_name_from_classifier_type(classifier_type):
     elif classifier_type == 'hybrid':
         return "CNN-RNN Hybrid"
     elif classifier_type == 'gnn':
-        return "Graph Neural Network"
+        return "Graph Neural Network (ST-GCN)"
+    elif classifier_type == 'gnn_v0_bugfix':
+        return "Graph Neural Network (GCN+LSTM fixed)"
+    elif classifier_type == 'gnn_v2_gat':
+        return "Graph Neural Network (GAT)"
     elif classifier_type == 'dae':
         return "Denoising Autoencoder"
     elif classifier_type == 'vae':
@@ -1157,8 +1161,9 @@ class GNNClassifier:
     Graph Neural Network classifier that models spatial relationships between electrodes.
     Uses Graph Convolutional Network (GCN) layers to process multi-electrode neural signals.
     """
-    def __init__(self, random_state=42, max_iter=100, batch_size=64, learning_rate=0.001, val_size=0.2, tol=1e-4, patience=10,
-                 gcn_hidden=[64, 128], dropout=0.3, k_neighbors=10, distance_threshold=None):
+    def __init__(self, random_state=42, max_iter=150, batch_size=64, learning_rate=0.0005, val_size=0.2, tol=1e-4, patience=20,
+                 gcn_hidden=[128, 256], dropout=0.4, k_neighbors=8, distance_threshold=None,
+                 gnn_variant='gnn_v1_stgcn'):
         self.random_state = random_state
         self.max_iter = max_iter
         self.batch_size = batch_size
@@ -1176,6 +1181,7 @@ class GNNClassifier:
         self.distance_threshold = distance_threshold
         self.adjacency_matrix = None
         self.electrode_coordinates = None
+        self.gnn_variant = gnn_variant
         
     def _build_adjacency_matrix(self, coordinates, k_neighbors=None, distance_threshold=None):
         """
@@ -1231,121 +1237,257 @@ class GNNClassifier:
         return normalized_adjacency
     
     def _create_model(self, input_shape, n_classes, adjacency_matrix):
+
+        # ── Shared building block ──────────────────────────────────────────────
         class GraphConvolution(torch.nn.Module):
-            """Simple Graph Convolutional Layer"""
+            """Simple GCN layer: A_norm * X * W"""
             def __init__(self, in_features, out_features):
                 super().__init__()
-                self.in_features = in_features
-                self.out_features = out_features
                 self.weight = torch.nn.Parameter(torch.FloatTensor(in_features, out_features))
                 self.bias = torch.nn.Parameter(torch.FloatTensor(out_features))
-                self.reset_parameters()
-            
-            def reset_parameters(self):
                 torch.nn.init.xavier_uniform_(self.weight)
                 torch.nn.init.zeros_(self.bias)
-            
+
             def forward(self, x, adjacency):
-                # x: (batch, n_nodes, in_features)
-                # adjacency: (n_nodes, n_nodes)
-                # Output: (batch, n_nodes, out_features)
-                support = torch.matmul(x, self.weight)  # (batch, n_nodes, out_features)
-                output = torch.matmul(adjacency, support)  # (batch, n_nodes, out_features)
-                return output + self.bias
-        
-        class GCN(torch.nn.Module):
-            def __init__(self, input_shape, n_classes, adjacency_matrix, gcn_hidden=[64, 128], dropout=0.3):
+                # x: (B, N, in_features)   adjacency: (N, N)
+                return torch.matmul(adjacency, torch.matmul(x, self.weight)) + self.bias
+
+        # ── v0_bugfix: axis-fixed version of the original GCN+LSTM model ──────
+        class GCNFixed(torch.nn.Module):
+            def __init__(self, input_shape, n_classes, adjacency_matrix, gcn_hidden, dropout):
                 super().__init__()
                 self.adjacency_matrix = adjacency_matrix
-                self.dropout = dropout
-                
-                # Determine input feature size
-                if len(input_shape) == 2:
-                    # 2D input: (channels, time)
-                    n_nodes, n_time = input_shape
-                    input_features = 1  # Each node has 1 feature per time step
-                    self.use_lstm = True  # Use LSTM for temporal modeling
+                if len(input_shape) == 3:
+                    _, n_freq, _ = input_shape
+                    input_features = n_freq
                 else:
-                    # 3D input: (channels, freq, time)
-                    n_nodes, n_freq, n_time = input_shape
-                    input_features = n_freq  # Each node has n_freq features per time step
-                    self.use_lstm = True
-                    self.n_freq = n_freq
-                
-                # Build GCN layers for spatial feature extraction
-                self.gcn_layers = torch.nn.ModuleList()
+                    input_features = 1
                 layer_sizes = [input_features] + gcn_hidden
-                
-                for i in range(len(layer_sizes) - 1):
-                    self.gcn_layers.append(GraphConvolution(layer_sizes[i], layer_sizes[i+1]))
-                
-                # LSTM for temporal modeling after GCN
-                self.temporal_lstm = torch.nn.LSTM(gcn_hidden[-1], gcn_hidden[-1], 
-                                                    num_layers=1, batch_first=True, bidirectional=True)
-                
-                # Final classification layers
-                final_dim = gcn_hidden[-1] * 2  # *2 for bidirectional LSTM
-                self.fc1 = torch.nn.Linear(final_dim, 256)
+                self.gcn_layers = torch.nn.ModuleList(
+                    [GraphConvolution(layer_sizes[i], layer_sizes[i+1]) for i in range(len(layer_sizes)-1)]
+                )
+                self.temporal_lstm = torch.nn.LSTM(gcn_hidden[-1], gcn_hidden[-1],
+                                                   num_layers=1, batch_first=True, bidirectional=True)
+                self.fc1 = torch.nn.Linear(gcn_hidden[-1] * 2, 256)
                 self.fc2 = torch.nn.Linear(256, n_classes)
-                self.dropout_layer = torch.nn.Dropout(dropout)
+                self.drop = torch.nn.Dropout(dropout)
                 self.relu = torch.nn.ReLU()
-            
+
             def forward(self, x):
-                # x: (batch, n_nodes, ...)
-                batch_size = x.shape[0]
-                
-                if len(x.shape) == 3:
-                    # 2D input: (batch, n_nodes, n_time)
-                    batch_size, n_nodes, n_time = x.shape
-                    # Process each time step through GCN
+                # x: (B, E, T, F) for 4D or (B, E, T) for 3D
+                if x.ndim == 4:
+                    B, E, T, F = x.shape
                     time_features = []
-                    for t in range(n_time):
-                        x_t = x[:, :, t].unsqueeze(-1)  # (batch, n_nodes, 1)
-                        # Apply GCN layers for spatial feature extraction
-                        for gcn_layer in self.gcn_layers:
-                            x_t = gcn_layer(x_t, self.adjacency_matrix)
-                            x_t = self.relu(x_t)
-                            x_t = self.dropout_layer(x_t)
-                        # Pool over nodes: (batch, n_nodes, hidden) -> (batch, hidden)
-                        x_t = x_t.mean(dim=1)  # Global average pooling over electrodes
-                        time_features.append(x_t)
-                    
-                    # Stack: (batch, n_time, hidden)
-                    x = torch.stack(time_features, dim=1)
-                    
+                    for t in range(T):
+                        x_t = x[:, :, t, :]        # (B, E, F)
+                        for gcn in self.gcn_layers:
+                            x_t = self.relu(self.drop(gcn(x_t, self.adjacency_matrix)))
+                        time_features.append(x_t.mean(dim=1))  # (B, H)
+                    x = torch.stack(time_features, dim=1)       # (B, T, H)
                 else:
-                    # 3D input: (batch, n_nodes, n_freq, n_time)
-                    batch_size, n_nodes, n_freq, n_time = x.shape
-                    # Process each time step through GCN
+                    B, E, T = x.shape
                     time_features = []
-                    for t in range(n_time):
-                        x_t = x[:, :, :, t]  # (batch, n_nodes, n_freq)
-                        # Apply GCN layers for spatial feature extraction
-                        for gcn_layer in self.gcn_layers:
-                            x_t = gcn_layer(x_t, self.adjacency_matrix)
-                            x_t = self.relu(x_t)
-                            x_t = self.dropout_layer(x_t)
-                        # Pool over nodes: (batch, n_nodes, hidden) -> (batch, hidden)
-                        x_t = x_t.mean(dim=1)  # Global average pooling over electrodes
-                        time_features.append(x_t)
-                    
-                    # Stack: (batch, n_time, hidden)
+                    for t in range(T):
+                        x_t = x[:, :, t].unsqueeze(-1)          # (B, E, 1)
+                        for gcn in self.gcn_layers:
+                            x_t = self.relu(self.drop(gcn(x_t, self.adjacency_matrix)))
+                        time_features.append(x_t.mean(dim=1))
                     x = torch.stack(time_features, dim=1)
-                
-                # Apply LSTM for temporal modeling
-                lstm_out, _ = self.temporal_lstm(x)  # (batch, n_time, hidden*2)
-                # Global average pooling over time
-                x = lstm_out.mean(dim=1)  # (batch, hidden*2)
-                
-                # Final classification layers
-                x = self.dropout_layer(x)
-                x = self.relu(self.fc1(x))
-                x = self.dropout_layer(x)
-                x = self.fc2(x)
-                
-                return x
-        
-        return GCN(input_shape, n_classes, adjacency_matrix, self.gcn_hidden, self.dropout)
+                lstm_out, _ = self.temporal_lstm(x)
+                x = lstm_out.mean(dim=1)
+                return self.fc2(self.drop(self.relu(self.fc1(self.drop(x)))))
+
+        # ── v1_stgcn: Efficient Spatio-Temporal GCN (no per-timestep loop) ────
+        class STGCNModel(torch.nn.Module):
+            """
+            Spatio-Temporal GCN (ST-GCN) — default variant.
+
+            Replaces the original per-timestep GCN loop with a fully batched
+            Conv1d over the temporal dimension, then applies graph convolution
+            for spatial aggregation across electrodes.
+
+            Pipeline: (B, E, T, F)
+              → reshape (B*E, F, T)
+              → Conv1d(F→H, k=5) + BN + ReLU
+              → Conv1d(H→H, k=3) + BN + ReLU
+              → AdaptiveAvgPool1d(1) → (B, E, H)
+              → GCN(H→H) + BN + ReLU  [×2]
+              → mean pool over E → (B, H)
+              → FC → n_classes
+            """
+            def __init__(self, input_shape, n_classes, adjacency_matrix, gcn_hidden, dropout):
+                super().__init__()
+                self.adjacency_matrix = adjacency_matrix
+                if len(input_shape) == 3:
+                    _, n_timebins, n_freqs = input_shape
+                elif len(input_shape) == 2:
+                    n_timebins, n_freqs = input_shape[1], 1
+                else:
+                    n_timebins, n_freqs = 1, 1
+
+                H = gcn_hidden[0]
+                # Shared 1D temporal conv: treats freq as channels, time as length
+                self.temporal_conv = torch.nn.Sequential(
+                    torch.nn.Conv1d(n_freqs, H, kernel_size=5, padding=2),
+                    torch.nn.BatchNorm1d(H),
+                    torch.nn.ReLU(),
+                    torch.nn.Conv1d(H, H, kernel_size=3, padding=1),
+                    torch.nn.BatchNorm1d(H),
+                    torch.nn.ReLU(),
+                    torch.nn.AdaptiveAvgPool1d(1),   # collapse time → (B*E, H, 1)
+                )
+                # GCN spatial layers
+                layer_sizes = [H] + gcn_hidden[1:] + [gcn_hidden[-1]]
+                # Deduplicate: if gcn_hidden=[128,256], layer_sizes=[128,256,256] which is fine
+                # but let's just use gcn_hidden directly
+                layer_sizes = [H] + list(gcn_hidden)
+                self.gcn_layers = torch.nn.ModuleList(
+                    [GraphConvolution(layer_sizes[i], layer_sizes[i+1]) for i in range(len(layer_sizes)-1)]
+                )
+                self.gcn_bns = torch.nn.ModuleList(
+                    [torch.nn.BatchNorm1d(layer_sizes[i+1]) for i in range(len(layer_sizes)-1)]
+                )
+                self.fc1 = torch.nn.Linear(gcn_hidden[-1], 256)
+                self.fc2 = torch.nn.Linear(256, n_classes)
+                self.drop = torch.nn.Dropout(dropout)
+                self.relu = torch.nn.ReLU()
+
+            def forward(self, x):
+                if x.ndim == 3:
+                    # (B, E, T) → treat F=1
+                    x = x.unsqueeze(-1)         # (B, E, T, 1)
+                # x: (B, E, T, F)
+                B, E, T, F = x.shape
+                # Reshape for Conv1d: treat each electrode independently
+                x = x.reshape(B * E, F, T)     # (B*E, F, T)  [channels=F, length=T]
+                x = self.temporal_conv(x)       # (B*E, H, 1)
+                x = x.squeeze(-1)               # (B*E, H)
+                x = x.reshape(B, E, -1)         # (B, E, H)
+                # GCN spatial message passing
+                for gcn, bn in zip(self.gcn_layers, self.gcn_bns):
+                    x_new = gcn(x, self.adjacency_matrix)   # (B, E, H_out)
+                    # BN expects (B, C) or (B, C, L); reshape to apply over feature dim
+                    B2, E2, H2 = x_new.shape
+                    x_new = bn(x_new.reshape(B2 * E2, H2)).reshape(B2, E2, H2)
+                    x = self.relu(self.drop(x_new))
+                x = x.mean(dim=1)               # (B, H) global mean over electrodes
+                return self.fc2(self.drop(self.relu(self.fc1(self.drop(x)))))
+
+        # ── v2_gat: Graph Attention Network (multi-head) ─────────────────────
+        class GATModel(torch.nn.Module):
+            """
+            Spatio-Temporal Graph Attention Network (ST-GAT).
+
+            Same temporal conv front-end as ST-GCN, but replaces fixed graph
+            convolution with multi-head attention (4 heads). Attention weights
+            are computed over concatenated node-pair features and masked to the
+            kNN adjacency, allowing the model to learn task-specific electrode
+            importance.
+
+            Attention (per head):
+              e_ij = LeakyReLU( a^T [W h_i || W h_j] )   (masked to kNN edges)
+              α_ij = softmax_j( e_ij )
+              h_i' = ELU( Σ_j α_ij · W h_j )
+
+            Pipeline: (B, E, T, F)
+              → [same temporal conv as ST-GCN] → (B, E, H)
+              → GAT(H→H, 4 heads) + BN + ELU  [×2]
+              → mean pool over E → (B, H)
+              → FC → n_classes
+            """
+            def __init__(self, input_shape, n_classes, adjacency_matrix, gcn_hidden, dropout, n_heads=4):
+                super().__init__()
+                self.adjacency_mask = (adjacency_matrix > 0).float()  # binary mask
+                if len(input_shape) == 3:
+                    _, n_timebins, n_freqs = input_shape
+                else:
+                    n_timebins, n_freqs = 1, 1
+
+                H = gcn_hidden[0]
+                self.temporal_conv = torch.nn.Sequential(
+                    torch.nn.Conv1d(n_freqs, H, kernel_size=5, padding=2),
+                    torch.nn.BatchNorm1d(H),
+                    torch.nn.ReLU(),
+                    torch.nn.Conv1d(H, H, kernel_size=3, padding=1),
+                    torch.nn.BatchNorm1d(H),
+                    torch.nn.ReLU(),
+                    torch.nn.AdaptiveAvgPool1d(1),
+                )
+
+                # GAT layers: each reduces to gcn_hidden[i+1]
+                self.gat_layers = torch.nn.ModuleList()
+                self.gat_bns = torch.nn.ModuleList()
+                layer_sizes = [H] + list(gcn_hidden)
+                for i in range(len(layer_sizes) - 1):
+                    in_f, out_f = layer_sizes[i], layer_sizes[i+1]
+                    head_dim = max(out_f // n_heads, 1)
+                    actual_heads = out_f // head_dim
+                    self.gat_layers.append(torch.nn.ModuleDict({
+                        'W': torch.nn.Linear(in_f, head_dim * actual_heads, bias=False),
+                        'a': torch.nn.Linear(2 * head_dim, 1, bias=False),
+                        'n_heads': torch.nn.Parameter(torch.tensor(float(actual_heads)), requires_grad=False),
+                        'head_dim': torch.nn.Parameter(torch.tensor(float(head_dim)), requires_grad=False),
+                    }))
+                    self.gat_bns.append(torch.nn.BatchNorm1d(head_dim * actual_heads))
+
+                final_h = gcn_hidden[-1]
+                self.fc1 = torch.nn.Linear(final_h, 256)
+                self.fc2 = torch.nn.Linear(256, n_classes)
+                self.drop = torch.nn.Dropout(dropout)
+                self.lrelu = torch.nn.LeakyReLU(0.2)
+                self.elu = torch.nn.ELU()
+
+            def _gat_forward(self, x, layer_dict, bn, mask):
+                # x: (B, N, in_features)
+                n_heads = int(layer_dict['n_heads'].item())
+                head_dim = int(layer_dict['head_dim'].item())
+                B, N, _ = x.shape
+                Wh = layer_dict['W'](x)                             # (B, N, n_heads*head_dim)
+                Wh = Wh.view(B, N, n_heads, head_dim)              # (B, N, H, D)
+                # Attention: concatenate pairs
+                Wh_i = Wh.unsqueeze(2).expand(-1, -1, N, -1, -1)  # (B, N, N, H, D)
+                Wh_j = Wh.unsqueeze(1).expand(-1, N, -1, -1, -1)  # (B, N, N, H, D)
+                e = layer_dict['a'](torch.cat([Wh_i, Wh_j], dim=-1)).squeeze(-1)  # (B, N, N, H)
+                e = self.lrelu(e)
+                # Mask out non-edges (set to -1e9 before softmax)
+                mask_4d = mask.unsqueeze(0).unsqueeze(-1)          # (1, N, N, 1)
+                e = e * mask_4d + (1 - mask_4d) * (-1e9)
+                alpha = torch.softmax(e, dim=2)                    # (B, N, N, H)
+                alpha = self.drop(alpha)
+                # Aggregate
+                out = (alpha.unsqueeze(-1) * Wh_j).sum(dim=2)     # (B, N, H, D)
+                out = out.reshape(B, N, n_heads * head_dim)        # (B, N, H*D)
+                # BN
+                B2, N2, F2 = out.shape
+                out = bn(out.reshape(B2 * N2, F2)).reshape(B2, N2, F2)
+                return self.elu(self.drop(out))
+
+            def forward(self, x):
+                if x.ndim == 3:
+                    x = x.unsqueeze(-1)
+                B, E, T, F = x.shape
+                x = x.reshape(B * E, F, T)
+                x = self.temporal_conv(x).squeeze(-1)  # (B*E, H)
+                x = x.reshape(B, E, -1)                # (B, E, H)
+                mask = self.adjacency_mask.to(x.device)
+                for layer_dict, bn in zip(self.gat_layers, self.gat_bns):
+                    x = self._gat_forward(x, layer_dict, bn, mask)
+                x = x.mean(dim=1)                      # (B, H)
+                return self.fc2(self.drop(self.relu(self.fc1(self.drop(x)))))
+
+            def relu(self, x):
+                return torch.nn.functional.relu(x)
+
+        # ── Dispatch ──────────────────────────────────────────────────────────
+        variant = self.gnn_variant
+        if variant == 'gnn_v0_bugfix':
+            return GCNFixed(input_shape, n_classes, adjacency_matrix, self.gcn_hidden, self.dropout)
+        elif variant == 'gnn_v1_stgcn':
+            return STGCNModel(input_shape, n_classes, adjacency_matrix, self.gcn_hidden, self.dropout)
+        elif variant == 'gnn_v2_gat':
+            return GATModel(input_shape, n_classes, adjacency_matrix, self.gcn_hidden, self.dropout)
+        else:
+            raise ValueError(f"Unknown gnn_variant: {variant}. Choose from gnn_v0_bugfix, gnn_v1_stgcn, gnn_v2_gat.")
     
     def fit(self, X, y, electrode_coordinates=None):
         # Convert to torch tensors
@@ -1444,7 +1586,7 @@ class GNNClassifier:
                 
                 if val_auroc > best_val_auroc:
                     best_val_auroc = val_auroc
-                    best_model_state = self.model.state_dict().copy()
+                    best_model_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                     patience_counter = 0
                 else:
                     patience_counter += 1
