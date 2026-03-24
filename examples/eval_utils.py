@@ -1415,20 +1415,21 @@ class GNNClassifier:
                 )
 
                 # GAT layers: each reduces to gcn_hidden[i+1]
+                class GATLayer(torch.nn.Module):
+                    def __init__(self, in_f, out_f, n_heads):
+                        super().__init__()
+                        self.head_dim = max(out_f // n_heads, 1)
+                        self.n_heads = out_f // self.head_dim
+                        self.W = torch.nn.Linear(in_f, self.head_dim * self.n_heads, bias=False)
+                        self.a = torch.nn.Linear(2 * self.head_dim, 1, bias=False)
+
                 self.gat_layers = torch.nn.ModuleList()
                 self.gat_bns = torch.nn.ModuleList()
                 layer_sizes = [H] + list(gcn_hidden)
                 for i in range(len(layer_sizes) - 1):
                     in_f, out_f = layer_sizes[i], layer_sizes[i+1]
-                    head_dim = max(out_f // n_heads, 1)
-                    actual_heads = out_f // head_dim
-                    self.gat_layers.append(torch.nn.ModuleDict({
-                        'W': torch.nn.Linear(in_f, head_dim * actual_heads, bias=False),
-                        'a': torch.nn.Linear(2 * head_dim, 1, bias=False),
-                        'n_heads': torch.nn.Parameter(torch.tensor(float(actual_heads)), requires_grad=False),
-                        'head_dim': torch.nn.Parameter(torch.tensor(float(head_dim)), requires_grad=False),
-                    }))
-                    self.gat_bns.append(torch.nn.BatchNorm1d(head_dim * actual_heads))
+                    self.gat_layers.append(GATLayer(in_f, out_f, n_heads))
+                    self.gat_bns.append(torch.nn.BatchNorm1d(self.gat_layers[-1].head_dim * self.gat_layers[-1].n_heads))
 
                 final_h = gcn_hidden[-1]
                 self.fc1 = torch.nn.Linear(final_h, 256)
@@ -1437,19 +1438,18 @@ class GNNClassifier:
                 self.lrelu = torch.nn.LeakyReLU(0.2)
                 self.elu = torch.nn.ELU()
 
-            def _gat_forward(self, x, layer_dict, bn, mask):
+            def _gat_forward(self, x, layer, bn, mask):
                 # x: (B, N, in_features)
-                n_heads = int(layer_dict['n_heads'].item())
-                head_dim = int(layer_dict['head_dim'].item())
+                n_heads, head_dim = layer.n_heads, layer.head_dim
                 B, N, _ = x.shape
-                Wh = layer_dict['W'](x)                             # (B, N, n_heads*head_dim)
+                Wh = layer.W(x)                                     # (B, N, n_heads*head_dim)
                 Wh = Wh.view(B, N, n_heads, head_dim)              # (B, N, H, D)
                 # Attention: concatenate pairs
                 Wh_i = Wh.unsqueeze(2).expand(-1, -1, N, -1, -1)  # (B, N, N, H, D)
                 Wh_j = Wh.unsqueeze(1).expand(-1, N, -1, -1, -1)  # (B, N, N, H, D)
-                e = layer_dict['a'](torch.cat([Wh_i, Wh_j], dim=-1)).squeeze(-1)  # (B, N, N, H)
+                e = layer.a(torch.cat([Wh_i, Wh_j], dim=-1)).squeeze(-1)  # (B, N, N, H)
                 e = self.lrelu(e)
-                # Mask out non-edges (set to -1e9 before softmax)
+                # Mask out non-edges
                 mask_4d = mask.unsqueeze(0).unsqueeze(-1)          # (1, N, N, 1)
                 e = e * mask_4d + (1 - mask_4d) * (-1e9)
                 alpha = torch.softmax(e, dim=2)                    # (B, N, N, H)
