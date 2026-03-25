@@ -13,6 +13,9 @@ EVAL_NAMES="onset,gpt2_surprisal,speech"
 SPLIT="WithinSession"
 SAVE_DIR="eval_results/gnn_benchmark"
 
+export NEUROPROBE_FEATURES_FILE="${NEUROPROBE_FEATURES_FILE:-features.csv}"
+export ROOT_DIR_BRAINTREEBANK="${ROOT_DIR_BRAINTREEBANK:-/storage/eg99/braintreebank_data}"
+
 for VARIANT in gnn_v1_stgcn gnn_v2_gat; do
     for GRAPH in coords functional; do
         echo "========================================"

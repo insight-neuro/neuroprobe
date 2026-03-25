@@ -31,7 +31,8 @@ GNN_GRAPH="${GNN_GRAPH:-functional}"
 SAVE_BASE="${SAVE_BASE:-eval_results/gnn_competition}"
 
 # Data root — override via env var or edit here
-export ROOT_DIR_BRAINTREEBANK="${ROOT_DIR_BRAINTREEBANK:-/storage/czw/braintreebank_data/all_subject_data}"
+export ROOT_DIR_BRAINTREEBANK="${ROOT_DIR_BRAINTREEBANK:-/storage/eg99/braintreebank_data}"
+export NEUROPROBE_FEATURES_FILE="${NEUROPROBE_FEATURES_FILE:-features.csv}"
 
 # All 16 Neuroprobe tasks (neuroprobe/config.py NEUROPROBE_TASKS_MAPPING)
 ALL_TASKS="onset,speech,volume,delta_volume,pitch,word_index,word_gap,gpt2_surprisal,word_head_pos,word_part_speech,word_length,global_flow,local_flow,frame_brightness,face_num,scene_onset"
