@@ -4,6 +4,9 @@ before running the full GNN pipeline.
 
 Usage:
     ROOT_DIR_BRAINTREEBANK=/storage/eg99/braintreebank_data python check_data.py
+
+    # If using original features.csv instead of test_new_features.csv:
+    NEUROPROBE_FEATURES_FILE=features.csv ROOT_DIR_BRAINTREEBANK=... python check_data.py
 """
 import os
 import sys
@@ -13,7 +16,10 @@ if not ROOT_DIR:
     print("ERROR: ROOT_DIR_BRAINTREEBANK not set")
     sys.exit(1)
 
-print(f"Checking data root: {ROOT_DIR}\n")
+FEATURES_FILE = os.environ.get('NEUROPROBE_FEATURES_FILE', 'test_new_features.csv')
+
+print(f"Checking data root: {ROOT_DIR}")
+print(f"Features file: {FEATURES_FILE}\n")
 
 LITE_SUBJECT_TRIALS = [
     (1, 1), (1, 2),
@@ -64,15 +70,14 @@ check(os.path.join(ROOT_DIR, 'corrupted_elec.json'), 'corrupted_elec.json')
 check(os.path.join(ROOT_DIR, 'localization/elec_coords_full.csv'), 'localization/elec_coords_full.csv')
 
 # --- Transcript files (one per movie) ---
-# Discover movie names from subject_timings or just check known movies
-print("\n=== Transcript files (test_new_features.csv) ===")
+print(f"\n=== Transcript files ({FEATURES_FILE}) ===")
 transcripts_dir = os.path.join(ROOT_DIR, 'transcripts')
 if os.path.isdir(transcripts_dir):
     movies = sorted(os.listdir(transcripts_dir))
     for movie in movies:
         check(
-            os.path.join(ROOT_DIR, f'transcripts/{movie}/test_new_features.csv'),
-            f"transcripts/{movie}/test_new_features.csv"
+            os.path.join(ROOT_DIR, f'transcripts/{movie}/{FEATURES_FILE}'),
+            f"transcripts/{movie}/{FEATURES_FILE}"
         )
 else:
     print(f"  [MISSING] transcripts/ directory not found at {transcripts_dir}")
