@@ -1163,7 +1163,7 @@ class GNNClassifier:
     """
     def __init__(self, random_state=42, max_iter=150, batch_size=64, learning_rate=0.0005, val_size=0.2, tol=1e-4, patience=20,
                  gcn_hidden=[128, 256], dropout=0.4, k_neighbors=8, distance_threshold=None,
-                 gnn_variant='gnn_v1_stgcn'):
+                 gnn_variant='gnn_v1_stgcn', gnn_graph='coords'):
         self.random_state = random_state
         self.max_iter = max_iter
         self.batch_size = batch_size
@@ -1182,7 +1182,34 @@ class GNNClassifier:
         self.adjacency_matrix = None
         self.electrode_coordinates = None
         self.gnn_variant = gnn_variant
-        
+        self.gnn_graph = gnn_graph  # 'coords' or 'functional'
+
+    def _build_functional_adjacency_matrix(self, X_train):
+        """
+        Build adjacency matrix from functional connectivity (Pearson correlation)
+        computed from training data only — no test leakage.
+
+        X_train: (N, E, ...) tensor
+        Returns: (E, E) normalised adjacency matrix on self.device
+        """
+        N, E = X_train.shape[0], X_train.shape[1]
+        x = X_train.reshape(N, E, -1)           # (N, E, T*F)
+        x = x.permute(1, 0, 2).reshape(E, -1)   # (E, N*T*F)
+        x = x - x.mean(dim=1, keepdim=True)
+        x = x / x.std(dim=1, keepdim=True).clamp(min=1e-8)
+        corr = (x @ x.T) / x.shape[1]           # (E, E) Pearson correlation
+        corr = corr.to(self.device)
+        k = min(self.k_neighbors, E - 1)
+        _, indices = torch.topk(corr, k=k + 1, dim=1)
+        adjacency = torch.zeros_like(corr)
+        adjacency.scatter_(1, indices, 1.0)
+        adjacency = (adjacency + adjacency.T) / 2
+        adjacency = (adjacency > 0).float()
+        adjacency += torch.eye(E, device=self.device)
+        degree = adjacency.sum(dim=1)
+        d_inv_sqrt = torch.diag(torch.pow(degree + 1e-8, -0.5))
+        return d_inv_sqrt @ adjacency @ d_inv_sqrt
+
     def _build_adjacency_matrix(self, coordinates, k_neighbors=None, distance_threshold=None):
         """
         Build adjacency matrix from electrode coordinates.
@@ -1512,17 +1539,20 @@ class GNNClassifier:
             self.electrode_coordinates = torch.FloatTensor(electrode_coordinates)
             electrode_coordinates = self.electrode_coordinates
         
-        # Build adjacency matrix
-        self.adjacency_matrix = self._build_adjacency_matrix(electrode_coordinates)
-        self.adjacency_matrix = self.adjacency_matrix.to(self.device)
-        
         # Create train/val split
         val_size = int(self.val_size * len(X))
         train_indices = np.arange(len(X) - val_size)
         val_indices = np.arange(len(X) - val_size, len(X))
-        
+
         X_train, y_train = X[train_indices], y[train_indices]
         X_val, y_val = X[val_indices], y[val_indices]
+
+        # Build adjacency matrix (after split so functional graph uses train only)
+        if self.gnn_graph == 'functional':
+            self.adjacency_matrix = self._build_functional_adjacency_matrix(X_train)
+        else:
+            self.adjacency_matrix = self._build_adjacency_matrix(electrode_coordinates)
+        self.adjacency_matrix = self.adjacency_matrix.to(self.device)
         
         log(f"Training with {len(X_train)} samples, validating with {len(X_val)} samples", priority=3, indent=2)
         

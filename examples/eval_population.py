@@ -82,6 +82,9 @@ parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'tr
 parser.add_argument('--gnn_variant', type=str, default='gnn_v1_stgcn',
                     choices=['gnn_v0_bugfix', 'gnn_v1_stgcn', 'gnn_v2_gat'],
                     help='GNN architecture variant (only used when --classifier_type gnn)')
+parser.add_argument('--gnn_graph', type=str, default='coords',
+                    choices=['coords', 'functional'],
+                    help='GNN graph construction: coords=kNN from electrode positions, functional=Pearson correlation from training data')
 parser.add_argument('--brainbert.path', type=str, default=None, help='Path to BrainBERT directory (if not provided, will try to auto-detect)')
 parser.add_argument('--brainbert.pretrained', type=lambda x: x.lower() == 'true', default=True, help='Whether to use pretrained BrainBERT weights (default: True)')
 parser.add_argument('--brainbert.frozen', type=lambda x: x.lower() == 'true', default=True, help='Whether to freeze BrainBERT weights (default: True)')
@@ -119,6 +122,7 @@ preprocess_parameters = {
 
 classifier_type = args.classifier_type
 gnn_variant = args.gnn_variant
+gnn_graph = args.gnn_graph
 
 # BrainBERT-specific arguments
 brainbert_path = getattr(args, 'brainbert.path', None)
@@ -469,7 +473,7 @@ for eval_name in eval_names:
                 clf = HybridCNNRNNClassifier(random_state=seed)
                 clf.fit(X_train, y_train)
             elif classifier_type == 'gnn':
-                clf = GNNClassifier(random_state=seed, gnn_variant=gnn_variant)
+                clf = GNNClassifier(random_state=seed, gnn_variant=gnn_variant, gnn_graph=gnn_graph)
                 clf.fit(X_train, y_train, electrode_coordinates=electrode_coordinates)
             elif classifier_type == 'dae':
                 clf = DenoisingAutoencoderClassifier(random_state=seed)
