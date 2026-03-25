@@ -8,7 +8,7 @@
 set -e
 
 SUBJECT_ID=1
-TRIAL_ID=0
+TRIAL_ID=1
 EVAL_NAMES="onset,gpt2_surprisal,speech"
 SPLIT="WithinSession"
 SAVE_DIR="eval_results/gnn_benchmark"
