@@ -7,7 +7,7 @@ from sklearn import preprocessing
 from .config import *
 from .braintreebank_subject import BrainTreebankSubject
 
-NEW_FEATURES_FILE_NAME = "test_new_features.csv"
+NEW_FEATURES_FILE_NAME = os.environ.get("NEUROPROBE_FEATURES_FILE", "test_new_features.csv")
 
 # Defining the names of evaluations and preparing them for downstream processing
 single_float_variables_name_remapping = {
