@@ -7,12 +7,12 @@ ssh devon
 
 ## 2. Activate conda
 ```bash
+export HOME=/storage/eg99
 export CONDARC=/storage/eg99/.condarc
-export CONDA_ENVS_PATH=/storage/eg99/anaconda3/envs
 source /storage/eg99/anaconda3/etc/profile.d/conda.sh
 conda activate neuroprobe
+which python  # should show /storage/eg99/anaconda3/envs/neuroprobe/bin/python
 ```
-If you get a permission denied error on `.condarc`, the `export CONDARC` line above fixes it by redirecting conda config away from AFS.
 
 ## 3. Get latest code
 ```bash
