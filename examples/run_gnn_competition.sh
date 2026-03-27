@@ -6,7 +6,7 @@
 #   - CrossSession:  train on one trial, test on another (same subject)
 #   - CrossSubject:  train on subject 2 trial 4, test on all other Lite pairs
 #
-# All 16 Neuroprobe tasks, all 12 Lite subject/trial pairs.
+# All 15 official Neuroprobe tasks, all 12 Lite subject/trial pairs.
 #
 # Usage:
 #   cd examples/
@@ -34,8 +34,8 @@ SAVE_BASE="${SAVE_BASE:-eval_results/gnn_competition}"
 export ROOT_DIR_BRAINTREEBANK="${ROOT_DIR_BRAINTREEBANK:-/storage/eg99/braintreebank_data}"
 export NEUROPROBE_FEATURES_FILE="${NEUROPROBE_FEATURES_FILE:-features.csv}"
 
-# All 16 Neuroprobe tasks (neuroprobe/config.py NEUROPROBE_TASKS_MAPPING)
-ALL_TASKS="onset,speech,volume,delta_volume,pitch,word_index,word_gap,gpt2_surprisal,word_head_pos,word_part_speech,word_length,global_flow,local_flow,frame_brightness,face_num,scene_onset"
+# All 15 official Neuroprobe tasks (scene_onset excluded — added in fork, not part of benchmark)
+ALL_TASKS="onset,speech,volume,delta_volume,pitch,word_index,word_gap,gpt2_surprisal,word_head_pos,word_part_speech,word_length,global_flow,local_flow,frame_brightness,face_num"
 
 # Neuroprobe Lite subject/trial pairs (neuroprobe/config.py NEUROPROBE_LITE_SUBJECT_TRIALS)
 # CrossSubject train pair is (2, 4) — defined as DS_DM_TRAIN_SUBJECT_ID/TRIAL_ID in config.py
