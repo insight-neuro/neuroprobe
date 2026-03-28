@@ -105,14 +105,14 @@ done
 echo ""
 
 # --- CrossSubject ---
-# Fixed training pair: subject 2 trial 4 (DS_DM_TRAIN_SUBJECT_ID/TRIAL_ID)
-# Skip (2, 4) as test — it is the training data
-echo "--- CrossSubject (train: sub2 trial4 — 11 test pairs) ---"
+# Fixed training subject: subject 2 (DS_DM_TRAIN_SUBJECT_ID)
+# Skip ALL subject 2 pairs as test — entire subject 2 is used as training data
+echo "--- CrossSubject (train: sub2 — 10 test pairs) ---"
 for ST in "${SUBJECT_TRIALS[@]}"; do
     SUBJECT_ID=$(echo "$ST" | cut -d' ' -f1)
     TRIAL_ID=$(echo "$ST" | cut -d' ' -f2)
-    if [ "$SUBJECT_ID" = "2" ] && [ "$TRIAL_ID" = "4" ]; then
-        echo "  Skipping sub2 trial4 (used as CrossSubject training data)"
+    if [ "$SUBJECT_ID" = "2" ]; then
+        echo "  Skipping sub2 trial${TRIAL_ID} (subject 2 used as CrossSubject training data)"
         continue
     fi
     run_eval "$SUBJECT_ID" "$TRIAL_ID" "CrossSubject"
