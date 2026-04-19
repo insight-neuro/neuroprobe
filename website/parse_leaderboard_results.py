@@ -82,6 +82,7 @@ class LeaderboardParser:
             for session_name, session_data in task_data.get('evaluation_results', {}).items():
                 population_data = session_data.get('population', {})
                 for time_bin_name, time_bin_data in population_data.items():
+                    if time_bin_name != 'one_second_after_onset': continue
                     folds = time_bin_data.get('folds', [])
                     for fold in folds:
                         test_roc_auc = fold.get('test_roc_auc')
