@@ -4,8 +4,12 @@
 \hline
 Model & Overall & Sentence Onset & Speech & Volume \\
 \hline
-Linear (Laplacian+spectrogram OLD) & \textbf{0.660 $\pm$ 0.005} & \textbf{0.891 $\pm$ 0.018} & \textbf{0.883 $\pm$ 0.018} & 0.717 $\pm$ 0.032 \\
-Linear (Laplacian+spectrogram NEW) & 0.660 $\pm$ 0.005 & 0.888 $\pm$ 0.017 & 0.882 $\pm$ 0.017 & \textbf{0.717 $\pm$ 0.036} \\
+Linear (voltage) & 0.604 $\pm$ 0.004 & 0.792 $\pm$ 0.023 & 0.645 $\pm$ 0.024 & 0.597 $\pm$ 0.015 \\
+Linear (spectrogram) & 0.625 $\pm$ 0.006 & 0.837 $\pm$ 0.027 & 0.816 $\pm$ 0.029 & \textbf{0.719 $\pm$ 0.043} \\
+Linear (Laplacian+spectrogram) & \textbf{0.660 $\pm$ 0.005} & \textbf{0.888 $\pm$ 0.017} & \textbf{0.882 $\pm$ 0.017} & 0.717 $\pm$ 0.036 \\
+BrainBERT (untrained, frozen) & 0.581 $\pm$ 0.004 & 0.749 $\pm$ 0.029 & 0.598 $\pm$ 0.021 & 0.566 $\pm$ 0.008 \\
+BrainBERT (frozen) & 0.585 $\pm$ 0.004 & 0.754 $\pm$ 0.029 & 0.606 $\pm$ 0.022 & 0.576 $\pm$ 0.010 \\
+PopulationTransformer & 0.549 $\pm$ 0.005 & 0.741 $\pm$ 0.040 & 0.672 $\pm$ 0.039 & 0.562 $\pm$ 0.016 \\
 \hline
 \end{tabular}
 \hspace{1em}
@@ -13,8 +17,12 @@ Linear (Laplacian+spectrogram NEW) & 0.660 $\pm$ 0.005 & 0.888 $\pm$ 0.017 & 0.8
 \hline
 Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
 \hline
-Linear (Laplacian+spectrogram OLD) & \textbf{0.762 $\pm$ 0.026} & 0.578 $\pm$ 0.016 & \textbf{0.740 $\pm$ 0.028} & 0.612 $\pm$ 0.014 \\
-Linear (Laplacian+spectrogram NEW) & 0.756 $\pm$ 0.027 & \textbf{0.584 $\pm$ 0.015} & 0.740 $\pm$ 0.030 & \textbf{0.613 $\pm$ 0.015} \\
+Linear (voltage) & 0.742 $\pm$ 0.022 & 0.535 $\pm$ 0.007 & \textbf{0.742 $\pm$ 0.020} & 0.598 $\pm$ 0.015 \\
+Linear (spectrogram) & 0.711 $\pm$ 0.027 & 0.566 $\pm$ 0.010 & 0.651 $\pm$ 0.031 & 0.582 $\pm$ 0.019 \\
+Linear (Laplacian+spectrogram) & \textbf{0.756 $\pm$ 0.027} & \textbf{0.584 $\pm$ 0.015} & 0.740 $\pm$ 0.030 & \textbf{0.613 $\pm$ 0.015} \\
+BrainBERT (untrained, frozen) & 0.690 $\pm$ 0.022 & 0.519 $\pm$ 0.007 & 0.677 $\pm$ 0.028 & 0.581 $\pm$ 0.016 \\
+BrainBERT (frozen) & 0.699 $\pm$ 0.023 & 0.527 $\pm$ 0.010 & 0.679 $\pm$ 0.028 & 0.581 $\pm$ 0.017 \\
+PopulationTransformer & 0.622 $\pm$ 0.022 & 0.527 $\pm$ 0.011 & 0.528 $\pm$ 0.022 & 0.523 $\pm$ 0.008 \\
 \hline
 \end{tabular}
 \hspace{1em}
@@ -22,8 +30,12 @@ Linear (Laplacian+spectrogram NEW) & 0.756 $\pm$ 0.027 & \textbf{0.584 $\pm$ 0.0
 \hline
 Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
 \hline
-Linear (Laplacian+spectrogram OLD) & \textbf{0.613 $\pm$ 0.017} & 0.602 $\pm$ 0.012 & \textbf{0.605 $\pm$ 0.012} & \textbf{0.618 $\pm$ 0.015} \\
-Linear (Laplacian+spectrogram NEW) & 0.608 $\pm$ 0.017 & \textbf{0.603 $\pm$ 0.012} & 0.601 $\pm$ 0.016 & 0.617 $\pm$ 0.018 \\
+Linear (voltage) & 0.575 $\pm$ 0.011 & 0.569 $\pm$ 0.009 & 0.579 $\pm$ 0.013 & 0.595 $\pm$ 0.014 \\
+Linear (spectrogram) & 0.567 $\pm$ 0.017 & 0.564 $\pm$ 0.012 & 0.557 $\pm$ 0.012 & 0.565 $\pm$ 0.019 \\
+Linear (Laplacian+spectrogram) & \textbf{0.608 $\pm$ 0.017} & \textbf{0.603 $\pm$ 0.012} & \textbf{0.601 $\pm$ 0.016} & \textbf{0.617 $\pm$ 0.018} \\
+BrainBERT (untrained, frozen) & 0.579 $\pm$ 0.012 & 0.581 $\pm$ 0.012 & 0.557 $\pm$ 0.011 & 0.569 $\pm$ 0.014 \\
+BrainBERT (frozen) & 0.580 $\pm$ 0.014 & 0.582 $\pm$ 0.012 & 0.556 $\pm$ 0.012 & 0.571 $\pm$ 0.015 \\
+PopulationTransformer & 0.517 $\pm$ 0.009 & 0.516 $\pm$ 0.012 & 0.507 $\pm$ 0.008 & 0.521 $\pm$ 0.009 \\
 \hline
 \end{tabular}
 \hspace{1em}
@@ -31,8 +43,12 @@ Linear (Laplacian+spectrogram NEW) & 0.608 $\pm$ 0.017 & \textbf{0.603 $\pm$ 0.0
 \hline
 Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
 \hline
-Linear (Laplacian+spectrogram OLD) & 0.625 $\pm$ 0.013 & 0.607 $\pm$ 0.017 & 0.521 $\pm$ 0.025 & \textbf{0.530 $\pm$ 0.014} \\
-Linear (Laplacian+spectrogram NEW) & \textbf{0.630 $\pm$ 0.014} & \textbf{0.615 $\pm$ 0.016} & \textbf{0.528 $\pm$ 0.027} & 0.519 $\pm$ 0.017 \\
+Linear (voltage) & 0.536 $\pm$ 0.008 & 0.541 $\pm$ 0.007 & 0.507 $\pm$ 0.016 & 0.503 $\pm$ 0.011 \\
+Linear (spectrogram) & 0.604 $\pm$ 0.019 & 0.596 $\pm$ 0.020 & 0.522 $\pm$ 0.012 & \textbf{0.522 $\pm$ 0.010} \\
+Linear (Laplacian+spectrogram) & \textbf{0.630 $\pm$ 0.014} & \textbf{0.615 $\pm$ 0.016} & \textbf{0.528 $\pm$ 0.027} & 0.519 $\pm$ 0.017 \\
+BrainBERT (untrained, frozen) & 0.525 $\pm$ 0.006 & 0.520 $\pm$ 0.005 & 0.495 $\pm$ 0.006 & 0.506 $\pm$ 0.005 \\
+BrainBERT (frozen) & 0.527 $\pm$ 0.005 & 0.520 $\pm$ 0.005 & 0.510 $\pm$ 0.012 & 0.509 $\pm$ 0.006 \\
+PopulationTransformer & 0.515 $\pm$ 0.015 & 0.501 $\pm$ 0.012 & 0.489 $\pm$ 0.012 & 0.500 $\pm$ 0.009 \\
 \hline
 \end{tabular}
 \caption{Performance comparison across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}

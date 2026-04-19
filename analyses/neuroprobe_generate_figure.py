@@ -32,49 +32,43 @@ n_fig_legend_cols = 1
 # assert split_type == 'SS_DM', 'Split type must be SS_DM'
 
 models = [
-    # {
-    #     'name': 'Linear (raw voltage)',
-    #     'short_name': 'Linear (voltage)',
-    #     'color_palette': 'viridis',
-    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_voltage/'
-    # },
-    # {
-    #     'name': 'Linear (spectrogram)',
-    #     'short_name': 'Linear (spectrogram)',
-    #     'color_palette': 'viridis', 
-    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
-    # },
     {
-        'name': 'Linear (Laplacian re-referencing + spectrogram OLD)',
-        'short_name': 'Linear (Laplacian+spectrogram OLD)',
-        'color_palette': 'viridis', 
-        'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/neuroprobe/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'name': 'Linear (raw voltage)',
+        'short_name': 'Linear (voltage)',
+        'color_palette': 'viridis',
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_voltage/'
     },
     {
-        'name': 'Linear (Laplacian re-referencing + spectrogram NEW)',
-        'short_name': 'Linear (Laplacian+spectrogram NEW)',
-        'color_palette': 'viridis', 
-        'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+        'name': 'Linear (spectrogram)',
+        'short_name': 'Linear (spectrogram)',
+        'color_palette': 'viridis',
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_stft_abs_nperseg512_poverlap0.75_maxfreq150/'
     },
-    # {
-    #     'name': 'BrainBERT (untrained, frozen)',
-    #     'color_palette': 'viridis', 
-    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/BrainBERT/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
-    #     'pad_x': 1,
-    # },
-    # {
-    #     'name': 'BrainBERT (frozen; Wang et al. 2023)',
-    #     'short_name': 'BrainBERT (frozen)',
-    #     'color_palette': 'viridis', 
-    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/BrainBERT/eval_results_{split_type}/brainbert_keepall/',
-    # },
-    # {
-    #     'name': 'PopulationTransformer (Chau et al. 2024)',
-    #     'short_name': 'PopulationTransformer',
-    #     'color_palette': 'viridis', 
-    #     'eval_results_path': f'/home/zaho/orcd/pool/np2/neuroprobe/data/arxiv_paper_eval_results/PopT/eval_results_{split_type}/',
-    #     'pad_x': 1,
-    # },
+    {
+        'name': 'Linear (Laplacian re-referencing + spectrogram)',
+        'short_name': 'Linear (Laplacian+spectrogram)',
+        'color_palette': 'viridis', 
+        'eval_results_path': f'./data/eval_results_lite_{split_type}/linear_laplacian-stft_abs_nperseg512_poverlap0.75_maxfreq150/'
+    },
+    {
+        'name': 'BrainBERT (untrained, frozen)',
+        'color_palette': 'viridis', 
+        'eval_results_path': f'./data/new_models_eval_results/brainbert/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
+        'pad_x': 1,
+    },
+    {
+        'name': 'BrainBERT (frozen; Wang et al. 2023)',
+        'short_name': 'BrainBERT (frozen)',
+        'color_palette': 'viridis', 
+        'eval_results_path': f'./data/new_models_eval_results/brainbert/eval_results_{split_type}/brainbert_keepall/',
+    },
+    {
+        'name': 'PopulationTransformer (Chau et al. 2024)',
+        'short_name': 'PopulationTransformer',
+        'color_palette': 'viridis', 
+        'eval_results_path': f'./data/new_models_eval_results/popt_lite/eval_results_{split_type}/',
+        'pad_x': 1,
+    },
 ]
 
 ### DEFINE TASK NAME MAPPING ###
