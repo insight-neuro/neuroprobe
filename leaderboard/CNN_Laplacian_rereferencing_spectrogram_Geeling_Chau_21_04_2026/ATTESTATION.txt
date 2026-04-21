@@ -1,0 +1,6 @@
+I attest that the training and test splits of Neuroprobe were respected and taken from the `neuroprobe/train_test_splits.py` function.
+SIGN Geeling Chau
+
+I attest that the submitted model was not pretrained on any data that intersects with any data of Neuroprobe.
+SIGN Geeling Chau
+[If the data intersects, please explain here]
