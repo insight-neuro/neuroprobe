@@ -25,16 +25,15 @@ SUBJECT_TRIALS=(
     "10 0" "10 1"
 )
 
-echo "========================================================"
-echo "Multi-class GNN + Linear Benchmark"
-echo "  binary_tasks=false, WithinSession, all 15 tasks"
-echo "  Output: $SAVE_BASE"
-echo "========================================================"
+# Split pairs across 3 GPUs (1/2/3) for 3x speedup
+GPU1_PAIRS=("1 1" "1 2" "2 0" "2 4")
+GPU2_PAIRS=("3 0" "3 1" "4 0" "4 1")
+GPU3_PAIRS=("7 0" "7 1" "10 0" "10 1")
 
-for ST in "${SUBJECT_TRIALS[@]}"; do
-    S=$(echo "$ST" | cut -d' ' -f1)
-    T=$(echo "$ST" | cut -d' ' -f2)
-    echo "  [gnn] sub${S} trial${T}"
+run_pair() {
+    local S=$1
+    local T=$2
+    echo "  [gnn] sub${S} trial${T} (GPU $CUDA_VISIBLE_DEVICES)"
     python eval_population.py \
         --classifier_type gnn \
         --gnn_variant gnn_v1_stgcn \
@@ -49,7 +48,7 @@ for ST in "${SUBJECT_TRIALS[@]}"; do
         --if_exists skip \
         --save_dir "${SAVE_BASE}/gnn/sub${S}_trial${T}"
 
-    echo "  [linear] sub${S} trial${T}"
+    echo "  [linear] sub${S} trial${T} (GPU $CUDA_VISIBLE_DEVICES)"
     python eval_population.py \
         --classifier_type linear \
         --preprocess.type laplacian-stft_abs \
@@ -62,8 +61,35 @@ for ST in "${SUBJECT_TRIALS[@]}"; do
         --verbose \
         --if_exists skip \
         --save_dir "${SAVE_BASE}/linear/sub${S}_trial${T}"
-done
+}
 
+run_gpu_worker() {
+    local GPU=$1
+    shift
+    export CUDA_VISIBLE_DEVICES=$GPU
+    for ST in "$@"; do
+        S=$(echo "$ST" | cut -d' ' -f1)
+        T=$(echo "$ST" | cut -d' ' -f2)
+        run_pair "$S" "$T"
+    done
+}
+
+echo "========================================================"
+echo "Multi-class GNN + Linear Benchmark"
+echo "  binary_tasks=false, WithinSession, all 15 tasks"
+echo "  Parallelized across GPUs 1/2/3"
+echo "  Output: $SAVE_BASE"
+echo "========================================================"
+
+run_gpu_worker 1 "${GPU1_PAIRS[@]}" > "${SAVE_BASE}/log_gpu1.txt" 2>&1 &
+run_gpu_worker 2 "${GPU2_PAIRS[@]}" > "${SAVE_BASE}/log_gpu2.txt" 2>&1 &
+run_gpu_worker 3 "${GPU3_PAIRS[@]}" > "${SAVE_BASE}/log_gpu3.txt" 2>&1 &
+
+echo "3 GPU workers running in background (GPUs 1/2/3)."
+echo "Monitor with:"
+echo "  tail -f ${SAVE_BASE}/log_gpu1.txt"
+
+wait
 echo "========================================================"
 echo "Done. Results in: $SAVE_BASE"
 echo "========================================================"
