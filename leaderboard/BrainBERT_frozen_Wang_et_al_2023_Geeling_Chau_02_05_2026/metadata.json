@@ -1,8 +1,0 @@
-{
-  "model_name": "BrainBERT_frozen_Wang_et_al_2023",
-  "description": "Frozen BrainBERT laplacian STFT Neuroprobe2025 public BrainBERT submission results.",
-  "author": "Geeling Chau",
-  "organization": "Caltech",
-  "organization_url": "https://caltech.edu",
-  "timestamp": 1777683197
-}

@@ -1,0 +1,8 @@
+{
+  "model_name": "BrainBERT (frozen, global z-scoring)",
+  "description": "Frozen BrainBERT laplacian STFT Neuroprobe2025 public BrainBERT submission results. This model had global z-scoring as opposed to per-window z-scoring of STFT inputs.",
+  "author": "Geeling Chau",
+  "organization": "Caltech",
+  "organization_url": "https://caltech.edu",
+  "timestamp": 1777683197
+}

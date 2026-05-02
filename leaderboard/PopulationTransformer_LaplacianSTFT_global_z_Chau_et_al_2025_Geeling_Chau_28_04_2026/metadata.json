@@ -1,0 +1,8 @@
+{
+  "model_name": "Population Transformer (global z-scoring)",
+  "description": "PopT laplacian STFT Neuroprobe2025 submission results. This model had global z-scoring as opposed to per-window z-scoring of STFT inputs.",
+  "author": "Geeling Chau",
+  "organization": "Caltech",
+  "organization_url": "caltech.edu",
+  "timestamp": 1777345797
+}

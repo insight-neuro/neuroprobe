@@ -1,0 +1,346 @@
+{
+  "model_name": "BrainBERT (frozen, global z-scoring)",
+  "description": "Frozen BrainBERT laplacian STFT Neuroprobe2025 public BrainBERT submission results. This model had global z-scoring as opposed to per-window z-scoring of STFT inputs.",
+  "author": "Geeling Chau",
+  "organization": "Caltech",
+  "organization_url": "https://caltech.edu",
+  "timestamp": 1777683197,
+  "evaluation_results": {
+    "btbank10_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.8725714285714286,
+              "train_roc_auc": 0.9976829387755102,
+              "val_accuracy": 0.7062857142857143,
+              "val_roc_auc": 0.915927400394972,
+              "test_accuracy": 0.6708571428571428,
+              "test_roc_auc": 0.7996614526190402,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.8697142857142857,
+              "train_roc_auc": 0.9946579591836735,
+              "val_accuracy": 0.72,
+              "val_roc_auc": 0.9119149869910035,
+              "test_accuracy": 0.6022857142857143,
+              "test_roc_auc": 0.8943293313689226,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.7028571428571428,
+              "train_roc_auc": 0.9965544489795918,
+              "val_accuracy": 0.608,
+              "val_roc_auc": 0.8750927348150006,
+              "test_accuracy": 0.6045714285714285,
+              "test_roc_auc": 0.9567045965121261,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.7165714285714285,
+              "train_roc_auc": 0.9984444081632653,
+              "val_accuracy": 0.664,
+              "val_roc_auc": 0.9210787540620462,
+              "test_accuracy": 0.6297142857142857,
+              "test_roc_auc": 0.9769599699068994,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9914285714285714,
+              "train_roc_auc": 0.999998693877551,
+              "val_accuracy": 0.8434285714285714,
+              "val_roc_auc": 0.9665867318683845,
+              "test_accuracy": 0.8331428571428572,
+              "test_roc_auc": 0.9658265676102108,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.9742857142857143,
+              "train_roc_auc": 0.9991164081632653,
+              "val_accuracy": 0.8377142857142857,
+              "val_roc_auc": 0.9581021493579094,
+              "test_accuracy": 0.776,
+              "test_roc_auc": 0.8735227735807656,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_2": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.928,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.8102857142857143,
+              "val_roc_auc": 0.9962174644473004,
+              "test_accuracy": 0.768,
+              "test_roc_auc": 0.9370474279803142,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.7691428571428571,
+              "train_roc_auc": 0.9999359999999999,
+              "val_accuracy": 0.7474285714285714,
+              "val_roc_auc": 0.9915206419861446,
+              "test_accuracy": 0.6982857142857143,
+              "test_roc_auc": 0.9841332037658171,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 1.0,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.912,
+              "val_roc_auc": 0.9516446715358975,
+              "test_accuracy": 0.8925714285714286,
+              "test_roc_auc": 0.9477106255812252,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.5102857142857142,
+              "train_roc_auc": 0.9975510204081632,
+              "val_accuracy": 0.49942857142857144,
+              "val_roc_auc": 0.9427865375171103,
+              "test_accuracy": 0.5028571428571429,
+              "test_roc_auc": 0.9699800424229125,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_4": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9274285714285714,
+              "train_roc_auc": 0.9976052244897959,
+              "val_accuracy": 0.7337142857142858,
+              "val_roc_auc": 0.8846587881257639,
+              "test_accuracy": 0.6891428571428572,
+              "test_roc_auc": 0.8171243325705568,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.8617142857142858,
+              "train_roc_auc": 0.972678530612245,
+              "val_accuracy": 0.7108571428571429,
+              "val_roc_auc": 0.9253419433037627,
+              "test_accuracy": 0.6948571428571428,
+              "test_roc_auc": 0.9703718796693939,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 1.0,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.9051428571428571,
+              "val_roc_auc": 0.9438627838207788,
+              "test_accuracy": 0.848,
+              "test_roc_auc": 0.91491907254736,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.8817142857142857,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.6971428571428572,
+              "val_roc_auc": 0.9273011295361692,
+              "test_accuracy": 0.6834285714285714,
+              "test_roc_auc": 0.9275728033603963,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9994285714285714,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.8902857142857142,
+              "val_roc_auc": 0.9601031315632739,
+              "test_accuracy": 0.7782857142857142,
+              "test_roc_auc": 0.851172377041472,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.9925714285714285,
+              "train_roc_auc": 0.9999973877551019,
+              "val_accuracy": 0.8868571428571429,
+              "val_roc_auc": 0.9625560327262468,
+              "test_accuracy": 0.896,
+              "test_roc_auc": 0.9525537339477342,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9908571428571429,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.5851428571428572,
+              "val_roc_auc": 0.8459504926700312,
+              "test_accuracy": 0.5862857142857143,
+              "test_roc_auc": 0.8631652090321097,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.9822857142857143,
+              "train_roc_auc": 0.999996081632653,
+              "val_accuracy": 0.7565714285714286,
+              "val_roc_auc": 0.8713363217453998,
+              "test_accuracy": 0.7931428571428571,
+              "test_roc_auc": 0.8646515783204288,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 1.0,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.7371428571428571,
+              "val_roc_auc": 0.8268079370552648,
+              "test_accuracy": 0.7657142857142857,
+              "test_roc_auc": 0.8459975131396089,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 0.8582857142857143,
+              "train_roc_auc": 0.996515918367347,
+              "val_accuracy": 0.6434285714285715,
+              "val_roc_auc": 0.8531550735086675,
+              "test_accuracy": 0.6365714285714286,
+              "test_roc_auc": 0.7998443100007315,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.8028571428571428,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.6857142857142857,
+              "val_roc_auc": 0.9090467383467602,
+              "test_accuracy": 0.6434285714285715,
+              "test_roc_auc": 0.794131322947034,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 1.0,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.6034285714285714,
+              "val_roc_auc": 0.8063514205406309,
+              "test_accuracy": 0.6754285714285714,
+              "test_roc_auc": 0.8975136620586607,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9987129987129987,
+              "train_roc_auc": 0.9999983436276872,
+              "val_accuracy": 0.6602316602316602,
+              "val_roc_auc": 0.8011223597381603,
+              "test_accuracy": 0.6435006435006435,
+              "test_roc_auc": 0.7592293218137969,
+              "fold_idx": 0
+            },
+            {
+              "train_accuracy": 1.0,
+              "train_roc_auc": 1.0,
+              "val_accuracy": 0.6332046332046332,
+              "val_roc_auc": 0.7014350833487929,
+              "test_accuracy": 0.6563706563706564,
+              "test_roc_auc": 0.7250682426523203,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}
