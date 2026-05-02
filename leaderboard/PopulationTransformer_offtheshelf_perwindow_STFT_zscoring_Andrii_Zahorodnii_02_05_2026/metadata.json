@@ -1,0 +1,8 @@
+{
+  "model_name": "PopulationTransformer (off-the-shelf; per-window STFT z-scoring)",
+  "description": "PopulationTransformer model (Chau et al. 2024). This model was taken off-the-shelf and had per-window STFT z-scoring.",
+  "author": "Andrii Zahorodnii",
+  "organization": "MIT",
+  "organization_url": "https://mit.edu",
+  "timestamp": 1777699971
+}

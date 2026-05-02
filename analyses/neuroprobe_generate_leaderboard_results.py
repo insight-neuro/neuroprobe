@@ -56,32 +56,33 @@ models = [
         'organization_url': 'https://mit.edu'
     },
     {
-        'name': 'BrainBERT (untrained, frozen)',
+        'name': 'BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)',
+        'short_name': 'BrainBERT (untrained; frozen; off-the-shelf)',
         'color_palette': 'viridis', 
         'eval_results_path': f'./data/new_models_eval_results/brainbert/eval_results_{split_type}/brainbert_randomly_initialized_keepall/',
         'pad_x': 1,
-        'description': 'BrainBERT model with random initialization, frozen weights',
+        'description': 'BrainBERT model with random initialization, frozen weights. . This model was taken off-the-shelf and had per-window STFT z-scoring.',
         'author': 'Andrii Zahorodnii',
         'organization': 'MIT',
         'organization_url': 'https://mit.edu'
     },
     {
-        'name': 'BrainBERT (frozen; Wang et al. 2023)',
-        'short_name': 'BrainBERT (frozen)',
+        'name': 'BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)',
+        'short_name': 'BrainBERT (frozen; off-the-shelf)',
         'color_palette': 'viridis', 
         'eval_results_path': f'./data/new_models_eval_results/brainbert/eval_results_{split_type}/brainbert_keepall/',
-        'description': 'BrainBERT model with pretrained weights, frozen (Wang et al. 2023)',
+        'description': 'BrainBERT model with pretrained weights, frozen (Wang et al. 2023). This model was taken off-the-shelf and had per-window STFT z-scoring.',
         'author': 'Andrii Zahorodnii',
         'organization': 'MIT',
         'organization_url': 'https://mit.edu'
     },
     {
-        'name': 'PopulationTransformer (Chau et al. 2024)',
-        'short_name': 'PopulationTransformer',
+        'name': 'PopulationTransformer (off-the-shelf; per-window STFT z-scoring)',
+        'short_name': 'PopulationTransformer (off-the-shelf; per-window STFT z-scoring)',
         'color_palette': 'viridis', 
         'eval_results_path': f'./data/new_models_eval_results/popt_lite/eval_results_{split_type}/',
         'pad_x': 1,
-        'description': 'PopulationTransformer model (Chau et al. 2024)',
+        'description': 'PopulationTransformer model (Chau et al. 2024). This model was taken off-the-shelf and had per-window STFT z-scoring.',
         'author': 'Andrii Zahorodnii',
         'organization': 'MIT',
         'organization_url': 'https://mit.edu'

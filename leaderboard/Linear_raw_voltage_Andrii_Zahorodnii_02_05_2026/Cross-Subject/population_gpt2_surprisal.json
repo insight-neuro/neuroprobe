@@ -1,0 +1,170 @@
+{
+  "model_name": "Linear (raw voltage)",
+  "description": "Linear regression model using raw voltage signals",
+  "author": "Andrii Zahorodnii",
+  "organization": "MIT",
+  "organization_url": "https://mit.edu",
+  "timestamp": 1777699971,
+  "evaluation_results": {
+    "btbank1_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9548571428571428,
+              "train_roc_auc": 0.9918514285714286,
+              "test_accuracy": 0.5051428571428571,
+              "test_roc_auc": 0.511937306122449
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_2": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9548571428571428,
+              "train_roc_auc": 0.9918514285714286,
+              "test_accuracy": 0.5142857142857142,
+              "test_roc_auc": 0.5207928163265307
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.8971428571428571,
+              "train_roc_auc": 0.9611941224489797,
+              "test_accuracy": 0.4982857142857143,
+              "test_roc_auc": 0.49927967346938773
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.8971428571428571,
+              "train_roc_auc": 0.9611941224489797,
+              "test_accuracy": 0.5371428571428571,
+              "test_roc_auc": 0.5563010612244899
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9857142857142858,
+              "train_roc_auc": 0.9987219591836733,
+              "test_accuracy": 0.5122096486003573,
+              "test_roc_auc": 0.5094748566888019
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9857142857142858,
+              "train_roc_auc": 0.9987219591836733,
+              "test_accuracy": 0.4937142857142857,
+              "test_roc_auc": 0.4907715918367347
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9457142857142857,
+              "train_roc_auc": 0.9858987755102041,
+              "test_accuracy": 0.504,
+              "test_roc_auc": 0.5049404081632654
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9457142857142857,
+              "train_roc_auc": 0.9858987755102041,
+              "test_accuracy": 0.5034285714285714,
+              "test_roc_auc": 0.5073018775510204
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9451428571428572,
+              "train_roc_auc": 0.989253224489796,
+              "test_accuracy": 0.4794285714285714,
+              "test_roc_auc": 0.46608718367346935
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "train_accuracy": 0.9451428571428572,
+              "train_roc_auc": 0.989253224489796,
+              "test_accuracy": 0.5011428571428571,
+              "test_roc_auc": 0.49326236734693873
+            }
+          ]
+        }
+      }
+    }
+  }
+}
