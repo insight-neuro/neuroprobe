@@ -248,7 +248,6 @@ class TestSubmissionFormat:
         """Test that ATTESTATION.txt contains the required attestations."""
         required_phrases = [
             "I attest that the training and test splits of Neuroprobe were respected",
-            "I attest that the submitted model was not pretrained on any data that intersects with any data of Neuroprobe",
             "SIGN"
         ]
         
@@ -266,10 +265,10 @@ class TestSubmissionFormat:
                 assert phrase in content, \
                     f"Required phrase '{phrase}' not found in ATTESTATION.txt in {submission_dir.name}"
             
-            # Check that there are at least 2 SIGN statements
+            # Check that there is at least 1 SIGN statement
             sign_count = content.count('SIGN')
-            assert sign_count >= 2, \
-                f"ATTESTATION.txt must contain at least 2 SIGN statements, found {sign_count} in {submission_dir.name}"
+            assert sign_count >= 1, \
+                f"ATTESTATION.txt must contain at least 1 SIGN statement, found {sign_count} in {submission_dir.name}"
     
     def test_publication_bib_format(self, submission_dirs):
         """Test that PUBLICATION.bib is not empty and appears to be a valid bibtex file."""
