@@ -1,2 +1,0 @@
-I attest that the training and test splits of Neuroprobe were respected and taken from the `neuroprobe/train_test_splits.py` function.
-SIGN Geeling_Chau
