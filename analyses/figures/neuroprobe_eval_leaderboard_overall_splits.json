@@ -41,7 +41,7 @@
       "sem": 0.00456624291387638
     }
   },
-  "PopT": {
+  "Population Transformer (global z-scoring)": {
     "WithinSession": {
       "mean": 0.6700032937829508,
       "sem": 0.004926464757673741
@@ -71,19 +71,19 @@
   },
   "Linear (Laplacian re-referencing + spectrogram)": {
     "WithinSession": {
-      "mean": 0.6602103626172598,
-      "sem": 0.005024018878056961
+      "mean": 0.6599077810422711,
+      "sem": 0.005343528409068332
     },
     "CrossSession": {
-      "mean": 0.6484066421190231,
-      "sem": 0.004155359316945617
+      "mean": 0.651149022795248,
+      "sem": 0.004720246047485648
     },
     "CrossSubject": {
-      "mean": 0.5387031881837313,
-      "sem": 0.00413588801749269
+      "mean": 0.539212451742488,
+      "sem": 0.004326467312439756
     }
   },
-  "BrainBERT_frozen_Wang_et_al_2023": {
+  "BrainBERT (frozen, global z-scoring)": {
     "WithinSession": {
       "mean": 0.6256546519883127,
       "sem": 0.00444159542516095
@@ -99,72 +99,72 @@
   },
   "Linear (spectrogram)": {
     "WithinSession": {
-      "mean": 0.6295800325085055,
-      "sem": 0.005394066008814842
+      "mean": 0.6252029376620418,
+      "sem": 0.005744581780012982
     },
     "CrossSession": {
-      "mean": 0.6257574770334545,
-      "sem": 0.0045660463236975165
+      "mean": 0.6257069424862015,
+      "sem": 0.004959864528948656
     },
     "CrossSubject": {
-      "mean": 0.5279927421459015,
-      "sem": 0.002660547631568042
+      "mean": 0.5276440310967986,
+      "sem": 0.0029414173124091775
+    }
+  },
+  "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+    "WithinSession": {
+      "mean": 0.5851276651249059,
+      "sem": 0.00422436035325719
+    },
+    "CrossSession": {
+      "mean": 0.580001500407485,
+      "sem": 0.004243663583563071
+    },
+    "CrossSubject": {
+      "mean": 0.5222574142997579,
+      "sem": 0.0018141617839296474
     }
   },
   "Linear (raw voltage)": {
     "WithinSession": {
-      "mean": 0.6058140611267704,
-      "sem": 0.003568664917669749
+      "mean": 0.603689967281871,
+      "sem": 0.003960820894904792
     },
     "CrossSession": {
-      "mean": 0.5756735698471581,
-      "sem": 0.0031217242342398417
+      "mean": 0.5737331432688229,
+      "sem": 0.003307129368044086
     },
     "CrossSubject": {
-      "mean": 0.510090448630403,
-      "sem": 0.0014640094095248067
+      "mean": 0.5092977185487277,
+      "sem": 0.0018328351137554338
     }
   },
-  "BrainBERT (frozen; Wang et al. 2023)": {
+  "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
     "WithinSession": {
-      "mean": 0.5864895612939521,
-      "sem": 0.004076196453362963
+      "mean": 0.5808346038656211,
+      "sem": 0.004010924651950488
     },
     "CrossSession": {
-      "mean": 0.5805462503561009,
-      "sem": 0.0039922268707236865
+      "mean": 0.5724665303132694,
+      "sem": 0.004066013882139139
     },
     "CrossSubject": {
-      "mean": 0.522261101053844,
-      "sem": 0.0015997822845691876
+      "mean": 0.5265593826400979,
+      "sem": 0.0019838595802563067
     }
   },
-  "BrainBERT (untrained, frozen)": {
+  "PopulationTransformer (off-the-shelf; per-window STFT z-scoring)": {
     "WithinSession": {
-      "mean": 0.5848131700543248,
-      "sem": 0.0038366978598664797
+      "mean": 0.5493758680576224,
+      "sem": 0.004936509347940716
     },
     "CrossSession": {
-      "mean": 0.5743296013199454,
-      "sem": 0.0039038245723684592
+      "mean": 0.5636552752844212,
+      "sem": 0.004355823445412424
     },
     "CrossSubject": {
-      "mean": 0.5273848909046708,
-      "sem": 0.0017828455102831217
-    }
-  },
-  "PopulationTransformer (Chau et al. 2024)": {
-    "WithinSession": {
-      "mean": 0.5449824371019548,
-      "sem": 0.005597880051504108
-    },
-    "CrossSession": {
-      "mean": 0.5657486044746878,
-      "sem": 0.0038984050177869167
-    },
-    "CrossSubject": {
-      "mean": 0.5257053734857119,
-      "sem": 0.00372657065267403
+      "mean": null,
+      "sem": null
     }
   },
   "GLIS-GNN (ST-GCN, Functional Graph)": {

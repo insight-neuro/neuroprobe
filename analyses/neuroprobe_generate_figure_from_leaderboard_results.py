@@ -62,6 +62,18 @@ task_name_mapping = {
     'face_num': 'Number of Faces',
 }
 
+### DEFINE MODEL DISPLAY NAME ALIASES ###
+
+model_display_name_aliases = {
+    'MLP_Laplacian_rereferencing_spectrogram': 'MLP (Laplacian re-referencing + spectrogram)',
+    'CNN_Laplacian_rereferencing_spectrogram': 'CNN (Laplacian re-referencing + spectrogram)',
+    'DIVER-1_0.1s_tiny_frozen': 'DIVER-1 (0.1s, tiny, frozen)',
+    'DIVER-1_0.1s_tiny': 'DIVER-1 (0.1s, tiny)',
+}
+
+def get_display_name(model_name):
+    return model_display_name_aliases.get(model_name, model_name)
+
 ### DISCOVER MODELS FROM LEADERBOARD ###
 
 def discover_models(leaderboard_dir, split_folder):
@@ -242,7 +254,7 @@ legend_ax.axis('off')
 handles = [plt.Rectangle((0, 0), 1, 1, color=model['color']) for model in models]
 chance_line = plt.Line2D([0], [0], color='black', linestyle='--', alpha=0.5)
 handles.append(chance_line)
-legend_ax.legend(handles, [model['name'] for model in models] + ["Chance"],
+legend_ax.legend(handles, [get_display_name(model['name']) for model in models] + ["Chance"],
                  loc='center left',
                  ncol=n_fig_legend_cols,
                  frameon=False,

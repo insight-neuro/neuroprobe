@@ -1,16 +1,16 @@
 {
   "Overall": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.522261101053844,
-      "sem": 0.0015997822845691876
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5273848909046708,
-      "sem": 0.0017828455102831217
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5471237606212218,
       "sem": 0.004016159885630139
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5222574142997579,
+      "sem": 0.0018141617839296474
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5265593826400979,
+      "sem": 0.0019838595802563067
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5776835073203573,
@@ -21,42 +21,38 @@
       "sem": 0.003638768671756955
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5387031881837313,
-      "sem": 0.00413588801749269
+      "mean": 0.539212451742488,
+      "sem": 0.004326467312439756
     },
     "Linear (raw voltage)": {
-      "mean": 0.510090448630403,
-      "sem": 0.0014640094095248067
+      "mean": 0.5092977185487277,
+      "sem": 0.0018328351137554338
     },
     "Linear (spectrogram)": {
-      "mean": 0.5279927421459015,
-      "sem": 0.002660547631568042
+      "mean": 0.5276440310967986,
+      "sem": 0.0029414173124091775
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5658775459671997,
       "sem": 0.004396299183658169
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5750058114937607,
       "sem": 0.006234686093268372
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5257053734857119,
-      "sem": 0.00372657065267403
     }
   },
   "onset": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5818791266600598,
-      "sem": 0.013406750075928604
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5847226936624329,
-      "sem": 0.013649317251804571
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.7119794296088167,
       "sem": 0.029726244324396096
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5841035374276558,
+      "sem": 0.015017289991551728
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5832422473445137,
+      "sem": 0.014923722336077545
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.7804294079562455,
@@ -67,42 +63,38 @@
       "sem": 0.017202102264576892
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.6725080174475765,
-      "sem": 0.036935331231784024
+      "mean": 0.6756088312624124,
+      "sem": 0.03793746386700286
     },
     "Linear (raw voltage)": {
-      "mean": 0.5393842708893604,
-      "sem": 0.012728990967422544
+      "mean": 0.5342517528815443,
+      "sem": 0.016444347099323048
     },
     "Linear (spectrogram)": {
-      "mean": 0.620966415852515,
-      "sem": 0.024303287026343035
+      "mean": 0.6162642338525123,
+      "sem": 0.02586553783509155
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.7494659284367533,
       "sem": 0.03069362138356394
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.710727195698722,
       "sem": 0.04470407335093703
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.6382138679818021,
-      "sem": 0.0314952687223147
     }
   },
   "speech": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5366846463860441,
-      "sem": 0.004961506445644722
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5370190533010673,
-      "sem": 0.007240868774056451
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.7224398827685932,
       "sem": 0.038159749858379166
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5365850567257826,
+      "sem": 0.0068985791104658805
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5403704540653175,
+      "sem": 0.005726245833623795
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.7510633548390089,
@@ -113,42 +105,38 @@
       "sem": 0.032716292777898455
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.6417602478164872,
-      "sem": 0.03784275623969712
+      "mean": 0.6432052169181868,
+      "sem": 0.03847687573576587
     },
     "Linear (raw voltage)": {
-      "mean": 0.5078516215268771,
-      "sem": 0.005963419267751846
+      "mean": 0.5044236466520574,
+      "sem": 0.00821041634339887
     },
     "Linear (spectrogram)": {
-      "mean": 0.5854904513395912,
-      "sem": 0.01807392781066799
+      "mean": 0.5747948438189983,
+      "sem": 0.02045748218333846
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.7290923168507726,
       "sem": 0.032449033757229004
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.7135404583129186,
       "sem": 0.04515982747225661
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5939541279375349,
-      "sem": 0.03543940128306773
     }
   },
   "volume": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5211533578670887,
-      "sem": 0.0030362421249497777
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5235007150441094,
-      "sem": 0.002959303172537818
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5358058959272863,
       "sem": 0.013446254400960733
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5259138459812054,
+      "sem": 0.004383703309431436
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5207632176757235,
+      "sem": 0.003310695999127722
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5870446950775543,
@@ -159,42 +147,38 @@
       "sem": 0.017969379828487803
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5270944323090276,
-      "sem": 0.010454948326696472
+      "mean": 0.5342280123438172,
+      "sem": 0.012077626193363935
     },
     "Linear (raw voltage)": {
-      "mean": 0.5127294657243121,
-      "sem": 0.0038998828790183016
+      "mean": 0.5173224286508883,
+      "sem": 0.005987358475600031
     },
     "Linear (spectrogram)": {
-      "mean": 0.5302881749513674,
-      "sem": 0.008460776964200329
+      "mean": 0.5401887029716297,
+      "sem": 0.01068343242247988
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5709636722693845,
       "sem": 0.017231714284613852
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5890399324819797,
       "sem": 0.022793042795256055
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5255863669881311,
-      "sem": 0.011720996181330632
     }
   },
   "delta_volume": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5741008953064825,
-      "sem": 0.009566465591738647
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5899204706795028,
-      "sem": 0.01003022500439407
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5640407779329134,
       "sem": 0.01570562762821609
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5709547012721656,
+      "sem": 0.009947928385296005
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5888733493485118,
+      "sem": 0.012519724412279123
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.6620455035846042,
@@ -205,42 +189,38 @@
       "sem": 0.013466175716911917
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5676431969006337,
-      "sem": 0.013293967665445184
+      "mean": 0.5685437102089466,
+      "sem": 0.014248143455773177
     },
     "Linear (raw voltage)": {
-      "mean": 0.532647859655156,
-      "sem": 0.009524355147844875
+      "mean": 0.5292742251822303,
+      "sem": 0.009379796388904061
     },
     "Linear (spectrogram)": {
-      "mean": 0.5545044957444661,
-      "sem": 0.011269029497943655
+      "mean": 0.5475592685980233,
+      "sem": 0.011333712587492576
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.6337113335960368,
       "sem": 0.023538555991481608
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.6531578596936749,
       "sem": 0.036754294382963015
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5732736174503171,
-      "sem": 0.01584609988096823
     }
   },
   "pitch": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5067476134947295,
-      "sem": 0.002163555935430451
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5052929578410733,
-      "sem": 0.0029769773895556846
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5285511789902135,
       "sem": 0.005100711216763745
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.49846907868615864,
+      "sem": 0.0049058541740257325
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5059249303268387,
+      "sem": 0.004496525640523917
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5159570962710709,
@@ -251,42 +231,38 @@
       "sem": 0.007490046063617683
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5049959821414098,
-      "sem": 0.0015446003113595093
+      "mean": 0.5054832107238127,
+      "sem": 0.002772216045421965
     },
     "Linear (raw voltage)": {
-      "mean": 0.5025555574298075,
-      "sem": 0.0022487527615981623
+      "mean": 0.5014093491279706,
+      "sem": 0.0027339513636119193
     },
     "Linear (spectrogram)": {
-      "mean": 0.5046995877953545,
-      "sem": 0.004687033102144883
+      "mean": 0.5030076071059651,
+      "sem": 0.005777706243652449
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5142972065513691,
       "sem": 0.004512105555407438
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5247307695685665,
       "sem": 0.009627927839290751
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5087889748593314,
-      "sem": 0.005206765924665199
     }
   },
   "word_index": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5488573065934904,
-      "sem": 0.01189794393139682
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5737239855453393,
-      "sem": 0.01501220232254837
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5385470247901718,
       "sem": 0.011731184510426452
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5491021564129784,
+      "sem": 0.012109988528965526
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5701380330094291,
+      "sem": 0.015806595440229
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.6171214781898068,
@@ -297,42 +273,38 @@
       "sem": 0.005148723708506327
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5708559492777121,
-      "sem": 0.022065549246269037
+      "mean": 0.5660913424055002,
+      "sem": 0.024098710747583203
     },
     "Linear (raw voltage)": {
-      "mean": 0.5391936337178298,
-      "sem": 0.009014620363737654
+      "mean": 0.5362531454052573,
+      "sem": 0.009524457610878279
     },
     "Linear (spectrogram)": {
-      "mean": 0.5523103335876006,
-      "sem": 0.012917110321033062
+      "mean": 0.5577905590291409,
+      "sem": 0.013493534931469766
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.6024025107766373,
       "sem": 0.026700755033525425
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.6295624066936806,
       "sem": 0.026356798621613258
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5028125407280176,
-      "sem": 0.007109920396917598
     }
   },
   "word_gap": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5097431792137159,
-      "sem": 0.002595625064466918
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5128339688457968,
-      "sem": 0.00337106022423542
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.499286518599812,
       "sem": 0.006968568178247515
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5098226510989867,
+      "sem": 0.004744669220286979
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5168684680111844,
+      "sem": 0.0061144540097878034
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5445620761060435,
@@ -343,42 +315,38 @@
       "sem": 0.007523191916599258
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5153432004166074,
-      "sem": 0.00782724041441612
+      "mean": 0.5152652684782665,
+      "sem": 0.00658901567670489
     },
     "Linear (raw voltage)": {
-      "mean": 0.5106309234367199,
-      "sem": 0.002758560302885834
+      "mean": 0.5097847165095739,
+      "sem": 0.003153102892925467
     },
     "Linear (spectrogram)": {
-      "mean": 0.508380501264954,
-      "sem": 0.00642947505142849
+      "mean": 0.5088412044786702,
+      "sem": 0.007753836696937497
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5297741658248081,
       "sem": 0.007509981718680697
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5249231655163709,
       "sem": 0.009501586210288784
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5187326687839733,
-      "sem": 0.004527786566252115
     }
   },
   "gpt2_surprisal": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5112820334118661,
-      "sem": 0.003821455251990175
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5217494999359755,
-      "sem": 0.004960473327469379
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5071598395822692,
       "sem": 0.004026900250946836
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5145853486025638,
+      "sem": 0.0040509151872293
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5155282171357218,
+      "sem": 0.004332854930494669
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5392583074829931,
@@ -389,42 +357,38 @@
       "sem": 0.0046278329829339175
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5075551846015864,
-      "sem": 0.0029869710524029268
+      "mean": 0.5076083750156081,
+      "sem": 0.003114463079094892
     },
     "Linear (raw voltage)": {
-      "mean": 0.510400107647385,
-      "sem": 0.00488058713518194
+      "mean": 0.5060149142403088,
+      "sem": 0.006950908717885151
     },
     "Linear (spectrogram)": {
-      "mean": 0.5095880195018527,
-      "sem": 0.0041607593590571815
+      "mean": 0.5100967367014506,
+      "sem": 0.0030107247995084896
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5318281506750018,
       "sem": 0.008889139144056417
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5633383405155149,
       "sem": 0.01603881901000794
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5215371954855483,
-      "sem": 0.00741632116850486
     }
   },
   "word_head_pos": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5235482857142857,
-      "sem": 0.0038073535261827366
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5302081306122448,
-      "sem": 0.004670379960733317
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5404761469387754,
       "sem": 0.011037979871678828
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5266740571428572,
+      "sem": 0.0024655688821398625
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.531380375510204,
+      "sem": 0.003505243672935905
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.555450906122449,
@@ -435,42 +399,38 @@
       "sem": 0.008374612250331167
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5214039918367347,
-      "sem": 0.007649298243256524
+      "mean": 0.5252538448979591,
+      "sem": 0.009300236814305267
     },
     "Linear (raw voltage)": {
-      "mean": 0.5040233142857142,
-      "sem": 0.002778752422772744
+      "mean": 0.5064400653061225,
+      "sem": 0.0042382394823767934
     },
     "Linear (spectrogram)": {
-      "mean": 0.5108044489795919,
-      "sem": 0.003944301351294152
+      "mean": 0.510978906122449,
+      "sem": 0.004647912434272121
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.548479542857143,
       "sem": 0.013037558007740218
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5533596734693877,
       "sem": 0.01615991370516463
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5092709224489795,
-      "sem": 0.006782107942253763
     }
   },
   "word_part_speech": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5094528944332372,
-      "sem": 0.003812057665519348
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5170128742582842,
-      "sem": 0.0026263963620605743
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5152043769546495,
       "sem": 0.00990878683773296
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5049696820050491,
+      "sem": 0.004024827664379567
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5159014623895786,
+      "sem": 0.002981223085971124
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5199909955762433,
@@ -481,42 +441,38 @@
       "sem": 0.007587679712123532
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5077270671516925,
-      "sem": 0.0058993826672014025
+      "mean": 0.5059204266399882,
+      "sem": 0.00829274261156196
     },
     "Linear (raw voltage)": {
-      "mean": 0.49521091351783203,
-      "sem": 0.003376780182176183
+      "mean": 0.495603833445006,
+      "sem": 0.004867638983942187
     },
     "Linear (spectrogram)": {
-      "mean": 0.5089421243296359,
-      "sem": 0.003174051291940868
+      "mean": 0.5094043542867696,
+      "sem": 0.004931825309625494
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5170899868738312,
       "sem": 0.010749276664426053
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5230748228947568,
       "sem": 0.011694041911364113
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.4976522002374407,
-      "sem": 0.004579154873814725
     }
   },
   "word_length": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5044555501020885,
-      "sem": 0.004362700251754151
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5093705086199115,
-      "sem": 0.003851951044623928
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5069120957424692,
       "sem": 0.0062330610233361635
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5087107721194479,
+      "sem": 0.004479445400316795
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5098302374181194,
+      "sem": 0.003295381335808441
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5110937956664142,
@@ -527,42 +483,38 @@
       "sem": 0.006266529811304166
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5084940690671776,
-      "sem": 0.0049415419605701545
+      "mean": 0.5110983506723635,
+      "sem": 0.006010349577457264
     },
     "Linear (raw voltage)": {
-      "mean": 0.5021950253533263,
-      "sem": 0.0027177815263827645
+      "mean": 0.5039184707571517,
+      "sem": 0.002876362500982064
     },
     "Linear (spectrogram)": {
-      "mean": 0.5089122698846453,
-      "sem": 0.003231942173194771
+      "mean": 0.5115787370364526,
+      "sem": 0.004060378724567912
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5212281819592174,
       "sem": 0.0075302215217067925
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5265891676329055,
       "sem": 0.008125577611764193
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.497965979425277,
-      "sem": 0.003545200448832174
     }
   },
   "global_flow": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5013578206781204,
-      "sem": 0.002425792874677409
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5028495726628818,
-      "sem": 0.0027831487029523123
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5336289102316492,
       "sem": 0.012271262368306437
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5008200709428945,
+      "sem": 0.004107064039768077
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5026401322144114,
+      "sem": 0.0036893983198966612
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5314501368100994,
@@ -573,42 +525,38 @@
       "sem": 0.011628543265970712
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5154807553332572,
-      "sem": 0.0051275459221595526
+      "mean": 0.5150297464085039,
+      "sem": 0.007029857413267131
     },
     "Linear (raw voltage)": {
-      "mean": 0.500344863130706,
-      "sem": 0.004038210806189043
+      "mean": 0.49975909146132835,
+      "sem": 0.005374889826211448
     },
     "Linear (spectrogram)": {
-      "mean": 0.5084890259073267,
-      "sem": 0.006615861537914063
+      "mean": 0.5094807626166558,
+      "sem": 0.008745944627695876
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5231576201957303,
       "sem": 0.010420932166723131
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5483997069851541,
       "sem": 0.020187709164748605
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.502707670378616,
-      "sem": 0.007476306231243734
     }
   },
   "local_flow": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.4983052080914129,
-      "sem": 0.004426609010829564
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5010044227776317,
-      "sem": 0.005728985365178126
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.5139587438430915,
       "sem": 0.007899772539628418
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.4966581611604356,
+      "sem": 0.003569794081541741
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.4986272895656474,
+      "sem": 0.0061896116202397634
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5284243565371799,
@@ -619,42 +567,38 @@
       "sem": 0.018444662408126564
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5130579037378414,
-      "sem": 0.0049814400719200265
+      "mean": 0.5095183867999643,
+      "sem": 0.004986241086328209
     },
     "Linear (raw voltage)": {
-      "mean": 0.49984342446575686,
-      "sem": 0.0024313139405690715
+      "mean": 0.4984062102957035,
+      "sem": 0.004785634225669345
     },
     "Linear (spectrogram)": {
-      "mean": 0.5056967121996857,
-      "sem": 0.009202885299175116
+      "mean": 0.5012589253711497,
+      "sem": 0.011375748384799683
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5124375502550007,
       "sem": 0.007791892066579973
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5465400482206708,
       "sem": 0.016950026396688724
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.4995975315455555,
-      "sem": 0.009828909526712086
     }
   },
   "frame_brightness": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5057213868569995,
-      "sem": 0.0039372548650949465
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.5016732586211367,
-      "sem": 0.0023461500649060176
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.4970246527239263,
       "sem": 0.006803788210736248
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5087130978602645,
+      "sem": 0.006115360033485809
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.5007225918383563,
+      "sem": 0.005053162636758856
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5161766372179384,
@@ -665,42 +609,38 @@
       "sem": 0.013126153901419621
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.4988952435339999,
-      "sem": 0.004309053436887819
+      "mean": 0.4948061828983322,
+      "sem": 0.0043828825004621355
     },
     "Linear (raw voltage)": {
-      "mean": 0.49343129481938675,
-      "sem": 0.002213643942036575
+      "mean": 0.4960695355922584,
+      "sem": 0.0038362828037065114
     },
     "Linear (spectrogram)": {
-      "mean": 0.5144482216554799,
-      "sem": 0.007536268508790777
+      "mean": 0.5190665126154395,
+      "sem": 0.007099261165554375
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5017438303130549,
       "sem": 0.007048333039683789
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5016169814923823,
       "sem": 0.020475311823085166
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.5019321156907542,
-      "sem": 0.009301511486909051
     }
   },
   "face_num": {
-    "BrainBERT (frozen; Wang et al. 2023)": {
-      "mean": 0.5006272109980385,
-      "sem": 0.003758284915330096
-    },
-    "BrainBERT (untrained, frozen)": {
-      "mean": 0.4998912511626757,
-      "sem": 0.002693630478516223
-    },
-    "BrainBERT_frozen_Wang_et_al_2023": {
+    "BrainBERT (frozen, global z-scoring)": {
       "mean": 0.4918409346836886,
       "sem": 0.010737467311834888
+    },
+    "BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.49777899705792283,
+      "sem": 0.00549862571149349
+    },
+    "BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring)": {
+      "mean": 0.4975797337479114,
+      "sem": 0.005157703135811991
     },
     "CNN_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5051838623677087,
@@ -711,28 +651,24 @@
       "sem": 0.011546102106679394
     },
     "Linear (Laplacian re-referencing + spectrogram)": {
-      "mean": 0.5077325811842257,
-      "sem": 0.00442211426917751
+      "mean": 0.5105258704636585,
+      "sem": 0.004073646788165134
     },
     "Linear (raw voltage)": {
-      "mean": 0.5009144538558754,
-      "sem": 0.002712312074788368
+      "mean": 0.5005343927235135,
+      "sem": 0.004614832214949805
     },
     "Linear (spectrogram)": {
-      "mean": 0.49637034919445533,
-      "sem": 0.0028226702010606787
+      "mean": 0.49434911184667174,
+      "sem": 0.0036341390086202167
     },
     "MLP_Laplacian_rereferencing_spectrogram": {
       "mean": 0.5024911920732549,
       "sem": 0.008527492997780214
     },
-    "PopT": {
+    "Population Transformer (global z-scoring)": {
       "mean": 0.5164866432297253,
       "sem": 0.01117471446960634
-    },
-    "PopulationTransformer (Chau et al. 2024)": {
-      "mean": 0.49355482234440123,
-      "sem": 0.0040677218656702385
     }
   }
 }

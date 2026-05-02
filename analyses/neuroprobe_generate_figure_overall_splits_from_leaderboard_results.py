@@ -37,6 +37,18 @@ for split_type in split_types:
     with open(filename, 'r') as f:
         all_data[split_type] = json.load(f)
 
+### DEFINE MODEL DISPLAY NAME ALIASES ###
+
+model_display_name_aliases = {
+    'MLP_Laplacian_rereferencing_spectrogram': 'MLP (Laplacian re-referencing + spectrogram)',
+    'CNN_Laplacian_rereferencing_spectrogram': 'CNN (Laplacian re-referencing + spectrogram)',
+    'DIVER-1_0.1s_tiny_frozen': 'DIVER-1 (0.1s, tiny, frozen)',
+    'DIVER-1_0.1s_tiny': 'DIVER-1 (0.1s, tiny)',
+}
+
+def get_display_name(model_name):
+    return model_display_name_aliases.get(model_name, model_name)
+
 ### COLLECT MODELS (UNION ACROSS SPLITS) ###
 
 # A model appears in the figure if it has Overall data for at least one split. We
@@ -125,7 +137,7 @@ chance_line = plt.Line2D([0], [0], color='black', linestyle='--', alpha=0.5)
 handles.append(chance_line)
 
 legend_ncol = 2 if len(models) <= 8 else 3
-fig.legend(handles, [model['name'] for model in models] + ["Chance"],
+fig.legend(handles, [get_display_name(model['name']) for model in models] + ["Chance"],
            loc='upper center',
            ncol=legend_ncol,
            frameon=False,
