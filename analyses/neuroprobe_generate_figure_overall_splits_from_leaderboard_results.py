@@ -59,20 +59,15 @@ for split_type in split_types:
     model_names.update(all_data[split_type].get('Overall', {}).keys())
 
 def _model_overall_score(name):
-    """Mean (across available splits) of the Overall AUROC. Used to sort models
-    so the best performers appear first. Models with no usable data sink to the bottom."""
-    values = []
-    for split_type in split_types:
-        perf = all_data[split_type].get('Overall', {}).get(name)
-        if not perf:
-            continue
-        mean = perf.get('mean')
-        if mean is None or (isinstance(mean, float) and np.isnan(mean)):
-            continue
-        values.append(float(mean))
-    if not values:
+    """WithinSession Overall AUROC. Used to sort models so the best performers
+    appear first. Models with no usable data sink to the bottom."""
+    perf = all_data['WithinSession'].get('Overall', {}).get(name)
+    if not perf:
         return (1, 0.0)
-    return (0, -float(np.mean(values)))
+    mean = perf.get('mean')
+    if mean is None or (isinstance(mean, float) and np.isnan(mean)):
+        return (1, 0.0)
+    return (0, -float(mean))
 
 models = [{'name': name, 'short_name': name} for name in sorted(model_names, key=_model_overall_score)]
 
@@ -106,6 +101,7 @@ for split_idx, split_type in enumerate(split_types):
     ax = axes[split_idx]
     overall = all_data[split_type].get('Overall', {})
 
+    x = 0
     for model in models:
         perf = overall.get(model['name'])
         if perf is None:
@@ -115,10 +111,11 @@ for split_idx, split_type in enumerate(split_types):
         if mean is None or (isinstance(mean, float) and np.isnan(mean)):
             continue
         yerr = sem if (sem is not None and not (isinstance(sem, float) and np.isnan(sem))) else None
-        ax.bar(model['x_pos'] * bar_width, mean, bar_width,
+        ax.bar(x * bar_width, mean, bar_width,
                yerr=yerr,
                color=model['color'],
                capsize=4)
+        x += 1
 
     ax.set_title(split_names[split_type], pad=15)
     ax.set_ylim(axis_ylim)
@@ -136,7 +133,7 @@ handles = [plt.Rectangle((0, 0), 1, 1, color=model['color']) for model in models
 chance_line = plt.Line2D([0], [0], color='black', linestyle='--', alpha=0.5)
 handles.append(chance_line)
 
-legend_ncol = 2 if len(models) <= 8 else 3
+legend_ncol = 2
 fig.legend(handles, [get_display_name(model['name']) for model in models] + ["Chance"],
            loc='upper center',
            ncol=legend_ncol,
