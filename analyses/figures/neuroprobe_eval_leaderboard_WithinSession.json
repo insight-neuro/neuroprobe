@@ -1,0 +1,866 @@
+{
+  "Overall": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5864895612939521,
+      "sem": 0.004076196453362963
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5848131700543248,
+      "sem": 0.0038366978598664797
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.6256546519883127,
+      "sem": 0.00444159542516095
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6686000061047539,
+      "sem": 0.0054612865529313475
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6651881666666667,
+      "sem": 0.004473460866671688
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6776861111111111,
+      "sem": 0.0046300989977717194
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.552642962164532,
+      "sem": 0.0046728814676915385
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6602103626172598,
+      "sem": 0.005024018878056961
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.6058140611267704,
+      "sem": 0.003568664917669749
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.6295800325085055,
+      "sem": 0.005394066008814842
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6562745778145381,
+      "sem": 0.005476226015998514
+    },
+    "PopT": {
+      "mean": 0.6700032937829508,
+      "sem": 0.004926464757673741
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5449824371019548,
+      "sem": 0.005597880051504108
+    }
+  },
+  "onset": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.756887153929001,
+      "sem": 0.027121911153590285
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.7504366599870534,
+      "sem": 0.027895804488763325
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.8833488342999694,
+      "sem": 0.01784690567128721
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.8861557237623979,
+      "sem": 0.016156411120403603
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.9244483333333333,
+      "sem": 0.010158284596774895
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.9296920833333333,
+      "sem": 0.010004720681909733
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.7103828777478384,
+      "sem": 0.03194223428379904
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.8906447564354948,
+      "sem": 0.01832697460488791
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.7946344226990045,
+      "sem": 0.02088366095302773
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.850896658578094,
+      "sem": 0.024975956327228398
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.8840910625170224,
+      "sem": 0.022231517286501076
+    },
+    "PopT": {
+      "mean": 0.9295634048501892,
+      "sem": 0.011408614718078223
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.6890817868260242,
+      "sem": 0.04983809995950341
+    }
+  },
+  "speech": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.6107349607798643,
+      "sem": 0.021969289176331345
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.6028250158509308,
+      "sem": 0.019798842911572304
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.8870496396020767,
+      "sem": 0.0183285029871136
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.8881759429129281,
+      "sem": 0.01952478165801122
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.8968058333333334,
+      "sem": 0.013502460807526772
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.8968437499999998,
+      "sem": 0.015160646860798762
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.7079897488419474,
+      "sem": 0.036131788787122004
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.8827203382974811,
+      "sem": 0.018379762541912495
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.6556600969552012,
+      "sem": 0.022473612022070582
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.825206509315714,
+      "sem": 0.027853718580405678
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.8770816381021825,
+      "sem": 0.02175762422789412
+    },
+    "PopT": {
+      "mean": 0.918779698752722,
+      "sem": 0.01289962246591216
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.6772132111018907,
+      "sem": 0.04430268670287849
+    }
+  },
+  "volume": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.582977598731348,
+      "sem": 0.010079447170341106
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5701706398260535,
+      "sem": 0.008313582406945585
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.7227009574377261,
+      "sem": 0.028380721190748102
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7565933573238427,
+      "sem": 0.0369355755070118
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6880991666666666,
+      "sem": 0.026256624678839866
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.7192458333333334,
+      "sem": 0.028664741861454048
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.6013696090747304,
+      "sem": 0.02212079245074781
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.7165545700623515,
+      "sem": 0.031841223142850594
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.594828271829113,
+      "sem": 0.015003481588647555
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.7260237129857109,
+      "sem": 0.03763445572837617
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7171981342385182,
+      "sem": 0.035824973193931395
+    },
+    "PopT": {
+      "mean": 0.7656045915324167,
+      "sem": 0.02913797225559382
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5758388790402137,
+      "sem": 0.01813838263510505
+    }
+  },
+  "delta_volume": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.7062372937616047,
+      "sem": 0.02076390075017072
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.6973676915343016,
+      "sem": 0.0199836229466651
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.6766537201256235,
+      "sem": 0.0253177702720261
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7621358725921082,
+      "sem": 0.025646614830441398
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.8135158333333333,
+      "sem": 0.025081612308298605
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.8028579166666665,
+      "sem": 0.02510600645027731
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5809449816331697,
+      "sem": 0.01856217607957539
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.7622677247742562,
+      "sem": 0.025832660806417
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.7530842463682333,
+      "sem": 0.018688627479545455
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.718109422547088,
+      "sem": 0.024765923137603577
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7474175379033084,
+      "sem": 0.027340116831723184
+    },
+    "PopT": {
+      "mean": 0.7814904733021945,
+      "sem": 0.026821510556593833
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.6284629990081053,
+      "sem": 0.025196649285199425
+    }
+  },
+  "pitch": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5243484791310246,
+      "sem": 0.007415594329342383
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5244250177459938,
+      "sem": 0.005144150180983524
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.5637615508614934,
+      "sem": 0.015458118690119439
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.617630947720666,
+      "sem": 0.018307512339853973
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.5611016666666666,
+      "sem": 0.008149594726915127
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.5917516666666667,
+      "sem": 0.00938350403806634
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5159393561271871,
+      "sem": 0.00871654803109242
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.5783737153228793,
+      "sem": 0.016187749248444242
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5357987418743024,
+      "sem": 0.004813161919564632
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.569821732415493,
+      "sem": 0.011455140529053272
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5852666812609011,
+      "sem": 0.01448780437705829
+    },
+    "PopT": {
+      "mean": 0.595527922899722,
+      "sem": 0.01639441641312003
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5087944312335979,
+      "sem": 0.007681552968977143
+    }
+  },
+  "word_index": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.6847140248168729,
+      "sem": 0.02695684694427202
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.6839721586013092,
+      "sem": 0.026502573659301344
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.6195534069407916,
+      "sem": 0.01765361329346744
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7338778306907546,
+      "sem": 0.029297015979901916
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.7986400000000001,
+      "sem": 0.023310649174369976
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.7984570833333334,
+      "sem": 0.022266208877984438
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.534359458324554,
+      "sem": 0.01253853175455243
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.7401195688759551,
+      "sem": 0.027551903024819198
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.7419908318164836,
+      "sem": 0.01706217417466552
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.6567443057782233,
+      "sem": 0.028960284665726067
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.7275529496769108,
+      "sem": 0.02918918312926487
+    },
+    "PopT": {
+      "mean": 0.7576147530652552,
+      "sem": 0.02876339747185487
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5188890819770676,
+      "sem": 0.02252331587611202
+    }
+  },
+  "word_gap": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5840111389543092,
+      "sem": 0.01680136910019498
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5834564895423898,
+      "sem": 0.017381806994343926
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.5259005270545744,
+      "sem": 0.007280066621850692
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5834437385198589,
+      "sem": 0.017050401843140387
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6344699999999999,
+      "sem": 0.018728338923125157
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.63645875,
+      "sem": 0.014289886892642427
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5053973106797977,
+      "sem": 0.005051708101015922
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6116517216356449,
+      "sem": 0.014277753094682284
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5952055471492237,
+      "sem": 0.015176809947660687
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5794971260814219,
+      "sem": 0.018726723714615746
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5967737904103091,
+      "sem": 0.015386374341054948
+    },
+    "PopT": {
+      "mean": 0.619625075591472,
+      "sem": 0.017573644124320286
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5091631661026008,
+      "sem": 0.008912265871477535
+    }
+  },
+  "gpt2_surprisal": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5799968724199255,
+      "sem": 0.014574424726034868
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5814797127667913,
+      "sem": 0.012613780209809336
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.5569909295067793,
+      "sem": 0.017763304327089474
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.597320570002118,
+      "sem": 0.017892295385150758
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6181241666666666,
+      "sem": 0.011464752623580996
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6287908333333334,
+      "sem": 0.014204756500334538
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5219178425974912,
+      "sem": 0.011086101406649168
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6130867731980356,
+      "sem": 0.016962817946021856
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.584331658438266,
+      "sem": 0.00946795414645923
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5703847392871332,
+      "sem": 0.016918345364425845
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6040284149057329,
+      "sem": 0.01817578793176673
+    },
+    "PopT": {
+      "mean": 0.6032060346895795,
+      "sem": 0.016310339899815673
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5226280366163151,
+      "sem": 0.013704189032356269
+    }
+  },
+  "word_head_pos": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5845200136054421,
+      "sem": 0.012951283972946643
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5872004897959184,
+      "sem": 0.011857110692272773
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.5665297195490214,
+      "sem": 0.011336475612797743
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6136252912656865,
+      "sem": 0.013151484008710376
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6167333333333332,
+      "sem": 0.012194567257670597
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6227575,
+      "sem": 0.013638168528017651
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5226363288855452,
+      "sem": 0.01030959877508055
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6016399591836735,
+      "sem": 0.01247027198315427
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.570445387755102,
+      "sem": 0.00800728117056913
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5649899047619048,
+      "sem": 0.012366476450417309
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6019906638245405,
+      "sem": 0.014712996808993043
+    },
+    "PopT": {
+      "mean": 0.6013936562420544,
+      "sem": 0.013454479737850505
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5188426666666666,
+      "sem": 0.007720415386010635
+    }
+  },
+  "word_part_speech": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5555934728204415,
+      "sem": 0.011620449365744996
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5531362205838056,
+      "sem": 0.010271159683171115
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.575922482336475,
+      "sem": 0.016216377664510014
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6212690341163064,
+      "sem": 0.023948894663275738
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6070570833333333,
+      "sem": 0.0170457565024987
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.62735,
+      "sem": 0.01755690601895258
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.520612238521681,
+      "sem": 0.0072637068962527074
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6054697377283453,
+      "sem": 0.011919831457673368
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5763935904323085,
+      "sem": 0.01249263853843826
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.558674252103322,
+      "sem": 0.011260184446356888
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.596918859449106,
+      "sem": 0.016396963278458417
+    },
+    "PopT": {
+      "mean": 0.6036847058461624,
+      "sem": 0.014069293511984625
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5126944963602126,
+      "sem": 0.004058222804003422
+    }
+  },
+  "word_length": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5711988171330334,
+      "sem": 0.013058183128080032
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5714815646550936,
+      "sem": 0.012250683148295279
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.585986965750644,
+      "sem": 0.01335357205967137
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6356234380623969,
+      "sem": 0.01842897018769089
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.6378079166666666,
+      "sem": 0.017215013911658278
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6464375,
+      "sem": 0.018266389867314287
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5203625932105208,
+      "sem": 0.009632963788441237
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6175825553762134,
+      "sem": 0.014960976534711299
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5994371223312426,
+      "sem": 0.012587291601930646
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5690208388606378,
+      "sem": 0.0168983680309646
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6148562377628309,
+      "sem": 0.018371053212467035
+    },
+    "PopT": {
+      "mean": 0.6222799875854701,
+      "sem": 0.018087562113743145
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5050473493707893,
+      "sem": 0.004810857638855297
+    }
+  },
+  "global_flow": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5205156087827265,
+      "sem": 0.005955313947739905
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5282821553112306,
+      "sem": 0.004869733367834634
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.6086871150421183,
+      "sem": 0.013993506180412939
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6377835235911967,
+      "sem": 0.018491381035837445
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.59350625,
+      "sem": 0.013688811379657743
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6282825,
+      "sem": 0.012906043111067089
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5236916770676058,
+      "sem": 0.014233151618378875
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6251868197332965,
+      "sem": 0.01330206537283645
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.535044204166768,
+      "sem": 0.009407280057189025
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.6037980631866574,
+      "sem": 0.0169371782061838
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6288210390265633,
+      "sem": 0.015077735003202492
+    },
+    "PopT": {
+      "mean": 0.6207001152853003,
+      "sem": 0.018621098824522748
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.508555610650299,
+      "sem": 0.007765231211018097
+    }
+  },
+  "local_flow": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5245705647366614,
+      "sem": 0.003489875223100225
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5284426233665497,
+      "sem": 0.0031024453064826723
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.598623638963098,
+      "sem": 0.016422289485652695
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6299663729266004,
+      "sem": 0.01410918421949944
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.5839370833333334,
+      "sem": 0.015721737952795346
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.6161595833333333,
+      "sem": 0.014723666588116984
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5370585918766115,
+      "sem": 0.011143506454962891
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.6073124092761063,
+      "sem": 0.017015908437205393
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5442812070552893,
+      "sem": 0.005358020189597282
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5925850000337839,
+      "sem": 0.01968389015789845
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.6170814036903854,
+      "sem": 0.01658994212665951
+    },
+    "PopT": {
+      "mean": 0.6177786427703463,
+      "sem": 0.01615821324887719
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.5083937477560752,
+      "sem": 0.013979327044003077
+    }
+  },
+  "frame_brightness": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5077694328308996,
+      "sem": 0.012077123268833844
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5043964552066357,
+      "sem": 0.004964689678518626
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.49748143764339375,
+      "sem": 0.014956895258509805
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5358318535368706,
+      "sem": 0.020211228416026555
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.48579625,
+      "sem": 0.023668237529476846
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.4951270833333334,
+      "sem": 0.02610548264479087
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.4720174435420577,
+      "sem": 0.02621322504707224
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.5205597952345817,
+      "sem": 0.025252466545846626
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.5070834150686895,
+      "sem": 0.013102727243394329
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5330230286676451,
+      "sem": 0.01461425212763643
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5237233141509009,
+      "sem": 0.020922187846838858
+    },
+    "PopT": {
+      "mean": 0.4959445109953204,
+      "sem": 0.017913422399690276
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.49905107941913357,
+      "sem": 0.018905576771203716
+    }
+  },
+  "face_num": {
+    "BrainBERT (frozen; Wang et al. 2023)": {
+      "mean": 0.5032679869761272,
+      "sem": 0.006657795412666103
+    },
+    "BrainBERT (untrained, frozen)": {
+      "mean": 0.5051246560408136,
+      "sem": 0.005402538705995188
+    },
+    "BrainBERT_frozen_Wang_et_al_2023": {
+      "mean": 0.5156288547109061,
+      "sem": 0.012636712451231534
+    },
+    "CNN_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5295665945475752,
+      "sem": 0.014372769308461191
+    },
+    "DIVER-1_0.1s_tiny": {
+      "mean": 0.5177795833333333,
+      "sem": 0.008735237257843097
+    },
+    "DIVER-1_0.1s_tiny_frozen": {
+      "mean": 0.5250795833333334,
+      "sem": 0.012610544370716523
+    },
+    "GLIS-GNN (ST-GCN, Functional Graph)": {
+      "mean": 0.5149643743372437,
+      "sem": 0.010296226938348316
+    },
+    "Linear (Laplacian re-referencing + spectrogram)": {
+      "mean": 0.5299849941245844,
+      "sem": 0.013636447802514039
+    },
+    "Linear (raw voltage)": {
+      "mean": 0.4989921729623272,
+      "sem": 0.006937364937024558
+    },
+    "Linear (spectrogram)": {
+      "mean": 0.5249251930247542,
+      "sem": 0.007565839177314998
+    },
+    "MLP_Laplacian_rereferencing_spectrogram": {
+      "mean": 0.5213169402988598,
+      "sem": 0.018890636090099694
+    },
+    "PopT": {
+      "mean": 0.5168558333360563,
+      "sem": 0.01702847220144331
+    },
+    "PopulationTransformer (Chau et al. 2024)": {
+      "mean": 0.49208001440032995,
+      "sem": 0.009712031699407668
+    }
+  }
+}

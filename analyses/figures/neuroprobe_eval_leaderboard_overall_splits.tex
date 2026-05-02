@@ -1,0 +1,25 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+Model & Within Session & Cross Session & Cross Subject \\
+\hline
+DIVER-1_0.1s_tiny_frozen & \textbf{0.678 $\pm$ 0.005} & -- & -- \\
+DIVER-1_0.1s_tiny & 0.665 $\pm$ 0.004 & -- & -- \\
+CNN_Laplacian_rereferencing_spectrogram & 0.669 $\pm$ 0.005 & \textbf{0.670 $\pm$ 0.005} & \textbf{0.578 $\pm$ 0.005} \\
+PopT & 0.670 $\pm$ 0.005 & 0.663 $\pm$ 0.004 & 0.575 $\pm$ 0.006 \\
+MLP_Laplacian_rereferencing_spectrogram & 0.656 $\pm$ 0.005 & 0.655 $\pm$ 0.005 & 0.566 $\pm$ 0.004 \\
+Linear (Laplacian re-referencing + spectrogram) & 0.660 $\pm$ 0.005 & 0.648 $\pm$ 0.004 & 0.539 $\pm$ 0.004 \\
+BrainBERT_frozen_Wang_et_al_2023 & 0.626 $\pm$ 0.004 & 0.633 $\pm$ 0.004 & 0.547 $\pm$ 0.004 \\
+Linear (spectrogram) & 0.630 $\pm$ 0.005 & 0.626 $\pm$ 0.005 & 0.528 $\pm$ 0.003 \\
+Linear (raw voltage) & 0.606 $\pm$ 0.004 & 0.576 $\pm$ 0.003 & 0.510 $\pm$ 0.001 \\
+BrainBERT (frozen; Wang et al. 2023) & 0.586 $\pm$ 0.004 & 0.581 $\pm$ 0.004 & 0.522 $\pm$ 0.002 \\
+BrainBERT (untrained, frozen) & 0.585 $\pm$ 0.004 & 0.574 $\pm$ 0.004 & 0.527 $\pm$ 0.002 \\
+PopulationTransformer (Chau et al. 2024) & 0.545 $\pm$ 0.006 & 0.566 $\pm$ 0.004 & 0.526 $\pm$ 0.004 \\
+GLIS-GNN (ST-GCN, Functional Graph) & 0.553 $\pm$ 0.005 & 0.550 $\pm$ 0.004 & 0.515 $\pm$ 0.004 \\
+RNN (gru) & -- & 0.510 $\pm$ 0.002 & -- \\
+\hline
+\end{tabular}
+\caption{Leaderboard task-mean AUROC across splits (mean $\pm$ SEM). Best performer per split is shown in bold.}
+\label{tab:leaderboard_overall_splits}
+\end{table}

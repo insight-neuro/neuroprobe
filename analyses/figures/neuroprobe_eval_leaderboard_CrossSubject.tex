@@ -1,0 +1,76 @@
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\hline
+Model & Overall & Sentence Onset & Speech & Volume \\
+\hline
+CNN_Laplacian_rereferencing_spectrogram & \textbf{0.578 $\pm$ 0.005} & \textbf{0.780 $\pm$ 0.029} & \textbf{0.751 $\pm$ 0.031} & 0.587 $\pm$ 0.019 \\
+PopT & 0.575 $\pm$ 0.006 & 0.711 $\pm$ 0.045 & 0.714 $\pm$ 0.045 & \textbf{0.589 $\pm$ 0.023} \\
+MLP_Laplacian_rereferencing_spectrogram & 0.566 $\pm$ 0.004 & 0.749 $\pm$ 0.031 & 0.729 $\pm$ 0.032 & 0.571 $\pm$ 0.017 \\
+BrainBERT_frozen_Wang_et_al_2023 & 0.547 $\pm$ 0.004 & 0.712 $\pm$ 0.030 & 0.722 $\pm$ 0.038 & 0.536 $\pm$ 0.013 \\
+Linear (Laplacian re-referencing + spectrogram) & 0.539 $\pm$ 0.004 & 0.673 $\pm$ 0.037 & 0.642 $\pm$ 0.038 & 0.527 $\pm$ 0.010 \\
+Linear (spectrogram) & 0.528 $\pm$ 0.003 & 0.621 $\pm$ 0.024 & 0.585 $\pm$ 0.018 & 0.530 $\pm$ 0.008 \\
+BrainBERT (untrained, frozen) & 0.527 $\pm$ 0.002 & 0.585 $\pm$ 0.014 & 0.537 $\pm$ 0.007 & 0.524 $\pm$ 0.003 \\
+PopulationTransformer (Chau et al. 2024) & 0.526 $\pm$ 0.004 & 0.638 $\pm$ 0.031 & 0.594 $\pm$ 0.035 & 0.526 $\pm$ 0.012 \\
+BrainBERT (frozen; Wang et al. 2023) & 0.522 $\pm$ 0.002 & 0.582 $\pm$ 0.013 & 0.537 $\pm$ 0.005 & 0.521 $\pm$ 0.003 \\
+GLIS-GNN (ST-GCN, Functional Graph) & 0.515 $\pm$ 0.004 & 0.608 $\pm$ 0.017 & 0.541 $\pm$ 0.033 & 0.559 $\pm$ 0.018 \\
+Linear (raw voltage) & 0.510 $\pm$ 0.001 & 0.539 $\pm$ 0.013 & 0.508 $\pm$ 0.006 & 0.513 $\pm$ 0.004 \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
+\hline
+CNN_Laplacian_rereferencing_spectrogram & \textbf{0.662 $\pm$ 0.026} & 0.516 $\pm$ 0.008 & 0.617 $\pm$ 0.029 & \textbf{0.545 $\pm$ 0.012} \\
+PopT & 0.653 $\pm$ 0.037 & 0.525 $\pm$ 0.010 & \textbf{0.630 $\pm$ 0.026} & 0.525 $\pm$ 0.010 \\
+MLP_Laplacian_rereferencing_spectrogram & 0.634 $\pm$ 0.024 & 0.514 $\pm$ 0.005 & 0.602 $\pm$ 0.027 & 0.530 $\pm$ 0.008 \\
+BrainBERT_frozen_Wang_et_al_2023 & 0.564 $\pm$ 0.016 & \textbf{0.529 $\pm$ 0.005} & 0.539 $\pm$ 0.012 & 0.499 $\pm$ 0.007 \\
+Linear (Laplacian re-referencing + spectrogram) & 0.568 $\pm$ 0.013 & 0.505 $\pm$ 0.002 & 0.571 $\pm$ 0.022 & 0.515 $\pm$ 0.008 \\
+Linear (spectrogram) & 0.555 $\pm$ 0.011 & 0.505 $\pm$ 0.005 & 0.552 $\pm$ 0.013 & 0.508 $\pm$ 0.006 \\
+BrainBERT (untrained, frozen) & 0.590 $\pm$ 0.010 & 0.505 $\pm$ 0.003 & 0.574 $\pm$ 0.015 & 0.513 $\pm$ 0.003 \\
+PopulationTransformer (Chau et al. 2024) & 0.573 $\pm$ 0.016 & 0.509 $\pm$ 0.005 & 0.503 $\pm$ 0.007 & 0.519 $\pm$ 0.005 \\
+BrainBERT (frozen; Wang et al. 2023) & 0.574 $\pm$ 0.010 & 0.507 $\pm$ 0.002 & 0.549 $\pm$ 0.012 & 0.510 $\pm$ 0.003 \\
+GLIS-GNN (ST-GCN, Functional Graph) & 0.519 $\pm$ 0.013 & 0.490 $\pm$ 0.007 & 0.503 $\pm$ 0.005 & 0.498 $\pm$ 0.008 \\
+Linear (raw voltage) & 0.533 $\pm$ 0.010 & 0.503 $\pm$ 0.002 & 0.539 $\pm$ 0.009 & 0.511 $\pm$ 0.003 \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
+\hline
+CNN_Laplacian_rereferencing_spectrogram & 0.539 $\pm$ 0.010 & \textbf{0.555 $\pm$ 0.014} & 0.520 $\pm$ 0.007 & 0.511 $\pm$ 0.009 \\
+PopT & \textbf{0.563 $\pm$ 0.016} & 0.553 $\pm$ 0.016 & \textbf{0.523 $\pm$ 0.012} & \textbf{0.527 $\pm$ 0.008} \\
+MLP_Laplacian_rereferencing_spectrogram & 0.532 $\pm$ 0.009 & 0.548 $\pm$ 0.013 & 0.517 $\pm$ 0.011 & 0.521 $\pm$ 0.008 \\
+BrainBERT_frozen_Wang_et_al_2023 & 0.507 $\pm$ 0.004 & 0.540 $\pm$ 0.011 & 0.515 $\pm$ 0.010 & 0.507 $\pm$ 0.006 \\
+Linear (Laplacian re-referencing + spectrogram) & 0.508 $\pm$ 0.003 & 0.521 $\pm$ 0.008 & 0.508 $\pm$ 0.006 & 0.508 $\pm$ 0.005 \\
+Linear (spectrogram) & 0.510 $\pm$ 0.004 & 0.511 $\pm$ 0.004 & 0.509 $\pm$ 0.003 & 0.509 $\pm$ 0.003 \\
+BrainBERT (untrained, frozen) & 0.522 $\pm$ 0.005 & 0.530 $\pm$ 0.005 & 0.517 $\pm$ 0.003 & 0.509 $\pm$ 0.004 \\
+PopulationTransformer (Chau et al. 2024) & 0.522 $\pm$ 0.007 & 0.509 $\pm$ 0.007 & 0.498 $\pm$ 0.005 & 0.498 $\pm$ 0.004 \\
+BrainBERT (frozen; Wang et al. 2023) & 0.511 $\pm$ 0.004 & 0.524 $\pm$ 0.004 & 0.509 $\pm$ 0.004 & 0.504 $\pm$ 0.004 \\
+GLIS-GNN (ST-GCN, Functional Graph) & 0.508 $\pm$ 0.005 & 0.497 $\pm$ 0.008 & 0.500 $\pm$ 0.008 & 0.488 $\pm$ 0.006 \\
+Linear (raw voltage) & 0.510 $\pm$ 0.005 & 0.504 $\pm$ 0.003 & 0.495 $\pm$ 0.003 & 0.502 $\pm$ 0.003 \\
+\hline
+\end{tabular}
+\hspace{1em}
+\begin{tabular}{lcccc}
+\hline
+Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
+\hline
+CNN_Laplacian_rereferencing_spectrogram & 0.531 $\pm$ 0.010 & 0.528 $\pm$ 0.011 & \textbf{0.516 $\pm$ 0.007} & 0.505 $\pm$ 0.009 \\
+PopT & \textbf{0.548 $\pm$ 0.020} & \textbf{0.547 $\pm$ 0.017} & 0.502 $\pm$ 0.020 & \textbf{0.516 $\pm$ 0.011} \\
+MLP_Laplacian_rereferencing_spectrogram & 0.523 $\pm$ 0.010 & 0.512 $\pm$ 0.008 & 0.502 $\pm$ 0.007 & 0.502 $\pm$ 0.009 \\
+BrainBERT_frozen_Wang_et_al_2023 & 0.534 $\pm$ 0.012 & 0.514 $\pm$ 0.008 & 0.497 $\pm$ 0.007 & 0.492 $\pm$ 0.011 \\
+Linear (Laplacian re-referencing + spectrogram) & 0.515 $\pm$ 0.005 & 0.513 $\pm$ 0.005 & 0.499 $\pm$ 0.004 & 0.508 $\pm$ 0.004 \\
+Linear (spectrogram) & 0.508 $\pm$ 0.007 & 0.506 $\pm$ 0.009 & 0.514 $\pm$ 0.008 & 0.496 $\pm$ 0.003 \\
+BrainBERT (untrained, frozen) & 0.503 $\pm$ 0.003 & 0.501 $\pm$ 0.006 & 0.502 $\pm$ 0.002 & 0.500 $\pm$ 0.003 \\
+PopulationTransformer (Chau et al. 2024) & 0.503 $\pm$ 0.007 & 0.500 $\pm$ 0.010 & 0.502 $\pm$ 0.009 & 0.494 $\pm$ 0.004 \\
+BrainBERT (frozen; Wang et al. 2023) & 0.501 $\pm$ 0.002 & 0.498 $\pm$ 0.004 & 0.506 $\pm$ 0.004 & 0.501 $\pm$ 0.004 \\
+GLIS-GNN (ST-GCN, Functional Graph) & 0.483 $\pm$ 0.012 & 0.538 $\pm$ 0.018 & 0.497 $\pm$ 0.013 & 0.498 $\pm$ 0.012 \\
+Linear (raw voltage) & 0.500 $\pm$ 0.004 & 0.500 $\pm$ 0.002 & 0.493 $\pm$ 0.002 & 0.501 $\pm$ 0.003 \\
+\hline
+\end{tabular}
+\caption{Leaderboard performance comparison across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
+\label{tab:leaderboard_performance_CrossSubject}
+\end{table}
