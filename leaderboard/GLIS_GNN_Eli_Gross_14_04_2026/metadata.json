@@ -1,5 +1,5 @@
 {
-  "model_name": "GLIS-GNN (ST-GCN, Functional Graph)",
+  "model_name": "GNN (ST-GCN, Functional Graph)",
   "description": "Spatio-temporal GCN with functional connectivity graph built from Pearson correlation of training data. STFT preprocessing with Laplacian re-referencing.",
   "author": "Eli Gross",
   "organization": "Columbia University",
