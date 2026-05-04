@@ -1,15 +1,16 @@
-\begin{table}[h]
-\centering
-\begin{tabular}{lcccc}
+\begin{table}[!htbp]
+\small
+\hspace*{-2.5cm}{\large\textbf{Within-Session Split}}\\[0.4em]
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Overall & Sentence Onset & Speech & Volume \\
 \hline
-DIVER-1_0.1s_tiny_frozen & \textbf{0.678 $\pm$ 0.005} & \textbf{0.930 $\pm$ 0.010} & 0.897 $\pm$ 0.015 & 0.719 $\pm$ 0.029 \\
+DIVER-1 (0.1s, tiny, frozen) & \textbf{0.678 $\pm$ 0.005} & \textbf{0.930 $\pm$ 0.010} & 0.897 $\pm$ 0.015 & 0.719 $\pm$ 0.029 \\
 Population Transformer (global z-scoring) & 0.670 $\pm$ 0.005 & 0.930 $\pm$ 0.011 & \textbf{0.919 $\pm$ 0.013} & \textbf{0.766 $\pm$ 0.029} \\
-CNN_Laplacian_rereferencing_spectrogram & 0.669 $\pm$ 0.005 & 0.886 $\pm$ 0.016 & 0.888 $\pm$ 0.020 & 0.757 $\pm$ 0.037 \\
-DIVER-1_0.1s_tiny & 0.665 $\pm$ 0.004 & 0.924 $\pm$ 0.010 & 0.897 $\pm$ 0.014 & 0.688 $\pm$ 0.026 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.669 $\pm$ 0.005 & 0.886 $\pm$ 0.016 & 0.888 $\pm$ 0.020 & 0.757 $\pm$ 0.037 \\
+DIVER-1 (0.1s, tiny) & 0.665 $\pm$ 0.004 & 0.924 $\pm$ 0.010 & 0.897 $\pm$ 0.014 & 0.688 $\pm$ 0.026 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.660 $\pm$ 0.005 & 0.888 $\pm$ 0.017 & 0.882 $\pm$ 0.017 & 0.717 $\pm$ 0.036 \\
-MLP_Laplacian_rereferencing_spectrogram & 0.656 $\pm$ 0.005 & 0.884 $\pm$ 0.022 & 0.877 $\pm$ 0.022 & 0.717 $\pm$ 0.036 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.656 $\pm$ 0.005 & 0.884 $\pm$ 0.022 & 0.877 $\pm$ 0.022 & 0.717 $\pm$ 0.036 \\
 BrainBERT (frozen, global z-scoring) & 0.626 $\pm$ 0.004 & 0.883 $\pm$ 0.018 & 0.887 $\pm$ 0.018 & 0.723 $\pm$ 0.028 \\
 Linear (spectrogram) & 0.625 $\pm$ 0.006 & 0.837 $\pm$ 0.027 & 0.816 $\pm$ 0.029 & 0.719 $\pm$ 0.043 \\
 Linear (raw voltage) & 0.604 $\pm$ 0.004 & 0.792 $\pm$ 0.023 & 0.645 $\pm$ 0.024 & 0.597 $\pm$ 0.015 \\
@@ -20,16 +21,16 @@ PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.549 $\pm$ 0
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
 \hline
-DIVER-1_0.1s_tiny_frozen & 0.803 $\pm$ 0.025 & 0.592 $\pm$ 0.009 & 0.798 $\pm$ 0.022 & \textbf{0.636 $\pm$ 0.014} \\
+DIVER-1 (0.1s, tiny, frozen) & 0.803 $\pm$ 0.025 & 0.592 $\pm$ 0.009 & 0.798 $\pm$ 0.022 & \textbf{0.636 $\pm$ 0.014} \\
 Population Transformer (global z-scoring) & 0.781 $\pm$ 0.027 & 0.596 $\pm$ 0.016 & 0.758 $\pm$ 0.029 & 0.620 $\pm$ 0.018 \\
-CNN_Laplacian_rereferencing_spectrogram & 0.762 $\pm$ 0.026 & \textbf{0.618 $\pm$ 0.018} & 0.734 $\pm$ 0.029 & 0.583 $\pm$ 0.017 \\
-DIVER-1_0.1s_tiny & \textbf{0.814 $\pm$ 0.025} & 0.561 $\pm$ 0.008 & \textbf{0.799 $\pm$ 0.023} & 0.634 $\pm$ 0.019 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.762 $\pm$ 0.026 & \textbf{0.618 $\pm$ 0.018} & 0.734 $\pm$ 0.029 & 0.583 $\pm$ 0.017 \\
+DIVER-1 (0.1s, tiny) & \textbf{0.814 $\pm$ 0.025} & 0.561 $\pm$ 0.008 & \textbf{0.799 $\pm$ 0.023} & 0.634 $\pm$ 0.019 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.756 $\pm$ 0.027 & 0.584 $\pm$ 0.015 & 0.740 $\pm$ 0.030 & 0.613 $\pm$ 0.015 \\
-MLP_Laplacian_rereferencing_spectrogram & 0.747 $\pm$ 0.027 & 0.585 $\pm$ 0.014 & 0.728 $\pm$ 0.029 & 0.597 $\pm$ 0.015 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.747 $\pm$ 0.027 & 0.585 $\pm$ 0.014 & 0.728 $\pm$ 0.029 & 0.597 $\pm$ 0.015 \\
 BrainBERT (frozen, global z-scoring) & 0.677 $\pm$ 0.025 & 0.564 $\pm$ 0.015 & 0.620 $\pm$ 0.018 & 0.526 $\pm$ 0.007 \\
 Linear (spectrogram) & 0.711 $\pm$ 0.027 & 0.566 $\pm$ 0.010 & 0.651 $\pm$ 0.031 & 0.582 $\pm$ 0.019 \\
 Linear (raw voltage) & 0.742 $\pm$ 0.022 & 0.535 $\pm$ 0.007 & 0.742 $\pm$ 0.020 & 0.598 $\pm$ 0.015 \\
@@ -40,16 +41,16 @@ PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.622 $\pm$ 0
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
 \hline
-DIVER-1_0.1s_tiny_frozen & \textbf{0.629 $\pm$ 0.014} & \textbf{0.623 $\pm$ 0.014} & \textbf{0.627 $\pm$ 0.018} & \textbf{0.646 $\pm$ 0.018} \\
+DIVER-1 (0.1s, tiny, frozen) & \textbf{0.629 $\pm$ 0.014} & \textbf{0.623 $\pm$ 0.014} & \textbf{0.627 $\pm$ 0.018} & \textbf{0.646 $\pm$ 0.018} \\
 Population Transformer (global z-scoring) & 0.603 $\pm$ 0.016 & 0.601 $\pm$ 0.013 & 0.604 $\pm$ 0.014 & 0.622 $\pm$ 0.018 \\
-CNN_Laplacian_rereferencing_spectrogram & 0.597 $\pm$ 0.018 & 0.614 $\pm$ 0.013 & 0.621 $\pm$ 0.024 & 0.636 $\pm$ 0.018 \\
-DIVER-1_0.1s_tiny & 0.618 $\pm$ 0.011 & 0.617 $\pm$ 0.012 & 0.607 $\pm$ 0.017 & 0.638 $\pm$ 0.017 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.597 $\pm$ 0.018 & 0.614 $\pm$ 0.013 & 0.621 $\pm$ 0.024 & 0.636 $\pm$ 0.018 \\
+DIVER-1 (0.1s, tiny) & 0.618 $\pm$ 0.011 & 0.617 $\pm$ 0.012 & 0.607 $\pm$ 0.017 & 0.638 $\pm$ 0.017 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.608 $\pm$ 0.017 & 0.603 $\pm$ 0.012 & 0.601 $\pm$ 0.016 & 0.617 $\pm$ 0.018 \\
-MLP_Laplacian_rereferencing_spectrogram & 0.604 $\pm$ 0.018 & 0.602 $\pm$ 0.015 & 0.597 $\pm$ 0.016 & 0.615 $\pm$ 0.018 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.604 $\pm$ 0.018 & 0.602 $\pm$ 0.015 & 0.597 $\pm$ 0.016 & 0.615 $\pm$ 0.018 \\
 BrainBERT (frozen, global z-scoring) & 0.557 $\pm$ 0.018 & 0.567 $\pm$ 0.011 & 0.576 $\pm$ 0.016 & 0.586 $\pm$ 0.013 \\
 Linear (spectrogram) & 0.567 $\pm$ 0.017 & 0.564 $\pm$ 0.012 & 0.557 $\pm$ 0.012 & 0.565 $\pm$ 0.019 \\
 Linear (raw voltage) & 0.575 $\pm$ 0.011 & 0.569 $\pm$ 0.009 & 0.579 $\pm$ 0.013 & 0.595 $\pm$ 0.014 \\
@@ -60,16 +61,16 @@ PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.517 $\pm$ 0
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
 \hline
-DIVER-1_0.1s_tiny_frozen & 0.628 $\pm$ 0.013 & 0.616 $\pm$ 0.015 & 0.495 $\pm$ 0.026 & 0.525 $\pm$ 0.013 \\
+DIVER-1 (0.1s, tiny, frozen) & 0.628 $\pm$ 0.013 & 0.616 $\pm$ 0.015 & 0.495 $\pm$ 0.026 & 0.525 $\pm$ 0.013 \\
 Population Transformer (global z-scoring) & 0.621 $\pm$ 0.019 & 0.618 $\pm$ 0.016 & 0.496 $\pm$ 0.018 & 0.517 $\pm$ 0.017 \\
-CNN_Laplacian_rereferencing_spectrogram & \textbf{0.638 $\pm$ 0.018} & \textbf{0.630 $\pm$ 0.014} & \textbf{0.536 $\pm$ 0.020} & \textbf{0.530 $\pm$ 0.014} \\
-DIVER-1_0.1s_tiny & 0.594 $\pm$ 0.014 & 0.584 $\pm$ 0.016 & 0.486 $\pm$ 0.024 & 0.518 $\pm$ 0.009 \\
+CNN (Laplacian re-referencing + spectrogram) & \textbf{0.638 $\pm$ 0.018} & \textbf{0.630 $\pm$ 0.014} & \textbf{0.536 $\pm$ 0.020} & \textbf{0.530 $\pm$ 0.014} \\
+DIVER-1 (0.1s, tiny) & 0.594 $\pm$ 0.014 & 0.584 $\pm$ 0.016 & 0.486 $\pm$ 0.024 & 0.518 $\pm$ 0.009 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.630 $\pm$ 0.014 & 0.615 $\pm$ 0.016 & 0.528 $\pm$ 0.027 & 0.519 $\pm$ 0.017 \\
-MLP_Laplacian_rereferencing_spectrogram & 0.629 $\pm$ 0.015 & 0.617 $\pm$ 0.017 & 0.524 $\pm$ 0.021 & 0.521 $\pm$ 0.019 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.629 $\pm$ 0.015 & 0.617 $\pm$ 0.017 & 0.524 $\pm$ 0.021 & 0.521 $\pm$ 0.019 \\
 BrainBERT (frozen, global z-scoring) & 0.609 $\pm$ 0.014 & 0.599 $\pm$ 0.016 & 0.497 $\pm$ 0.015 & 0.516 $\pm$ 0.013 \\
 Linear (spectrogram) & 0.604 $\pm$ 0.019 & 0.596 $\pm$ 0.020 & 0.522 $\pm$ 0.012 & 0.522 $\pm$ 0.010 \\
 Linear (raw voltage) & 0.536 $\pm$ 0.008 & 0.541 $\pm$ 0.007 & 0.507 $\pm$ 0.016 & 0.503 $\pm$ 0.011 \\
@@ -79,6 +80,6 @@ GLIS-GNN (ST-GCN, Functional Graph) & 0.524 $\pm$ 0.014 & 0.537 $\pm$ 0.011 & 0.
 PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.515 $\pm$ 0.015 & 0.501 $\pm$ 0.012 & 0.489 $\pm$ 0.012 & 0.500 $\pm$ 0.009 \\
 \hline
 \end{tabular}
-\caption{Leaderboard performance comparison across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
+\caption{Leaderboard performance on the Within-Session split across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
 \label{tab:leaderboard_performance_WithinSession}
 \end{table}

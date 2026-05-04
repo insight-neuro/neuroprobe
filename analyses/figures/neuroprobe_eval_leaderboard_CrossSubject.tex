@@ -1,12 +1,13 @@
-\begin{table}[h]
-\centering
-\begin{tabular}{lcccc}
+\begin{table}[!htbp]
+\small
+\hspace*{-2.5cm}{\large\textbf{Cross-Subject Split}}\\[0.4em]
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Overall & Sentence Onset & Speech & Volume \\
 \hline
-CNN_Laplacian_rereferencing_spectrogram & \textbf{0.578 $\pm$ 0.005} & \textbf{0.780 $\pm$ 0.029} & \textbf{0.751 $\pm$ 0.031} & 0.587 $\pm$ 0.019 \\
+CNN (Laplacian re-referencing + spectrogram) & \textbf{0.578 $\pm$ 0.005} & \textbf{0.780 $\pm$ 0.029} & \textbf{0.751 $\pm$ 0.031} & 0.587 $\pm$ 0.019 \\
 Population Transformer (global z-scoring) & 0.575 $\pm$ 0.006 & 0.711 $\pm$ 0.045 & 0.714 $\pm$ 0.045 & \textbf{0.589 $\pm$ 0.023} \\
-MLP_Laplacian_rereferencing_spectrogram & 0.566 $\pm$ 0.004 & 0.749 $\pm$ 0.031 & 0.729 $\pm$ 0.032 & 0.571 $\pm$ 0.017 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.566 $\pm$ 0.004 & 0.749 $\pm$ 0.031 & 0.729 $\pm$ 0.032 & 0.571 $\pm$ 0.017 \\
 BrainBERT (frozen, global z-scoring) & 0.547 $\pm$ 0.004 & 0.712 $\pm$ 0.030 & 0.722 $\pm$ 0.038 & 0.536 $\pm$ 0.013 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.539 $\pm$ 0.004 & 0.676 $\pm$ 0.038 & 0.643 $\pm$ 0.038 & 0.534 $\pm$ 0.012 \\
 Linear (spectrogram) & 0.528 $\pm$ 0.003 & 0.616 $\pm$ 0.026 & 0.575 $\pm$ 0.020 & 0.540 $\pm$ 0.011 \\
@@ -17,13 +18,13 @@ Linear (raw voltage) & 0.509 $\pm$ 0.002 & 0.534 $\pm$ 0.016 & 0.504 $\pm$ 0.008
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
 \hline
-CNN_Laplacian_rereferencing_spectrogram & \textbf{0.662 $\pm$ 0.026} & 0.516 $\pm$ 0.008 & 0.617 $\pm$ 0.029 & \textbf{0.545 $\pm$ 0.012} \\
+CNN (Laplacian re-referencing + spectrogram) & \textbf{0.662 $\pm$ 0.026} & 0.516 $\pm$ 0.008 & 0.617 $\pm$ 0.029 & \textbf{0.545 $\pm$ 0.012} \\
 Population Transformer (global z-scoring) & 0.653 $\pm$ 0.037 & 0.525 $\pm$ 0.010 & \textbf{0.630 $\pm$ 0.026} & 0.525 $\pm$ 0.010 \\
-MLP_Laplacian_rereferencing_spectrogram & 0.634 $\pm$ 0.024 & 0.514 $\pm$ 0.005 & 0.602 $\pm$ 0.027 & 0.530 $\pm$ 0.008 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.634 $\pm$ 0.024 & 0.514 $\pm$ 0.005 & 0.602 $\pm$ 0.027 & 0.530 $\pm$ 0.008 \\
 BrainBERT (frozen, global z-scoring) & 0.564 $\pm$ 0.016 & \textbf{0.529 $\pm$ 0.005} & 0.539 $\pm$ 0.012 & 0.499 $\pm$ 0.007 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.569 $\pm$ 0.014 & 0.505 $\pm$ 0.003 & 0.566 $\pm$ 0.024 & 0.515 $\pm$ 0.007 \\
 Linear (spectrogram) & 0.548 $\pm$ 0.011 & 0.503 $\pm$ 0.006 & 0.558 $\pm$ 0.013 & 0.509 $\pm$ 0.008 \\
@@ -34,13 +35,13 @@ Linear (raw voltage) & 0.529 $\pm$ 0.009 & 0.501 $\pm$ 0.003 & 0.536 $\pm$ 0.010
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
 \hline
-CNN_Laplacian_rereferencing_spectrogram & 0.539 $\pm$ 0.010 & \textbf{0.555 $\pm$ 0.014} & 0.520 $\pm$ 0.007 & 0.511 $\pm$ 0.009 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.539 $\pm$ 0.010 & \textbf{0.555 $\pm$ 0.014} & 0.520 $\pm$ 0.007 & 0.511 $\pm$ 0.009 \\
 Population Transformer (global z-scoring) & \textbf{0.563 $\pm$ 0.016} & 0.553 $\pm$ 0.016 & \textbf{0.523 $\pm$ 0.012} & \textbf{0.527 $\pm$ 0.008} \\
-MLP_Laplacian_rereferencing_spectrogram & 0.532 $\pm$ 0.009 & 0.548 $\pm$ 0.013 & 0.517 $\pm$ 0.011 & 0.521 $\pm$ 0.008 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.532 $\pm$ 0.009 & 0.548 $\pm$ 0.013 & 0.517 $\pm$ 0.011 & 0.521 $\pm$ 0.008 \\
 BrainBERT (frozen, global z-scoring) & 0.507 $\pm$ 0.004 & 0.540 $\pm$ 0.011 & 0.515 $\pm$ 0.010 & 0.507 $\pm$ 0.006 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.508 $\pm$ 0.003 & 0.525 $\pm$ 0.009 & 0.506 $\pm$ 0.008 & 0.511 $\pm$ 0.006 \\
 Linear (spectrogram) & 0.510 $\pm$ 0.003 & 0.511 $\pm$ 0.005 & 0.509 $\pm$ 0.005 & 0.512 $\pm$ 0.004 \\
@@ -51,13 +52,13 @@ Linear (raw voltage) & 0.506 $\pm$ 0.007 & 0.506 $\pm$ 0.004 & 0.496 $\pm$ 0.005
 \hline
 \end{tabular}
 \hspace{1em}
-\begin{tabular}{lcccc}
+\hspace*{-2.5cm}\begin{tabular}{>{\raggedright\arraybackslash}p{8cm}cccc}
 \hline
 Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
 \hline
-CNN_Laplacian_rereferencing_spectrogram & 0.531 $\pm$ 0.010 & 0.528 $\pm$ 0.011 & 0.516 $\pm$ 0.007 & 0.505 $\pm$ 0.009 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.531 $\pm$ 0.010 & 0.528 $\pm$ 0.011 & 0.516 $\pm$ 0.007 & 0.505 $\pm$ 0.009 \\
 Population Transformer (global z-scoring) & \textbf{0.548 $\pm$ 0.020} & \textbf{0.547 $\pm$ 0.017} & 0.502 $\pm$ 0.020 & \textbf{0.516 $\pm$ 0.011} \\
-MLP_Laplacian_rereferencing_spectrogram & 0.523 $\pm$ 0.010 & 0.512 $\pm$ 0.008 & 0.502 $\pm$ 0.007 & 0.502 $\pm$ 0.009 \\
+MLP (Laplacian re-referencing + spectrogram) & 0.523 $\pm$ 0.010 & 0.512 $\pm$ 0.008 & 0.502 $\pm$ 0.007 & 0.502 $\pm$ 0.009 \\
 BrainBERT (frozen, global z-scoring) & 0.534 $\pm$ 0.012 & 0.514 $\pm$ 0.008 & 0.497 $\pm$ 0.007 & 0.492 $\pm$ 0.011 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.515 $\pm$ 0.007 & 0.510 $\pm$ 0.005 & 0.495 $\pm$ 0.004 & 0.511 $\pm$ 0.004 \\
 Linear (spectrogram) & 0.509 $\pm$ 0.009 & 0.501 $\pm$ 0.011 & \textbf{0.519 $\pm$ 0.007} & 0.494 $\pm$ 0.004 \\
@@ -67,6 +68,6 @@ GLIS-GNN (ST-GCN, Functional Graph) & 0.483 $\pm$ 0.012 & 0.538 $\pm$ 0.018 & 0.
 Linear (raw voltage) & 0.500 $\pm$ 0.005 & 0.498 $\pm$ 0.005 & 0.496 $\pm$ 0.004 & 0.501 $\pm$ 0.005 \\
 \hline
 \end{tabular}
-\caption{Leaderboard performance comparison across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
+\caption{Leaderboard performance on the Cross-Subject split across tasks (mean $\pm$ SEM). Best performing model for each task is shown in bold.}
 \label{tab:leaderboard_performance_CrossSubject}
 \end{table}

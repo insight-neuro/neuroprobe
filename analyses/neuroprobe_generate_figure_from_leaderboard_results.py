@@ -254,11 +254,14 @@ legend_ax.axis('off')
 handles = [plt.Rectangle((0, 0), 1, 1, color=model['color']) for model in models]
 chance_line = plt.Line2D([0], [0], color='black', linestyle='--', alpha=0.5)
 handles.append(chance_line)
-legend_ax.legend(handles, [get_display_name(model['name']) for model in models] + ["Chance"],
+legend = legend_ax.legend(handles, [get_display_name(model['name']) for model in models] + ["Chance"],
                  loc='center left',
                  ncol=n_fig_legend_cols,
                  frameon=False,
-                 fontsize=9)
+                 fontsize=9,
+                 title=f'{split_folder} Split',
+                 title_fontsize=11)
+legend.get_title().set_fontweight('bold')
 
 # Per-task panels
 plot_idx = 0
@@ -311,8 +314,9 @@ print(f'Saved performance data to {filename}')
 ### GENERATE LATEX TABLE ###
 
 latex_lines = []
-latex_lines.append("\\begin{table}[h]")
-latex_lines.append("\\centering")
+latex_lines.append("\\begin{table}[!htbp]")
+latex_lines.append("\\small")
+latex_lines.append(f"\\hspace*{{-2.5cm}}{{\\large\\textbf{{{split_folder} Split}}}}\\\\[0.4em]")
 
 task_display_mapping = {'Overall': 'Overall'}
 task_display_mapping.update(task_name_mapping)
@@ -326,12 +330,32 @@ def _fmt(perf):
     sem_str = f"{sem:.3f}" if not np.isnan(sem) else "--"
     return f"{perf['mean']:.3f} $\\pm$ {sem_str}"
 
+def _latex_escape(s):
+    # Backslash must be replaced first so subsequent replacements aren't double-escaped.
+    replacements = [
+        ('\\', r'\textbackslash{}'),
+        ('&', r'\&'),
+        ('%', r'\%'),
+        ('$', r'\$'),
+        ('#', r'\#'),
+        ('_', r'\_'),
+        ('{', r'\{'),
+        ('}', r'\}'),
+        ('~', r'\textasciitilde{}'),
+        ('^', r'\textasciicircum{}'),
+    ]
+    for old, new in replacements:
+        s = s.replace(old, new)
+    return s
+
+model_name_col_width = '8cm'
+
 for chunk in range(n_chunks):
     start_idx = chunk * 4
     end_idx = min((chunk + 1) * 4, len(all_tasks))
     chunk_tasks = all_tasks[start_idx:end_idx]
 
-    latex_lines.append("\\begin{tabular}{l" + "c" * len(chunk_tasks) + "}")
+    latex_lines.append("\\hspace*{-2.5cm}\\begin{tabular}{>{\\raggedright\\arraybackslash}p{" + model_name_col_width + "}" + "c" * len(chunk_tasks) + "}")
     latex_lines.append("\\hline")
 
     header = "Model"
@@ -349,7 +373,7 @@ for chunk in range(n_chunks):
             best_by_task[task] = max(candidates, key=lambda kv: kv[1])[0]
 
     for model in models:
-        row_cells = [model['short_name']]
+        row_cells = [_latex_escape(get_display_name(model['name']))]
         for task in chunk_tasks:
             cell = _fmt(performance_data[task][model['name']])
             if best_by_task.get(task) == model['name'] and cell != "--":
@@ -363,7 +387,7 @@ for chunk in range(n_chunks):
     if chunk < n_chunks - 1:
         latex_lines.append("\\hspace{1em}")
 
-latex_lines.append("\\caption{Leaderboard performance comparison across tasks (mean $\\pm$ SEM). "
+latex_lines.append("\\caption{Leaderboard performance on the " + split_folder + " split across tasks (mean $\\pm$ SEM). "
                    "Best performing model for each task is shown in bold.}")
 latex_lines.append("\\label{tab:leaderboard_performance_" + split_type + "}")
 latex_lines.append("\\end{table}")
