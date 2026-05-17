@@ -30,9 +30,9 @@
 
 ---
 
-By **Andrii Zahorodnii¹²***, **Christopher Wang¹***, **Bennett Stankovits¹***, **Charikleia Moraitaki¹**, **Geeling Chau³**, **Andrei Barbu¹**, **Boris Katz¹**, **Ila R Fiete¹²**,
+By **Andrii Zahorodnii¹²***, **Christopher Wang¹***, **Geeling Chau³***, **Bennett Stankovits¹**, **Charikleia Moraitaki¹**, **Eli Gross⁴**, **Alexander Brady⁵**, **Andrei Barbu¹**, **Boris Katz¹**, **Ila R Fiete¹²**,
 
-¹MIT CSAIL, CBMM  |  ²MIT McGovern Institute  |  ³Caltech  |  *Equal contribution
+¹MIT CSAIL, CBMM  |  ²MIT McGovern Institute  |  ³Caltech  |  ⁴Columbia University  |  ⁵ETH Zurich  |  *Equal contribution
 
 ## Overview
 Neuroprobe is a benchmark for evaluating EEG/iEEG/sEEG/ECoG foundation models and understanding how the brain processes information across multiple tasks. It analyzes intracranial recordings during naturalistic stimuli using techniques from modern natural language processing. By probing neural responses across many tasks simultaneously, Neuroprobe aims to reveal the functional organization of the brain and relationships between different cognitive processes. The benchmark includes tools for decoding neural signals using both simple linear models and advanced neural networks, enabling researchers to better understand how the brain processes information across vision, language, and audio domains.
@@ -127,8 +127,8 @@ If you use Neuroprobe in your work, please cite our paper:
 ```bibtex
 @misc{neuroprobe,
       title={Neuroprobe: Evaluating Intracranial Brain Responses to Naturalistic Stimuli}, 
-      author={Andrii Zahorodnii and Christopher Wang and Bennett Stankovits and Charikleia Moraitaki and Geeling Chau and Andrei Barbu and Boris Katz and Ila R Fiete},
-      year={2025},
+      author={Andrii Zahorodnii and Christopher Wang and Geeling Chau and Bennett Stankovits and Charikleia Moraitaki and Eli Gross and Alexander Brady and Andrei Barbu and Boris Katz and Ila R Fiete},
+      year={2026},
       eprint={2509.21671},
       archivePrefix={arXiv},
       primaryClass={cs.LG},
