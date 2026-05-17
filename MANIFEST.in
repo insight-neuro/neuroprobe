@@ -5,6 +5,7 @@ include LICENSE
 # Include the configuration and data files
 recursive-include neuroprobe/braintreebank_features_time_alignment *
 recursive-include neuroprobe/pitch_volume_features *
+recursive-include neuroprobe/mni_coords *
 
 # Include any JSON schema files
 include leaderboard_schema.json

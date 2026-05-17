@@ -63,7 +63,7 @@ os.environ['ROOT_DIR_BRAINTREEBANK'] = '/path/to/braintreebank/'  # NOTE: Change
 
 from neuroprobe import BrainTreebankSubject, BrainTreebankSubjectTrialBenchmarkDataset
 subject = BrainTreebankSubject(subject_id=1, cache=True, 
-                               dtype=torch.float32, coordinates_type="cortical")
+                               dtype=torch.float32, coordinates_type="mni") # = mni152; also: "cortical", "mni305", "lpi"
 dataset = BrainTreebankSubjectTrialBenchmarkDataset(subject, trial_id=2, 
                                                     dtype=torch.float32, 
                                                     eval_name="gpt2_surprisal") 
