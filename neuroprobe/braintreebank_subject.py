@@ -20,7 +20,7 @@ class BrainTreebankSubject:
         self.cache = cache
         self.dtype = dtype  # Store dtype as instance variable
         self.coordinates_type = coordinates_type
-        assert coordinates_type in ["cortical", "mni", "lpi"], "Invalid coordinates type. Must be one of: 'cortical', 'mni', 'lpi'"
+        assert coordinates_type in ["cortical", "mni", "mni152", "mni305", "lpi"], "Invalid coordinates type. Must be one of: 'cortical', 'mni' (= 'mni152'), 'mni152', 'mni305', 'lpi'"
 
         self.localization_data = self._load_localization_data()
         self.electrode_labels = self._get_all_electrode_names()
@@ -169,8 +169,10 @@ class BrainTreebankSubject:
     def get_electrode_coordinates(self):
         if self.coordinates_type == "cortical":
             return self.get_electrode_coordinates_cortical()
-        elif self.coordinates_type == "mni":
-            return self.get_electrode_coordinates_mni()
+        elif self.coordinates_type in ("mni", "mni152"):
+            return self.get_electrode_coordinates_mni(version="mni152")
+        elif self.coordinates_type == "mni305":
+            return self.get_electrode_coordinates_mni(version="mni305")
         elif self.coordinates_type == "lpi":
             return self.get_electrode_coordinates_lpi()
         else:
@@ -200,8 +202,58 @@ class BrainTreebankSubject:
                     electrode_row.iloc[0]['Z']
                 ], dtype=self.dtype)
         return electrode_coordinates
-    def get_electrode_coordinates_mni(self):
-        raise NotImplementedError("Direct MNI coordinates are not yet available for the Braintreebank dataset. Will be added in the future ASAP!")
+    def get_electrode_coordinates_mni(self, version="mni152"):
+        """
+        Get MNI coordinates of the electrodes for this subject.
+
+        Args:
+            version: 'mni152' (default) or 'mni305'. MNI152 is the conventional
+                stereotaxic reference; MNI305 is FreeSurfer's native MNI variant
+                (differs from MNI152 by a fixed Fischl 4x4, ~1-2 mm).
+
+        Returns:
+            (n_electrodes, 3) tensor of x, y, z in millimeters, in the same
+            row order as self.electrode_labels.
+
+        The coordinates were computed once from each subject's FreeSurfer recon
+        by composing:
+            vox (iELVis LIP, from elec_recon/<subj>PostimpLoc.txt)
+            -> vox (FS LIA, single axis flip)
+            -> scanner RAS (via mri/orig.mgz vox2ras)
+            -> MNI305      (via mri/transforms/talairach.xfm, LINEAR)
+            -> MNI152      (Fischl 4x4)
+
+        This is a LINEAR transform. Nonlinear MNI (talairach.m3z) is not used,
+        so atlas-level localization is fine but sub-cm precision may be off by
+        1-3 mm. Depth electrodes retain their true 3D location (no cortical
+        projection); use the 'type' column of the bundled CSV ('D'/'S'/'G') to
+        distinguish depth from grid/strip if needed.
+        """
+        assert version in ("mni152", "mni305"), f"version must be 'mni152' or 'mni305', got {version!r}"
+
+        csv_path = os.path.join(MNI_COORDS_DIR, f'btbank{self.subject_id}_mni_coords.csv')
+        df = pd.read_csv(csv_path)
+        df['electrode_label'] = df['electrode_label'].apply(self._clean_electrode_label)
+        label_to_row = {row['electrode_label']: row for _, row in df.iterrows()}
+
+        coords = torch.zeros((len(self.electrode_labels), 3), dtype=self.dtype) * np.nan
+        for label in self.electrode_labels:
+            row = label_to_row.get(label)
+            if row is not None:
+                i = self.electrode_ids[label]
+                coords[i] = torch.tensor([
+                    row[f'{version}_x'],
+                    row[f'{version}_y'],
+                    row[f'{version}_z'],
+                ], dtype=self.dtype)
+            elif not self.allow_missing_coordinates:
+                raise ValueError(
+                    f"No MNI coordinates for electrode {label!r} in "
+                    f"btbank{self.subject_id}_mni_coords.csv. This is unexpected — "
+                    f"the bundled MNI CSV should have 100% overlap with the public "
+                    f"localization. Pass allow_missing_coordinates=True to tolerate."
+                )
+        return coords
     def get_electrode_coordinates_lpi(self):
         """
             Get the coordinates of the electrodes for this subject

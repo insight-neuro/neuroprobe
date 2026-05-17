@@ -10,7 +10,8 @@ ROOT_DIR = os.environ['ROOT_DIR_BRAINTREEBANK'] # Root directory for the braintr
 
 # This comes together with the neuroprobe package
 SAVE_SUBJECT_TRIAL_DF_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "braintreebank_features_time_alignment")
-PITCH_VOLUME_FEATURES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pitch_volume_features") 
+PITCH_VOLUME_FEATURES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pitch_volume_features")
+MNI_COORDS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mni_coords")
 
 # Disable file locking for HDF5 files. This is helpful for parallel processing.
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE" 
