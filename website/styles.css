@@ -279,6 +279,19 @@ th {
     font-weight: 600;
 }
 
+/* Give organization names room to wrap without stacking each word. */
+#leaderboard th:nth-child(4),
+#leaderboard td:nth-child(4) {
+    min-width: 12rem;
+}
+
+/* Keep the complete date on one line in every leaderboard tab. */
+#leaderboard th:nth-child(5),
+#leaderboard td:nth-child(5) {
+    min-width: 8rem;
+    white-space: nowrap;
+}
+
 tr:last-child td {
     border-bottom: none;
 }
@@ -457,4 +470,4 @@ footer {
         flex-direction: column;
         align-items: center;
     }
-} 
+}
