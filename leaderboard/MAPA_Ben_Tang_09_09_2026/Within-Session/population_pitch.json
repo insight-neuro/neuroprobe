@@ -1,0 +1,226 @@
+{
+  "model_name": "MAPA",
+  "description": "A masked autoencoder for intracranial EEG, evaluated with a frozen encoder and a linear probe.",
+  "author": "Ben Tang",
+  "organization": "Duke",
+  "organization_url": "https://duke.edu",
+  "timestamp": 1788965319,
+  "evaluation_results": {
+    "btbank10_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6238728148542887,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.5748200160914496,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank10_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6528165261277077,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.6746549219982655,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6630408660125596,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.7682152074647608,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank1_2": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6871884893890474,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.6713582646312029,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6016007857642915,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.6994085869826441,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank2_4": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6228435890201979,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.7323647116600316,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6343322570870298,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.6475711315214779,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank3_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.5897359539408378,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.6053206273575541,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.5768820861678005,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.5652947845804989,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank4_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.5879909720698411,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.608298590430812,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_0": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.5621715097750332,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.5552072557809055,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    },
+    "btbank7_1": {
+      "population": {
+        "one_second_after_onset": {
+          "time_bin_start": 0.0,
+          "time_bin_end": 1.0,
+          "folds": [
+            {
+              "test_roc_auc": 0.6080164676133455,
+              "fold_idx": 0
+            },
+            {
+              "test_roc_auc": 0.5528771302884967,
+              "fold_idx": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}
