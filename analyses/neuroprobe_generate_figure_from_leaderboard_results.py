@@ -69,6 +69,7 @@ model_display_name_aliases = {
     'CNN_Laplacian_rereferencing_spectrogram': 'CNN (Laplacian re-referencing + spectrogram)',
     'DIVER-1_0.1s_tiny_frozen': 'DIVER-1 (0.1s, tiny, frozen)',
     'DIVER-1_0.1s_tiny': 'DIVER-1 (0.1s, tiny)',
+    'GLIS-GNN (ST-GCN, Functional Graph)': 'GNN (ST-GCN)',
 }
 
 def get_display_name(model_name):

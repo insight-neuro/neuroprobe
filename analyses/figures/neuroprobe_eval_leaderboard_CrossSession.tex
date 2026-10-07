@@ -5,8 +5,9 @@
 \hline
 Model & Overall & Sentence Onset & Speech & Volume \\
 \hline
-CNN (Laplacian re-referencing + spectrogram) & \textbf{0.670 $\pm$ 0.005} & 0.919 $\pm$ 0.009 & \textbf{0.919 $\pm$ 0.012} & \textbf{0.731 $\pm$ 0.030} \\
-Population Transformer (global z-scoring) & 0.663 $\pm$ 0.004 & \textbf{0.924 $\pm$ 0.012} & 0.913 $\pm$ 0.015 & 0.712 $\pm$ 0.024 \\
+MAPA & \textbf{0.691 $\pm$ 0.005} & \textbf{0.941 $\pm$ 0.010} & \textbf{0.932 $\pm$ 0.013} & \textbf{0.774 $\pm$ 0.031} \\
+CNN (Laplacian re-referencing + spectrogram) & 0.670 $\pm$ 0.005 & 0.919 $\pm$ 0.009 & 0.919 $\pm$ 0.012 & 0.731 $\pm$ 0.030 \\
+Population Transformer (global z-scoring) & 0.663 $\pm$ 0.004 & 0.924 $\pm$ 0.012 & 0.913 $\pm$ 0.015 & 0.712 $\pm$ 0.024 \\
 MLP (Laplacian re-referencing + spectrogram) & 0.655 $\pm$ 0.005 & 0.910 $\pm$ 0.014 & 0.902 $\pm$ 0.017 & 0.705 $\pm$ 0.029 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.651 $\pm$ 0.005 & 0.913 $\pm$ 0.011 & 0.908 $\pm$ 0.014 & 0.708 $\pm$ 0.027 \\
 BrainBERT (frozen, global z-scoring) & 0.633 $\pm$ 0.004 & 0.905 $\pm$ 0.013 & 0.903 $\pm$ 0.016 & 0.705 $\pm$ 0.026 \\
@@ -15,7 +16,7 @@ BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring) & 0.580 $\pm$ 0.004
 Linear (raw voltage) & 0.574 $\pm$ 0.003 & 0.724 $\pm$ 0.023 & 0.616 $\pm$ 0.015 & 0.565 $\pm$ 0.009 \\
 BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring) & 0.572 $\pm$ 0.004 & 0.724 $\pm$ 0.031 & 0.609 $\pm$ 0.016 & 0.557 $\pm$ 0.011 \\
 PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.564 $\pm$ 0.004 & 0.754 $\pm$ 0.036 & 0.719 $\pm$ 0.031 & 0.572 $\pm$ 0.014 \\
-GLIS-GNN (ST-GCN, Functional Graph) & 0.550 $\pm$ 0.004 & 0.679 $\pm$ 0.029 & 0.716 $\pm$ 0.036 & 0.555 $\pm$ 0.025 \\
+GNN (ST-GCN) & 0.550 $\pm$ 0.004 & 0.679 $\pm$ 0.029 & 0.716 $\pm$ 0.036 & 0.555 $\pm$ 0.025 \\
 RNN (gru) & 0.510 $\pm$ 0.002 & 0.531 $\pm$ 0.011 & 0.537 $\pm$ 0.015 & 0.512 $\pm$ 0.010 \\
 \hline
 \end{tabular}
@@ -24,8 +25,9 @@ RNN (gru) & 0.510 $\pm$ 0.002 & 0.531 $\pm$ 0.011 & 0.537 $\pm$ 0.015 & 0.512 $\
 \hline
 Model & Delta Volume & Voice Pitch & Word Position & Inter-word Gap \\
 \hline
-CNN (Laplacian re-referencing + spectrogram) & 0.753 $\pm$ 0.019 & \textbf{0.618 $\pm$ 0.016} & \textbf{0.712 $\pm$ 0.027} & 0.581 $\pm$ 0.014 \\
-Population Transformer (global z-scoring) & \textbf{0.759 $\pm$ 0.021} & 0.598 $\pm$ 0.013 & 0.703 $\pm$ 0.029 & \textbf{0.602 $\pm$ 0.015} \\
+MAPA & \textbf{0.787 $\pm$ 0.023} & \textbf{0.633 $\pm$ 0.015} & \textbf{0.741 $\pm$ 0.030} & 0.600 $\pm$ 0.016 \\
+CNN (Laplacian re-referencing + spectrogram) & 0.753 $\pm$ 0.019 & 0.618 $\pm$ 0.016 & 0.712 $\pm$ 0.027 & 0.581 $\pm$ 0.014 \\
+Population Transformer (global z-scoring) & 0.759 $\pm$ 0.021 & 0.598 $\pm$ 0.013 & 0.703 $\pm$ 0.029 & \textbf{0.602 $\pm$ 0.015} \\
 MLP (Laplacian re-referencing + spectrogram) & 0.745 $\pm$ 0.022 & 0.587 $\pm$ 0.014 & 0.688 $\pm$ 0.031 & 0.578 $\pm$ 0.014 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.737 $\pm$ 0.020 & 0.588 $\pm$ 0.015 & 0.696 $\pm$ 0.030 & 0.584 $\pm$ 0.015 \\
 BrainBERT (frozen, global z-scoring) & 0.674 $\pm$ 0.021 & 0.584 $\pm$ 0.011 & 0.612 $\pm$ 0.016 & 0.526 $\pm$ 0.007 \\
@@ -34,7 +36,7 @@ BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring) & 0.684 $\pm$ 0.020
 Linear (raw voltage) & 0.699 $\pm$ 0.011 & 0.525 $\pm$ 0.006 & 0.654 $\pm$ 0.029 & 0.544 $\pm$ 0.010 \\
 BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring) & 0.671 $\pm$ 0.020 & 0.506 $\pm$ 0.005 & 0.658 $\pm$ 0.030 & 0.560 $\pm$ 0.016 \\
 PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.637 $\pm$ 0.021 & 0.523 $\pm$ 0.008 & 0.568 $\pm$ 0.023 & 0.526 $\pm$ 0.011 \\
-GLIS-GNN (ST-GCN, Functional Graph) & 0.563 $\pm$ 0.013 & 0.527 $\pm$ 0.012 & 0.532 $\pm$ 0.012 & 0.496 $\pm$ 0.010 \\
+GNN (ST-GCN) & 0.563 $\pm$ 0.013 & 0.527 $\pm$ 0.012 & 0.532 $\pm$ 0.012 & 0.496 $\pm$ 0.010 \\
 RNN (gru) & 0.518 $\pm$ 0.008 & 0.498 $\pm$ 0.004 & 0.507 $\pm$ 0.004 & 0.494 $\pm$ 0.004 \\
 \hline
 \end{tabular}
@@ -43,8 +45,9 @@ RNN (gru) & 0.518 $\pm$ 0.008 & 0.498 $\pm$ 0.004 & 0.507 $\pm$ 0.004 & 0.494 $\
 \hline
 Model & GPT-2 Surprisal & Head Word Position & Part of Speech & Word Length \\
 \hline
-CNN (Laplacian re-referencing + spectrogram) & 0.622 $\pm$ 0.013 & \textbf{0.619 $\pm$ 0.013} & \textbf{0.638 $\pm$ 0.015} & \textbf{0.638 $\pm$ 0.016} \\
-Population Transformer (global z-scoring) & \textbf{0.624 $\pm$ 0.014} & 0.612 $\pm$ 0.010 & 0.611 $\pm$ 0.010 & 0.636 $\pm$ 0.011 \\
+MAPA & \textbf{0.626 $\pm$ 0.015} & \textbf{0.628 $\pm$ 0.012} & \textbf{0.643 $\pm$ 0.012} & \textbf{0.639 $\pm$ 0.013} \\
+CNN (Laplacian re-referencing + spectrogram) & 0.622 $\pm$ 0.013 & 0.619 $\pm$ 0.013 & 0.638 $\pm$ 0.015 & 0.638 $\pm$ 0.016 \\
+Population Transformer (global z-scoring) & 0.624 $\pm$ 0.014 & 0.612 $\pm$ 0.010 & 0.611 $\pm$ 0.010 & 0.636 $\pm$ 0.011 \\
 MLP (Laplacian re-referencing + spectrogram) & 0.609 $\pm$ 0.015 & 0.603 $\pm$ 0.013 & 0.613 $\pm$ 0.012 & 0.611 $\pm$ 0.012 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.596 $\pm$ 0.014 & 0.585 $\pm$ 0.009 & 0.612 $\pm$ 0.013 & 0.608 $\pm$ 0.012 \\
 BrainBERT (frozen, global z-scoring) & 0.573 $\pm$ 0.012 & 0.567 $\pm$ 0.008 & 0.592 $\pm$ 0.011 & 0.600 $\pm$ 0.010 \\
@@ -53,7 +56,7 @@ BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring) & 0.578 $\pm$ 0.014
 Linear (raw voltage) & 0.559 $\pm$ 0.012 & 0.538 $\pm$ 0.005 & 0.564 $\pm$ 0.010 & 0.554 $\pm$ 0.010 \\
 BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring) & 0.576 $\pm$ 0.013 & 0.578 $\pm$ 0.016 & 0.554 $\pm$ 0.011 & 0.558 $\pm$ 0.013 \\
 PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.554 $\pm$ 0.013 & 0.535 $\pm$ 0.006 & 0.503 $\pm$ 0.006 & 0.522 $\pm$ 0.005 \\
-GLIS-GNN (ST-GCN, Functional Graph) & 0.535 $\pm$ 0.008 & 0.528 $\pm$ 0.008 & 0.530 $\pm$ 0.007 & 0.513 $\pm$ 0.007 \\
+GNN (ST-GCN) & 0.535 $\pm$ 0.008 & 0.528 $\pm$ 0.008 & 0.530 $\pm$ 0.007 & 0.513 $\pm$ 0.007 \\
 RNN (gru) & 0.514 $\pm$ 0.006 & 0.511 $\pm$ 0.003 & 0.514 $\pm$ 0.006 & 0.509 $\pm$ 0.004 \\
 \hline
 \end{tabular}
@@ -62,7 +65,8 @@ RNN (gru) & 0.514 $\pm$ 0.006 & 0.511 $\pm$ 0.003 & 0.514 $\pm$ 0.006 & 0.509 $\
 \hline
 Model & Global Optical Flow & Local Optical Flow & Frame Brightness & Number of Faces \\
 \hline
-CNN (Laplacian re-referencing + spectrogram) & \textbf{0.629 $\pm$ 0.023} & \textbf{0.608 $\pm$ 0.015} & 0.524 $\pm$ 0.031 & \textbf{0.546 $\pm$ 0.015} \\
+MAPA & \textbf{0.675 $\pm$ 0.018} & \textbf{0.648 $\pm$ 0.013} & 0.533 $\pm$ 0.015 & \textbf{0.563 $\pm$ 0.011} \\
+CNN (Laplacian re-referencing + spectrogram) & 0.629 $\pm$ 0.023 & 0.608 $\pm$ 0.015 & 0.524 $\pm$ 0.031 & 0.546 $\pm$ 0.015 \\
 Population Transformer (global z-scoring) & 0.607 $\pm$ 0.018 & 0.594 $\pm$ 0.009 & 0.505 $\pm$ 0.016 & 0.541 $\pm$ 0.010 \\
 MLP (Laplacian re-referencing + spectrogram) & 0.617 $\pm$ 0.021 & 0.592 $\pm$ 0.013 & 0.528 $\pm$ 0.027 & 0.536 $\pm$ 0.015 \\
 Linear (Laplacian re-referencing + spectrogram) & 0.598 $\pm$ 0.017 & 0.580 $\pm$ 0.010 & 0.532 $\pm$ 0.032 & 0.522 $\pm$ 0.015 \\
@@ -72,7 +76,7 @@ BrainBERT (frozen; off-the-shelf; per-window STFT z-scoring) & 0.526 $\pm$ 0.003
 Linear (raw voltage) & 0.527 $\pm$ 0.006 & 0.521 $\pm$ 0.004 & 0.507 $\pm$ 0.006 & 0.510 $\pm$ 0.006 \\
 BrainBERT (untrained; frozen; off-the-shelf; per-window STFT z-scoring) & 0.522 $\pm$ 0.004 & 0.525 $\pm$ 0.006 & 0.493 $\pm$ 0.004 & 0.496 $\pm$ 0.002 \\
 PopulationTransformer (off-the-shelf; per-window STFT z-scoring) & 0.516 $\pm$ 0.011 & 0.518 $\pm$ 0.010 & 0.496 $\pm$ 0.013 & 0.513 $\pm$ 0.005 \\
-GLIS-GNN (ST-GCN, Functional Graph) & 0.547 $\pm$ 0.015 & 0.505 $\pm$ 0.012 & 0.513 $\pm$ 0.017 & 0.510 $\pm$ 0.006 \\
+GNN (ST-GCN) & 0.547 $\pm$ 0.015 & 0.505 $\pm$ 0.012 & 0.513 $\pm$ 0.017 & 0.510 $\pm$ 0.006 \\
 RNN (gru) & 0.503 $\pm$ 0.007 & 0.506 $\pm$ 0.008 & 0.493 $\pm$ 0.006 & 0.503 $\pm$ 0.005 \\
 \hline
 \end{tabular}
