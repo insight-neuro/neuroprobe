@@ -191,6 +191,16 @@ def _sort_key(model):
 
 models.sort(key=_sort_key)
 
+# Leave room for complete error bars when a new submission exceeds the old range.
+upper_error_bars = [
+    perf['mean'] + (perf['sem'] if np.isfinite(perf['sem']) else 0.0)
+    for task in task_name_mapping for perf in performance_data[task].values()
+    if np.isfinite(perf['mean'])
+]
+if upper_error_bars:
+    other_axis_ylim = (other_axis_ylim[0],
+                       max(other_axis_ylim[1], math.ceil((max(upper_error_bars) + 0.005) * 100) / 100))
+
 ### PREPARING FOR PLOTTING ###
 
 import matplotlib.font_manager as fm
