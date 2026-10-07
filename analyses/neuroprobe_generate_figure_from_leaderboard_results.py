@@ -69,6 +69,7 @@ model_display_name_aliases = {
     'CNN_Laplacian_rereferencing_spectrogram': 'CNN (Laplacian re-referencing + spectrogram)',
     'DIVER-1_0.1s_tiny_frozen': 'DIVER-1 (0.1s, tiny, frozen)',
     'DIVER-1_0.1s_tiny': 'DIVER-1 (0.1s, tiny)',
+    'GLIS-GNN (ST-GCN, Functional Graph)': 'GNN (ST-GCN)',
 }
 
 def get_display_name(model_name):
@@ -189,6 +190,16 @@ def _sort_key(model):
     return (0, -float(mean))
 
 models.sort(key=_sort_key)
+
+# Leave room for complete error bars when a new submission exceeds the old range.
+upper_error_bars = [
+    perf['mean'] + (perf['sem'] if np.isfinite(perf['sem']) else 0.0)
+    for task in task_name_mapping for perf in performance_data[task].values()
+    if np.isfinite(perf['mean'])
+]
+if upper_error_bars:
+    other_axis_ylim = (other_axis_ylim[0],
+                       max(other_axis_ylim[1], math.ceil((max(upper_error_bars) + 0.005) * 100) / 100))
 
 ### PREPARING FOR PLOTTING ###
 
