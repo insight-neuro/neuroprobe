@@ -1,0 +1,8 @@
+{
+  "model_name": "Ridge Regression on 6-band Preprocessed Data",
+  "description": "No pretraining. Lite electrodes as adjacent bipolar pairs on the same shaft; line noise removed; 6 streams at 200 Hz (1-30 Hz waveform; theta, alpha, beta, low-gamma (30-70 Hz) log envelopes; 70-170 Hz high-gamma log amplitude), each normalized with median/MAD per channel over the session; every stream averaged in ten 100 ms bins over the 1 s after word onset; linear ridge readout (features z-scored on the training set, ridge regression parameters chosen on the validation AUROC). Cross-Subject: the features of each channel are averaged within its DKT atlas region.",
+  "author": "Evan Chen",
+  "organization": "Purdue",
+  "organization_url": "https://purdue.edu",
+  "timestamp": 1792032468
+}
