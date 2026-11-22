@@ -183,7 +183,8 @@ def remove_line_noise(data, fs=2048, line_freq=60):
     
     # Convert back to tensor if input was a tensor
     if was_tensor:
-        filtered_data = torch.from_numpy(filtered_data).to(device)
+        # filtfilt can return a reversed-stride view, which Torch cannot wrap.
+        filtered_data = torch.from_numpy(np.ascontiguousarray(filtered_data)).to(device)
     
     return filtered_data
 
