@@ -162,6 +162,15 @@ class BrainTreebankSubject:
         neural_data_file = os.path.join(ROOT_DIR, f'sub_{self.subject_id}_trial{trial_id:03}.h5')
         self.h5_files[trial_id] = h5py.File(neural_data_file, 'r')
         self.electrode_data_length[trial_id] = self.h5_files[trial_id]['data'][self.h5_neural_data_keys[self.electrode_labels[0]]].shape[0]
+    def get_trial_n_samples(self, trial_id):
+        """Read the recording length from H5 metadata, without caching waveform data."""
+        if trial_id not in self.electrode_data_length:
+            neural_data_file = os.path.join(ROOT_DIR, f'sub_{self.subject_id}_trial{trial_id:03}.h5')
+            with h5py.File(neural_data_file, 'r') as handle:
+                key = self.h5_neural_data_keys[self.electrode_labels[0]]
+                self.electrode_data_length[trial_id] = handle['data'][key].shape[0]
+        return self.electrode_data_length[trial_id]
+
     def load_neural_data(self, trial_id, cache_window_from=None, cache_window_to=None):
         if self.cache: self.cache_neural_data(trial_id, cache_window_from=cache_window_from, cache_window_to=cache_window_to)
         else: self.open_neural_data_file(trial_id)

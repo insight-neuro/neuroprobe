@@ -31,7 +31,7 @@ all_tasks = single_float_variables + ["onset", "speech"] + ["face_num", "word_ga
 class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
     def __init__(self, subject, trial_id, dtype, eval_name, output_indices=False, binary_tasks=True,
                  start_neural_data_before_word_onset=START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE, end_neural_data_after_word_onset=END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE,
-                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=True, max_samples=None, always_cache_full_subject=False):
+                 lite=True, nano=False, random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED, output_dict=True, max_samples=None, always_cache_full_subject=False, defer_selection=False):
         """
         Args:
             subject (Subject): the subject to evaluate on
@@ -64,11 +64,13 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             random_seed (int, optional): seed for random operations within this dataset (defaults to NEUROPROBE_GLOBAL_RANDOM_SEED)
             max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
             always_cache_full_subject (bool, optional): if True, the dataset will always cache the full subject's neural data (defaults to False)
+            defer_selection (bool, optional): expose chronological candidates without balancing or caps,
+                so temporal boundary exclusion can happen first. Defaults to False.
         """
 
-        # Set up a local random state with the provided seed
-        self.rng = np.random.RandomState(random_seed)
-        
+        if not isinstance(defer_selection, bool):
+            raise TypeError("defer_selection must be a bool")
+
         assert eval_name in all_tasks, f"eval_name must be one of {all_tasks}, not {eval_name}"
 
         self.subject = subject
@@ -251,37 +253,59 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             raise ValueError(f"Invalid eval_name: {eval_name}")
 
         self.n_classes = len(self.label_indices)
-        n_samples_each = min([len(self.label_indices[label]) for label in self.label_indices])
-        if self.lite: 
-            n_samples_each = min(n_samples_each, NEUROPROBE_LITE_MAX_SAMPLES//self.n_classes)
-        elif self.nano:
-            n_samples_each = min(n_samples_each, NEUROPROBE_NANO_MAX_SAMPLES//self.n_classes)
-        for label in list(self.label_indices.keys()):
-            self.label_indices[label] = np.sort(self.rng.choice(self.label_indices[label], size=n_samples_each, replace=False))
-            if self.max_samples is not None: # if max_samples is set, we need to truncate the indices to the max_samples
-                self.label_indices[label] = self.label_indices[label][:self.max_samples//self.n_classes]
+        self.candidate_samples = None
+        if defer_selection:
+            # Preserve every candidate until its full support is assigned to a block.
+            rows, labels, onsets = [], [], []
+            for label, indices in self.label_indices.items():
+                frame = self.nonverbal_df if eval_name in ("onset", "speech") and label == 0 else self.all_words_df
+                rows.extend(indices)
+                labels.extend([label] * len(indices))
+                onsets.extend(frame.iloc[indices]["est_idx"].to_numpy())
+            order = np.argsort(onsets, kind="stable")
+            self.candidate_samples = np.column_stack((labels, rows)).astype(np.int64)[order]
+        else:
+            # Deferred temporal selection owns its RNG; retain legacy draws here only.
+            self.rng = np.random.RandomState(random_seed)
+            n_samples_each = min([len(self.label_indices[label]) for label in self.label_indices])
+            if self.lite:
+                n_samples_each = min(n_samples_each, NEUROPROBE_LITE_MAX_SAMPLES//self.n_classes)
+            elif self.nano:
+                n_samples_each = min(n_samples_each, NEUROPROBE_NANO_MAX_SAMPLES//self.n_classes)
+            for label in list(self.label_indices.keys()):
+                self.label_indices[label] = np.sort(self.rng.choice(self.label_indices[label], size=n_samples_each, replace=False))
+                if self.max_samples is not None: # if max_samples is set, we need to truncate the indices to the max_samples
+                    self.label_indices[label] = self.label_indices[label][:self.max_samples//self.n_classes]
         self.n_samples = sum([len(self.label_indices[label]) for label in self.label_indices])
 
         self.cache_window_from = None
         self.cache_window_to = None
-        if not self.always_cache_full_subject:
-            n_try_indices = self.n_classes # try some first and last samples to get a good estimate of the edges of the needed data in the dataset
-            window_indices = []
-            for i in list(range(n_try_indices))+list(range(self.n_samples-n_try_indices, self.n_samples)):
-                if self.output_dict:
-                    window_from, window_to = self.__getitem__(i, force_output_indices=True)['data']
-                else:
-                    (window_from, window_to), _ = self.__getitem__(i, force_output_indices=True)
-                window_indices.append(window_from)
-                window_indices.append(window_to)
-            self.cache_window_from = np.min(window_indices)
-            self.cache_window_to = np.max(window_indices)
+        # Index-only consumers need annotation bounds, not a waveform cache window.
+        if not self.output_indices and not self.always_cache_full_subject and self.n_samples:
+            starts, ends, _ = self.get_window_bounds()
+            self.cache_window_from = max(0, int(starts.min()))
+            self.cache_window_to = int(ends.max())
 
-        
+    def get_window_bounds(self):
+        """Return start/end sample indices and labels without reading neural data."""
+        if self.candidate_samples is not None:
+            labels, rows = self.candidate_samples.T
+        else:
+            labels = (np.arange(self.n_samples) + 1) % self.n_classes
+            rows = np.empty(self.n_samples, dtype=np.int64)
+            for label, indices in self.label_indices.items():
+                rows[labels == label] = indices
+        onsets = np.empty(self.n_samples, dtype=np.int64)
+        for label in self.label_indices:
+            selected = labels == label
+            frame = self.nonverbal_df if self.eval_name in ("onset", "speech") and label == 0 else self.all_words_df
+            onsets[selected] = frame.iloc[rows[selected]]["est_idx"].to_numpy(dtype=np.int64)
+        return (onsets - int(self.start_neural_data_before_word_onset),
+                onsets + int(self.end_neural_data_after_word_onset), labels.copy())
 
     def _get_neural_data(self, window_from, window_to, force_output_indices=False):
-        self.subject.load_neural_data(self.trial_id, cache_window_from=self.cache_window_from, cache_window_to=self.cache_window_to)
         if not self.output_indices and not force_output_indices:
+            self.subject.load_neural_data(self.trial_id, cache_window_from=self.cache_window_from, cache_window_to=self.cache_window_to)
             input = self.subject.get_all_electrode_data(self.trial_id, window_from=window_from, window_to=window_to)
             if self.lite or self.nano:
                 input = input[self.electrode_indices_subset]
@@ -290,9 +314,12 @@ class BrainTreebankSubjectTrialBenchmarkDataset(Dataset):
             return window_from, window_to # just return the window indices
 
     def _positive_negative_getitem__(self, idx, force_output_indices=False):
-        # even indices are positive samples, odd indices are negative samples
-        current_label = (idx+1) % self.n_classes
-        word_index = self.label_indices[current_label][idx//self.n_classes]
+        # Standalone datasets retain interleaving; deferred candidates are chronological.
+        if self.candidate_samples is None:
+            current_label = (idx+1) % self.n_classes
+            word_index = self.label_indices[current_label][idx//self.n_classes]
+        else:
+            current_label, word_index = map(int, self.candidate_samples[idx])
         if self.eval_name in ["onset", "speech"] and (current_label == 0): # for onset and speech, we need to get the nonverbal data
             row = self.nonverbal_df.iloc[word_index]
         else:
