@@ -1,6 +1,7 @@
 from neuroprobe.braintreebank_subject import BrainTreebankSubject
 import neuroprobe.train_test_splits as neuroprobe_train_test_splits
 import neuroprobe.config as neuroprobe_config
+from neuroprobe.temporal_splits import TEMPORAL_SPLIT_PROTOCOL
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -55,7 +56,16 @@ parser.add_argument('--preprocess.projection.dim', type=int, default=192, help='
 parser.add_argument('--preprocess.projection.method', type=str, choices=['pca', 'random'], default='pca', help='Method to use for projection (only used if preprocess is projection)')
 
 parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
+parser.add_argument('--temporal-context-width-s', type=float, default=None,
+                    help='Total centered preprocessing support; default: extracted window duration (WithinSession only)')
+parser.add_argument('--temporal-gap-s', type=float, default=0.0,
+                    help='Additional blank interval between temporal blocks (WithinSession only)')
+parser.add_argument('--split-seed', type=int, default=42,
+                    help='Fixed temporal balancing seed, separate from model --seed')
 args = parser.parse_args()
+if args.split_type != 'WithinSession' and (args.temporal_context_width_s is not None or args.temporal_gap_s != 0):
+    parser.error('Temporal context/gap options apply only to WithinSession')
+
 
 eval_names = args.eval_name.split(',')
 splits_type = args.split_type
@@ -136,6 +146,9 @@ for eval_name in eval_names:
 
     preprocess_suffix += f"_projection{preprocess_parameters['projection']['dim']}_{preprocess_parameters['projection']['method']}" if 'projection' in preprocess_type else ''
 
+    if splits_type == "WithinSession":
+        preprocess_suffix += f"_{TEMPORAL_SPLIT_PROTOCOL}_context{args.temporal_context_width_s}_gap{args.temporal_gap_s}_splitseed{args.split_seed}_target{bins_start_before_word_onset_seconds}_{bins_end_after_word_onset_seconds}"
+
     file_save_dir = f"{save_dir}/{classifier_type}_{preprocess_suffix}"
     os.makedirs(file_save_dir, exist_ok=True) # Create save directory if it doesn't exist
 
@@ -163,7 +176,8 @@ for eval_name in eval_names:
                                                                                         output_dict=False,
                                                                                         start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                         end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                        lite=lite, nano=nano, binary_tasks=binary_tasks)
+                                                                                        lite=lite, nano=nano, binary_tasks=binary_tasks,
+                                                                                        context_width_s=args.temporal_context_width_s, gap_s=args.temporal_gap_s, random_seed=args.split_seed)
         train_subject = subject
     elif splits_type == "CrossSession":
         folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
@@ -206,6 +220,12 @@ for eval_name in eval_names:
         for fold_idx, fold in enumerate(folds):
             train_dataset = fold["train_dataset"]
             test_dataset = fold["test_dataset"]
+            if "temporal_split" in fold and any(len(fold[f"{split}_dataset"]) == 0 for split in ("train", "val", "test")):
+                bin_results["folds"].append({"fold_idx": fold_idx, "status": "skipped",
+                                              "skip_reason": "insufficient_class_support",
+                                              "temporal_split": fold["temporal_split"]})
+                continue
+
 
             log(f"Fold {fold_idx+1}, Bin {bin_start}-{bin_end}")
             log("Preparing and preprocessing data...", priority=2, indent=1)
@@ -315,6 +335,9 @@ for eval_name in eval_names:
                 "test_accuracy": float(test_accuracy),
                 "test_roc_auc": float(test_roc)
             }
+            if "temporal_split" in fold:
+                fold_result["fold_idx"] = fold_idx
+                fold_result["temporal_split"] = fold["temporal_split"]
             bin_results["folds"].append(fold_result)
             
             # Clean up variables no longer needed
