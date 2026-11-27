@@ -3,7 +3,7 @@
  "description": "Equal-weight mean of two frozen pretrained encoders with linear readouts: MAPA (last encoder layer, closed-form ridge; Tang et al. 2026) and DIVER-1 0.1s tiny (linear head; Han et al. 2025). Each member score is mapped through the empirical CDF of its own label-free validation scores before averaging. No additional pretraining; ridge penalty and DIVER early stopping chosen on the validation split. Design chosen on permitted non-evaluation sessions only.",
  "author": "Jake Hemmerle",
  "organization": "Spark",
- "organization_url": "",
+ "organization_url": "https://github.com/jakehemmerle",
  "timestamp": 1795748602,
  "evaluation_results": {
   "btbank10_0": {
