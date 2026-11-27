@@ -1,0 +1,226 @@
+{
+ "model_name": "MAPA+DIVER-1 ensemble",
+ "description": "Equal-weight mean of two frozen pretrained encoders with linear readouts: MAPA (last encoder layer, closed-form ridge; Tang et al. 2026) and DIVER-1 0.1s tiny (linear head; Han et al. 2025). Each member score is mapped through the empirical CDF of its own label-free validation scores before averaging. No additional pretraining; ridge penalty and DIVER early stopping chosen on the validation split. Design chosen on permitted non-evaluation sessions only.",
+ "author": "Jake Hemmerle",
+ "organization": "Spark",
+ "organization_url": "",
+ "timestamp": 1795748602,
+ "evaluation_results": {
+  "btbank10_0": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.851279479222177,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.8752337962237339,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank10_1": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9815940984086183,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9902458648109255,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank1_1": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9901361503819107,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.8930127582207454,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank1_2": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9501948737239168,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9915363154760038,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank2_0": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9638046874183672,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9861028389914632,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank2_4": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.8743769787780947,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9734856796547653,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank3_0": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9433246606689445,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9571173317450864,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank3_1": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.8951443528416038,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.96940534779474,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank4_0": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.882271193170538,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.892265655204121,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank4_1": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.9377971432452483,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.9000867266438879,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank7_0": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.8022528029424365,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.8882114458271946,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  },
+  "btbank7_1": {
+   "population": {
+    "one_second_after_onset": {
+     "time_bin_start": 0.0,
+     "time_bin_end": 1.0,
+     "folds": [
+      {
+       "test_roc_auc": 0.8774945008348131,
+       "fold_idx": 0
+      },
+      {
+       "test_roc_auc": 0.873002411682082,
+       "fold_idx": 1
+      }
+     ]
+    }
+   }
+  }
+ }
+}
