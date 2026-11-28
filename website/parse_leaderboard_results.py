@@ -270,45 +270,23 @@ class LeaderboardParser:
         with open(index_file, 'r') as f:
             html_content = f.read()
         
-        # Find and replace Within-Session table (active by default)
-        within_session_start = html_content.find('<div class="tab-content active" id="population_within_session">')
-        within_session_end = html_content.find('</div>', within_session_start)
-        within_session_end = html_content.find('</div>', within_session_end) # find second </div>
-        
-        if within_session_start != -1 and within_session_end != -1:
-            within_session_content = f"""<div class="tab-content active" id="population_within_session">
-{within_session_table}
-                </div>"""
-            html_content = (html_content[:within_session_start] + 
-                          within_session_content + 
-                          html_content[within_session_end + 6:])
-        
-        # Find and replace Cross-Session table
-        cross_session_start = html_content.find('<div class="tab-content" id="population_cross_session">')
-        cross_session_end = html_content.find('</div>', cross_session_start)
-        cross_session_end = html_content.find('</div>', cross_session_end) # find second </div>
-        
-        if cross_session_start != -1 and cross_session_end != -1:
-            cross_session_content = f"""<div class="tab-content" id="population_cross_session">
-{cross_session_table}
-                </div>"""
-            html_content = (html_content[:cross_session_start] + 
-                          cross_session_content + 
-                          html_content[cross_session_end + 6:])
-        
-        # Find and replace Cross-Subject table
-        cross_subject_start = html_content.find('<div class="tab-content" id="population_cross_subject">')
-        cross_subject_end = html_content.find('</div>', cross_subject_start)
-        cross_subject_end = html_content.find('</div>', cross_subject_end) # find second </div>
-        
-        if cross_subject_start != -1 and cross_subject_end != -1:
-            cross_subject_content = f"""<div class="tab-content" id="population_cross_subject">
-{cross_subject_table}
-                </div>"""
-            html_content = (html_content[:cross_subject_start] + 
-                          cross_subject_content + 
-                          html_content[cross_subject_end + 6:])
-        
+        tables = {
+            'population_within_session': within_session_table,
+            'population_cross_session': cross_session_table,
+            'population_cross_subject': cross_subject_table,
+        }
+        for tab_id, table in tables.items():
+            start_marker = f'<!-- BEGIN {tab_id} -->'
+            end_marker = f'<!-- END {tab_id} -->'
+            start = html_content.index(start_marker) + len(start_marker)
+            end = html_content.index(end_marker, start)
+            html_content = (
+                html_content[:start]
+                + table.rstrip()
+                + '\n                    '
+                + html_content[end:]
+            )
+
         # Write back to file
         with open(index_file, 'w') as f:
             f.write(html_content)
