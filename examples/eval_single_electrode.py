@@ -1,6 +1,7 @@
 from neuroprobe.braintreebank_subject import BrainTreebankSubject
 import neuroprobe.train_test_splits as neuroprobe_train_test_splits
 import neuroprobe.config as neuroprobe_config
+from neuroprobe.temporal_splits import TEMPORAL_SPLIT_PROTOCOL
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -46,7 +47,16 @@ parser.add_argument('--lite', action='store_true', help='Whether to use the lite
 parser.add_argument('--electrodes', type=str, default='all', help='Electrode labels to evaluate on. If multiple, separate with commas.')
 parser.add_argument('--classifier_type', type=str, choices=['linear', 'cnn', 'transformer', 'mlp'], default='linear', help='Type of classifier to use for evaluation')
 parser.add_argument('--binary_tasks', type=lambda x: x.lower() == 'true', default=True, help='Whether to use binary classification for tasks that support it')
+parser.add_argument('--temporal-context-width-s', type=float, default=None,
+                    help='Total centered preprocessing support; default: extracted window duration (WithinSession only)')
+parser.add_argument('--temporal-gap-s', type=float, default=0.0,
+                    help='Additional blank interval between temporal blocks (WithinSession only)')
+parser.add_argument('--split-seed', type=int, default=42,
+                    help='Fixed temporal balancing seed, separate from model --seed')
 args = parser.parse_args()
+if args.split_type != 'WithinSession' and (args.temporal_context_width_s is not None or args.temporal_gap_s != 0):
+    parser.error('Temporal context/gap options apply only to WithinSession')
+
 
 eval_names = args.eval_name.split(',') if ',' in args.eval_name else [args.eval_name]
 subject_id = args.subject_id
@@ -76,8 +86,8 @@ preprocess_parameters = {
 
 model_name = model_name_from_classifier_type(classifier_type)
 
-bins_start_before_word_onset_seconds = 0.5# if not only_1second else 0
-bins_end_after_word_onset_seconds = 1.5# if not only_1second else 1
+bins_start_before_word_onset_seconds = 0.5 if not only_1second else 0
+bins_end_after_word_onset_seconds = 1.5 if not only_1second else 1
 bin_size_seconds = 0.25
 bin_step_size_seconds = 0.125
 
@@ -115,6 +125,9 @@ for eval_name in eval_names:
     preprocess_suffix += f"_{preprocess_parameters['stft']['window']}" if 'stft' in preprocess_type and preprocess_parameters['stft']['window'] != 'hann' else ''
     preprocess_suffix += f"_maxfreq{preprocess_parameters['stft']['max_frequency']}" if 'stft' in preprocess_type else ''
     preprocess_suffix += f"_minfreq{preprocess_parameters['stft']['min_frequency']}" if 'stft' in preprocess_type and preprocess_parameters['stft']['min_frequency'] != 0 else ''
+
+    if splits_type == "WithinSession":
+        preprocess_suffix += f"_{TEMPORAL_SPLIT_PROTOCOL}_context{args.temporal_context_width_s}_gap{args.temporal_gap_s}_splitseed{args.split_seed}_target{bins_start_before_word_onset_seconds}_{bins_end_after_word_onset_seconds}"
 
     save_dir = f"{save_dir}/{classifier_type}_{preprocess_suffix}_single_electrode"
     os.makedirs(save_dir, exist_ok=True)
@@ -164,7 +177,8 @@ for eval_name in eval_names:
                                                                                             output_indices=False, output_dict=False,
                                                                                             start_neural_data_before_word_onset=int(bins_start_before_word_onset_seconds*neuroprobe_config.SAMPLING_RATE), 
                                                                                             end_neural_data_after_word_onset=int(bins_end_after_word_onset_seconds*neuroprobe_config.SAMPLING_RATE),
-                                                                                            lite=lite, max_samples=3500, binary_tasks=binary_tasks)
+                                                                                            lite=lite, max_samples=3500, binary_tasks=binary_tasks,
+                                                                                        context_width_s=args.temporal_context_width_s, gap_s=args.temporal_gap_s, random_seed=args.split_seed)
         elif splits_type == "CrossSession":
             folds = neuroprobe_train_test_splits.generate_splits_cross_session(subject, trial_id, eval_name, dtype=torch.float32, 
                                                                                             output_indices=False, output_dict=False,
@@ -186,6 +200,12 @@ for eval_name in eval_names:
             for fold_idx, fold in enumerate(folds):
                 train_dataset = fold["train_dataset"]
                 test_dataset = fold["test_dataset"]
+                if "temporal_split" in fold and any(len(fold[f"{split}_dataset"]) == 0 for split in ("train", "val", "test")):
+                    bin_results["folds"].append({"fold_idx": fold_idx, "status": "skipped",
+                                                  "skip_reason": "insufficient_class_support",
+                                                  "temporal_split": fold["temporal_split"]})
+                    continue
+
 
                 # Convert PyTorch dataset to numpy arrays for scikit-learn - now using proper preprocess_parameters
                 X_train = np.array([preprocess_data(item[0][:, data_idx_from:data_idx_to].float().numpy(), subject.electrode_labels, preprocess_type, preprocess_parameters) for item in train_dataset])
@@ -265,6 +285,9 @@ for eval_name in eval_names:
                     "test_accuracy": float(test_accuracy),
                     "test_roc_auc": float(test_roc)
                 }
+                if "temporal_split" in fold:
+                    fold_result["fold_idx"] = fold_idx
+                    fold_result["temporal_split"] = fold["temporal_split"]
                 bin_results["folds"].append(fold_result)
                 if verbose: 
                     log(f"Electrode {electrode_label} ({electrode_idx+1}/{len(all_electrode_labels)}), Fold {fold_idx+1}, Bin {bin_start}-{bin_end}: Train accuracy: {train_accuracy:.3f}, Test accuracy: {test_accuracy:.3f}, Train ROC AUC: {train_roc:.3f}, Test ROC AUC: {test_roc:.3f}", priority=0)

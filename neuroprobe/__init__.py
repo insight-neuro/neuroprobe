@@ -5,7 +5,7 @@ This package provides tools for analyzing neural data from the BrainTreebank dat
 including dataset loading, preprocessing, and evaluation utilities.
 """
 
-__version__ = "0.1.6"
+__version__ = "0.2.0"
 __author__ = "Andrii Zahorodnii, Christopher Wang, Bennett Stankovits, Charikleia Moraitaki, Geeling Chau, Andrei Barbu, Boris Katz, Ila R Fiete"
 __email__ = "zaho@csail.mit.edu"
 

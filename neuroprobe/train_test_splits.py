@@ -1,10 +1,10 @@
 import torch
 from torch.utils.data import Dataset, DataLoader, Subset, ConcatDataset
-from sklearn.model_selection import KFold
 import numpy as np
 
 from .datasets import BrainTreebankSubjectTrialBenchmarkDataset
 from .config import *
+from .temporal_splits import temporal_fold_indices
 
 
 def generate_splits_cross_subject(all_subjects, test_subject_id, test_trial_id, eval_name, dtype=torch.float32,
@@ -173,18 +173,20 @@ def generate_splits_cross_session(test_subject, test_trial_id, eval_name, dtype=
 
 def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype=torch.float32,
                           lite=True, nano=False,
-                          
+
                           # Dataset parameters
                           binary_tasks=True,
                           output_indices=False, # if True, the dataset will return the window indices instead of the neural data
                           output_dict=True, # if True, the dataset will return a dictionary with the window indices and the neural data
-                          start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE), 
+                          start_neural_data_before_word_onset=int(START_NEURAL_DATA_BEFORE_WORD_ONSET * SAMPLING_RATE),
                           end_neural_data_after_word_onset=int(END_NEURAL_DATA_AFTER_WORD_ONSET * SAMPLING_RATE),
-                          max_samples=None):
+                          max_samples=None, *, context_width_s=None, gap_s=0.0,
+                          random_seed=NEUROPROBE_GLOBAL_RANDOM_SEED):
     """Generate train/test splits for Within Session evaluation.
 
-    This function performs k-fold cross validation on data from a single subject and movie.
-    
+    This function creates two recording-time folds for a single subject and movie.
+    Windows crossing block boundaries, including their context, are excluded before balancing.
+    Empty splits retain their fold IDs.
 
     Args:
         test_subject (Subject): Subject object containing brain recording data
@@ -199,57 +201,65 @@ def generate_splits_within_session(test_subject, test_trial_id, eval_name, dtype
         output_dict (bool, optional): Whether to output the dataset as a dictionary with the window indices and the neural data. Defaults to True.
         start_neural_data_before_word_onset (int, optional): Number of seconds before the word onset to start the neural data. Defaults to START_NEURAL_DATA_BEFORE_WORD_ONSET.
         end_neural_data_after_word_onset (int, optional): Number of seconds after the word onset to end the neural data. Defaults to END_NEURAL_DATA_AFTER_WORD_ONSET.
-        max_samples (int, optional): the maximum number of samples to include in the dataset (defaults to None, which means default limits: none for Neuroprobe-Full, 3500 for Neuroprobe-Lite, 1000 for Neuroprobe-Nano)
+        max_samples (int, optional): Total per-fold budget, divided across train/val/test. Defaults to tier limits: none for Full, 3500 for Lite, 1000 for Nano.
+        context_width_s (float, optional): Total centered support width in seconds. None requires only the target window.
+        gap_s (float, optional): Additional gap between temporal blocks in seconds. Defaults to 0.
+        random_seed (int, optional): Seed for within-split balancing. Defaults to NEUROPROBE_GLOBAL_RANDOM_SEED.
 
     Returns:
         list: A list of dictionaries, each containing:
             - train_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Training dataset
             - val_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Validation dataset
             - test_dataset (BrainTreebankSubjectTrialBenchmarkDataset): Test dataset
+            - temporal_split (dict): Protocol, block bounds in sample indices, settings and class counts
     """
-
-    train_datasets = []
-    test_datasets = []
-    val_datasets = []
-
-    dataset = BrainTreebankSubjectTrialBenchmarkDataset(test_subject, test_trial_id, dtype=dtype, eval_name=eval_name, 
-                                                        binary_tasks=binary_tasks, output_indices=output_indices, output_dict=output_dict, start_neural_data_before_word_onset=start_neural_data_before_word_onset, end_neural_data_after_word_onset=end_neural_data_after_word_onset,
-                                                        lite=lite, nano=nano, max_samples=max_samples)
-    
-    k_folds = NEUROPROBE_LITE_N_FOLDS if not nano else NEUROPROBE_NANO_N_FOLDS
-    kf = KFold(n_splits=k_folds, shuffle=False)  # shuffle=False is important to avoid correlated train/test splits!
-    
-    for fold, (train_idx, test_idx) in enumerate(kf.split(dataset)):
-        # Skip empty splits
-        if len(test_idx) == 0 or len(train_idx) == 0:
-            continue
-        
-        train_dataset = Subset(dataset, train_idx)
-        train_datasets.append(train_dataset)
-        test_dataset = Subset(dataset, test_idx)
-        
-        # Further split the test dataset into val and test datasets
-        test_size = len(test_dataset)
-        val_size = test_size // 2
-        val_indices = list(range(val_size))
-        test_indices = list(range(val_size, test_size))
-        val_dataset = Subset(test_dataset, val_indices)
-        test_dataset = Subset(test_dataset, test_indices)
-        # copy the electrode coordinates and labels from the test dataset to the val and test datasets
-        val_dataset.electrode_coordinates = dataset.electrode_coordinates
-        val_dataset.electrode_labels = dataset.electrode_labels
-        test_dataset.electrode_coordinates = dataset.electrode_coordinates
-        test_dataset.electrode_labels = dataset.electrode_labels
-        test_datasets.append(test_dataset)
-        val_datasets.append(val_dataset)
-
-    return [
-        {
-            "train_dataset": train_dataset, 
-            "val_dataset": val_dataset, 
-            "test_dataset": test_dataset
-        } for train_dataset, val_dataset, test_dataset in zip(train_datasets, val_datasets, test_datasets)
-    ]
+    if max_samples is not None and (isinstance(max_samples, bool) or not isinstance(max_samples, (int, np.integer)) or max_samples < 1):
+        raise ValueError("max_samples must be a positive integer or None")
+    for name, value in (("start_neural_data_before_word_onset", start_neural_data_before_word_onset),
+                        ("end_neural_data_after_word_onset", end_neural_data_after_word_onset)):
+        if isinstance(value, bool) or not isinstance(value, (int, np.integer)) or value < 0:
+            raise ValueError(f"{name} must be a nonnegative integer sample count")
+    if start_neural_data_before_word_onset + end_neural_data_after_word_onset == 0:
+        raise ValueError("The target window must contain at least one sample")
+    dataset = BrainTreebankSubjectTrialBenchmarkDataset(
+        test_subject, test_trial_id, dtype=dtype, eval_name=eval_name,
+        binary_tasks=binary_tasks, output_indices=output_indices, output_dict=output_dict,
+        start_neural_data_before_word_onset=start_neural_data_before_word_onset,
+        end_neural_data_after_word_onset=end_neural_data_after_word_onset,
+        lite=lite, nano=nano, random_seed=random_seed, defer_selection=True,
+    )
+    budget = NEUROPROBE_NANO_MAX_SAMPLES if nano else NEUROPROBE_LITE_MAX_SAMPLES if lite else None
+    if budget is not None:
+        # Retain the historical tier's attainable total cap, without discarding
+        # candidates before they have been assigned to a temporal block.
+        budget = min(budget, dataset.n_classes * min(len(indices) for indices in dataset.label_indices.values()))
+    if max_samples is not None:
+        budget = max_samples if budget is None else min(budget, max_samples)
+    starts, ends, labels = dataset.get_window_bounds()
+    recording_n_samples = test_subject.get_trial_n_samples(test_trial_id)
+    if dataset.cache_window_to is not None:
+        # The full candidate pool can include edge-crossing targets which the
+        # selector drops; never extend the waveform cache beyond the recording.
+        dataset.cache_window_to = min(dataset.cache_window_to, recording_n_samples)
+    # A missing class has no balanced budget; pass uncapped and let the selector
+    # retain empty splits with explicit class counts rather than raising here.
+    folds = temporal_fold_indices(
+        starts, ends, labels, recording_n_samples=recording_n_samples,
+        sampling_rate=SAMPLING_RATE, n_classes=dataset.n_classes,
+        context_width_s=context_width_s, gap_s=gap_s, random_seed=random_seed,
+        max_samples=budget if budget else None,
+    )
+    result = []
+    for fold in folds:
+        output = {"temporal_split": fold["temporal_split"]}
+        for split, indices in fold["indices"].items():
+            subset = Subset(dataset, indices)
+            subset.electrode_coordinates = dataset.electrode_coordinates
+            subset.electrode_labels = dataset.electrode_labels
+            subset.temporal_block_samples = tuple(fold["temporal_split"]["blocks_samples"][split])
+            output[f"{split}_dataset"] = subset
+        result.append(output)
+    return result
 
 # For backwards compatibility
 generate_splits_DS_DM = generate_splits_cross_subject
