@@ -4,62 +4,61 @@ on:
   push:
     paths:
       - 'leaderboard/**'
+      - 'tests/test_submission_format.py'
+      - '.github/workflows/validate_submissions.yml'
   pull_request:
     paths:
       - 'leaderboard/**'
-  workflow_dispatch:  # Allow manual triggering
+      - 'tests/test_submission_format.py'
+      - '.github/workflows/validate_submissions.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   validate-submissions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest
+      - name: Install dependencies
+        run: python -m pip install 'pytest>=9,<10'
 
-    - name: Run submission format validation tests
-      run: |
-        python -m pytest tests/test_submission_format.py -v --tb=long --no-header
+      - name: Run submission format validation tests
+        id: validation
+        shell: bash
+        run: |
+          python -m pytest tests/test_submission_format.py -v --tb=long --no-header \
+            |& tee "$RUNNER_TEMP/submission-validation.log"
 
-    - name: Write validation summary
-      if: always()
-      run: |
-        SUBMISSION_COUNT=$(find leaderboard -maxdepth 1 -mindepth 1 -type d | wc -l)
-        TEST_OUTPUT=$(python -m pytest tests/test_submission_format.py -v --tb=long --no-header 2>&1 || true)
+      - name: Write validation summary
+        if: always()
+        env:
+          VALIDATION_OUTCOME: ${{ steps.validation.outcome }}
+        run: |
+          {
+            echo "## Submission Validation Results"
+            echo ""
+            case "$VALIDATION_OUTCOME" in
+              success) echo "✅ Submission format validation passed." ;;
+              failure) echo "❌ Submission format validation failed." ;;
+              *) echo "⚠️ Submission format validation did not run. See the job steps for details." ;;
+            esac
 
-        if echo "$TEST_OUTPUT" | grep -q "FAILED"; then
-          STATUS="❌ Some validation tests failed."
-        else
-          STATUS="✅ All validation tests passed!"
-        fi
-
-        {
-          echo "## Submission Validation Results"
-          echo ""
-          echo "**Submissions found:** $SUBMISSION_COUNT"
-          echo ""
-          echo "**Directories:**"
-          for dir in leaderboard/*/; do
-            echo "- \`$(basename "$dir")\`"
-          done
-          echo ""
-          echo "**Test Output:**"
-          echo '```'
-          echo "$TEST_OUTPUT"
-          echo '```'
-          echo ""
-          echo "$STATUS"
-        } >> "$GITHUB_STEP_SUMMARY"
+            if [[ -f "$RUNNER_TEMP/submission-validation.log" ]]; then
+              echo ""
+              echo '~~~~text'
+              cat "$RUNNER_TEMP/submission-validation.log"
+              echo '~~~~'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

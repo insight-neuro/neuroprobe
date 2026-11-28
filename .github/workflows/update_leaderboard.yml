@@ -10,7 +10,7 @@ on:
 
 jobs:
   update-leaderboard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     # Grant write permissions to contents and actions
     permissions:
@@ -22,43 +22,37 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         # Use a token that can push back to the repo
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
-        python-version: '3.9'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        # Install any dependencies needed by the parser script
-        pip install pathlib
+        python-version: '3.14'
     
     - name: Run leaderboard parser
-      run: |
-        cd website
-        python parse_leaderboard_results.py
-    
+      working-directory: website
+      env:
+        TZ: UTC
+      run: python parse_leaderboard_results.py
+
     - name: Check for changes
       id: verify-changed-files
       run: |
-        if git diff --quiet; then
-          echo "changed=false" >> $GITHUB_OUTPUT
+        if git diff --quiet -- website/index.html; then
+          echo "changed=false" >> "$GITHUB_OUTPUT"
         else
-          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "changed=true" >> "$GITHUB_OUTPUT"
         fi
     
     - name: Commit and push changes
       if: steps.verify-changed-files.outputs.changed == 'true'
       run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
-        git config --global init.defaultBranch main
+        git config user.email "action@github.com"
+        git config user.name "GitHub Action"
         
         # Show git status for debugging
         echo "Git status before commit:"
@@ -76,7 +70,6 @@ jobs:
         git push origin main
     
     - name: Generate summary
-      if: always()
       run: |
         echo "## 🏆 Leaderboard Update Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -104,4 +97,4 @@ jobs:
           if [ -d "$dir" ]; then
             echo "- $(basename "$dir")" >> $GITHUB_STEP_SUMMARY
           fi
-        done 
+        done
